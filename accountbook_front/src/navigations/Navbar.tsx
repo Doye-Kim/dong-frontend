@@ -36,6 +36,9 @@ const Navbar = () => {
           options={{
             tabBarIcon: ({focused, color, size}) => 
               focused ? <HouseHoldFillIcon size={30} /> : <HouseHoldIcon size={30} />,
+            title: "캘린더",
+            headerShown: true,
+            // headerRight: () => NotificationButton(navigation),
           }}
         />
         <Tab.Screen
