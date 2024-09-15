@@ -1,16 +1,24 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
+import { colors } from '../../../constants';
+import CustomCalendar from '../../../component/accountBook/calendar/CustomCalendar';
+
 
 interface CalendarScreenProps {}
 
 function CalendarScreen({}: CalendarScreenProps) {
   return (
-    <View>
-      <Text>테스트</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <CustomCalendar />
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.WHITE,
+  }
+});
 
 export default CalendarScreen;

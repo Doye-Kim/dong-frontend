@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Navbar from './src/component/Navbar';
+import Navbar from './src/navigations/Navbar';
 import { NavigationContainer } from '@react-navigation/native';
 
 const App = () => {
