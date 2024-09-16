@@ -1,31 +1,64 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
-import {FilterButton, LeftArrowIcon, RightArrowIcon} from '../../../assets/icons';
-import { colors } from '../../../constants';
+import {
+  FilterButton,
+  LeftArrowIcon,
+  RightArrowIcon,
+} from '../../../assets/icons';
+import {colors} from '../../../constants';
+import {MonthYear} from '../../../utils/date';
 
-function AccountBookHeader() {
+interface CustomCalendarHeaderProps {
+  monthYear: MonthYear;
+  onChangeMonth: (increment: number) => void;
+}
+
+const AccountBookHeader = ({
+  monthYear,
+  onChangeMonth,
+}: CustomCalendarHeaderProps) => {
+  const {month, year} = monthYear;
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftContainer}>
-        <Pressable style={({pressed}) => [styles.arrowButton, pressed && styles.buttonPressed]}>
+        <Pressable
+          onPress={() => onChangeMonth(-1)}
+          style={({pressed}) => [
+            styles.arrowButton,
+            pressed && styles.buttonPressed,
+          ]}>
           <LeftArrowIcon size={24} style={styles.arrowIcon} />
         </Pressable>
-        <Text style={styles.monthText}>8월</Text>
-        <Pressable style={({pressed}) => [styles.arrowButton, pressed && styles.buttonPressed]}>
+        <Text style={styles.monthText}>{month}월</Text>
+        <Pressable
+          onPress={() => onChangeMonth(1)}
+          style={({pressed}) => [
+            styles.arrowButton,
+            pressed && styles.buttonPressed,
+          ]}>
           <RightArrowIcon size={24} style={styles.arrowIcon} />
         </Pressable>
       </View>
       <View style={styles.rightContainer}>
-        <Pressable style={({pressed}) => [styles.filterButton, pressed && styles.buttonPressed]}>
-          <FilterButton size={24}/>
+        <Pressable
+          style={({pressed}) => [
+            styles.filterButton,
+            pressed && styles.buttonPressed,
+          ]}>
+          <FilterButton size={24} />
         </Pressable>
-        <Pressable style={({pressed}) => [styles.iconButton, pressed && [styles.iconButtonPressed, styles.buttonPressed]]}>
+        <Pressable
+          style={({pressed}) => [
+            styles.iconButton,
+            pressed && [styles.iconButtonPressed, styles.buttonPressed],
+          ]}>
           <Text style={styles.iconText}>분석</Text>
         </Pressable>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -45,15 +78,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arrowButton: {
-    padding: 5,
+    padding: 0,
   },
   arrowIcon: {
     color: '#000000',
   },
   monthText: {
-    fontSize: 18,
+    fontSize:28,
     fontWeight: 'bold',
     marginHorizontal: 10,
+    width: 70,
+    textAlign: 'center',
+    fontFamily: 'Pretendard-Bold',
   },
   filterButton: {
     padding: 5,
@@ -69,6 +105,7 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_600,
     fontSize: 14,
     fontWeight: 'bold',
+    fontFamily: 'Pretendard-Light'
   },
   buttonPressed: {
     opacity: 0.7,

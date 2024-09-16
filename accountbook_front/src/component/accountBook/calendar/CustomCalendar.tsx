@@ -1,13 +1,19 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import AccountBookHeader from '../common/AccountBookHeader';
+import { MonthYear } from '../../../utils/date';
 
-interface CustomCalendarProps {}
+interface CustomCalendarProps {
+  monthYear: MonthYear
+  onChangeMonth : (increment: number) => void;
+}
 
-function CustomCalendar({}: CustomCalendarProps) {
+const CustomCalendar = ({monthYear, onChangeMonth}: CustomCalendarProps) => {
+  const {month, year} = monthYear;
+
   return (
     <>
-      <AccountBookHeader />
+      <AccountBookHeader monthYear={monthYear} onChangeMonth={onChangeMonth}/>
     </>
   );
 }
