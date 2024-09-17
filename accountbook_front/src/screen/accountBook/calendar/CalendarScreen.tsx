@@ -9,6 +9,12 @@ interface CalendarScreenProps {}
 function CalendarScreen({}: CalendarScreenProps) {
   const currentMonthYear = getMonthYearDetails(new Date());
   const [monthYear, setMonthYear] = useState(currentMonthYear);
+  const [selectedDate, setSelectedDate] = useState(0);
+  const [expenses, setExpenses] = useState([]);
+
+  const handlePressDate = (date: number) => {
+    setSelectedDate(date);
+  };
 
   const handleUpdateMonth = (increment: number) => {
     setMonthYear(prev => getNewMonthYear(prev, increment));
@@ -16,7 +22,13 @@ function CalendarScreen({}: CalendarScreenProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomCalendar monthYear={monthYear} onChangeMonth={handleUpdateMonth}/>
+      <CustomCalendar
+        monthYear={monthYear}
+        onChangeMonth={handleUpdateMonth}
+        selectedDate={selectedDate}
+        onPressDate={handlePressDate}
+        expenses={expenses}
+      />
     </SafeAreaView>
   );
 }
