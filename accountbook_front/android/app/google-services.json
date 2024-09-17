@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101101546949",
+    "project_id": "dong-83563",
+    "storage_bucket": "dong-83563.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101101546949:android:4a1608c1d3a45ce294afac",
+        "android_client_info": {
+          "package_name": "com.awesomeproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEzJGszJvQ9k3asDqO_hOwBC8kGpATO0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
