@@ -6,7 +6,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "declaration.d.ts",
-  ],
+  "include": ["src", "declaration.d.ts"]
 }

@@ -1,6 +1,6 @@
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import CustomButton from '../../components/common/CustomButton';
-import {colors} from '../../constants/colors';
+import CustomButton from '@/components/common/CustomButton';
+import {colors} from '@/constants/colors';
 
 const AuthHomeScreen = () => {
   return (

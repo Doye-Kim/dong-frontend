@@ -7,8 +7,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import CustomButton from '../../components/common/CustomButton';
-import {colors} from '../../constants/colors';
+import CustomButton from '@/components/common/CustomButton';
+import {colors} from '@/constants/colors';
 import AssetItem from '@/components/common/AssetItem';
 
 const SelectAssetsScreen = () => {

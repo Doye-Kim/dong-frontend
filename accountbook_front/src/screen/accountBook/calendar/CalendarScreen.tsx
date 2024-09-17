@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
-import {colors} from '../../../constants';
-import CustomCalendar from '../../../component/accountBook/calendar/CustomCalendar';
-import {getMonthYearDetails, getNewMonthYear} from '../../../utils/date';
+import {StyleSheet, SafeAreaView} from 'react-native';
+import {colors} from '@/constants';
+import CustomCalendar from '@/component/accountBook/calendar/CustomCalendar';
+import {getMonthYearDetails, getNewMonthYear} from '@/utils/date';
 
 interface CalendarScreenProps {}
 

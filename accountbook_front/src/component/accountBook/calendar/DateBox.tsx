@@ -1,20 +1,19 @@
 import React from 'react';
 import {StyleSheet, View, Text, Pressable, Dimensions} from 'react-native';
-import {colors} from '../../../constants';
+import {colors} from '@/constants';
 
 interface DateBoxProps {
   date: number | null;
   selectedDate: number;
   onPressDate: (date: number) => void;
-  expense? :number;
+  expense?: number;
 }
 
 const deviceWidth = Dimensions.get('window').width;
 
 const DateBox = ({date, selectedDate, onPressDate, expense}: DateBoxProps) => {
-
   if (date === null) {
-    return <View style={styles.emptyBox}></View>
+    return <View style={styles.emptyBox}></View>;
   }
 
   return (
@@ -33,13 +32,11 @@ const DateBox = ({date, selectedDate, onPressDate, expense}: DateBoxProps) => {
               ]}>
               {date}
             </Text>
-            { expense && (
+            {expense && (
               <Text style={styles.expenseText}>
                 {expense.toLocaleString()}원
               </Text>
-            )
-
-            }
+            )}
           </View>
         </>
       )}
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 18,
     color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold'
+    fontFamily: 'Pretendard-Bold',
   },
   selectedContainer: {
     backgroundColor: colors.BLACK,
@@ -83,7 +80,7 @@ const styles = StyleSheet.create({
   },
   emptyBox: {
     width: deviceWidth / 7,
-    height: deviceWidth / 7 + 20, 
+    height: deviceWidth / 7 + 20,
   },
 });
 

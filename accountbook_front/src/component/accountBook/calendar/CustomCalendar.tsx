@@ -1,16 +1,16 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import AccountBookHeader from '../common/AccountBookHeader';
-import {MonthYear} from '../../../utils/date';
+import AccountBookHeader from '@/component/accountBook/common/AccountBookHeader';
+import {MonthYear} from '@/utils/date';
 import DateBox from './DateBox';
-import { colors } from '../../../constants';
+import {colors} from '@/constants';
 
 interface CustomCalendarProps {
   monthYear: MonthYear;
   selectedDate: number;
   onChangeMonth: (increment: number) => void;
   onPressDate: (date: number) => void;
-  expenses: { [key: number]: number }; // 날짜별 금액 정보
+  expenses: {[key: number]: number}; // 날짜별 금액 정보
 }
 
 const CustomCalendar = ({
@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   container: {
-    marginTop: 30
+    marginTop: 30,
   },
   rowSeparator: {
     borderTopWidth: 10,
     borderTopColor: colors.GRAY_200,
-  }
+  },
 });
 
 export default CustomCalendar;
