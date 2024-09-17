@@ -1,6 +1,10 @@
 const colors = {
   PRIMARY: '#FFA000',
   ORANGE_200: '#FFF0C8',
+  ORANGE_300: '#FFDC96',
+  ORANGE_400: '#FFC864',
+  ORANGE_500: '#FFB432',
+  ORANGE_600: '#FFA000',
   RED_300: '#ffb4b4',
   RED_500: '#ff5f5f',
   WHITE: '#fafafa',

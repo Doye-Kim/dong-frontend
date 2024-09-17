@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Navbar from './src/navigations/Navbar';
+import { NavigationContainer } from '@react-navigation/native';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -16,11 +18,9 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <View>
-        <Text>돈그랑땡</Text>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Navbar />
+    </NavigationContainer>
   );
 };
 
