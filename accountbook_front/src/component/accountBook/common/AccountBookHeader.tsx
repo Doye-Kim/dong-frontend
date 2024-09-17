@@ -1,12 +1,8 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
-import {
-  FilterButton,
-  LeftArrowIcon,
-  RightArrowIcon,
-} from '../../../assets/icons';
-import {colors} from '../../../constants';
-import {MonthYear} from '../../../utils/date';
+import {FilterButton, LeftArrowIcon, RightArrowIcon} from '@/assets/icons';
+import {colors} from '@/constants';
+import {MonthYear} from '@/utils/date';
 
 interface CustomCalendarHeaderProps {
   monthYear: MonthYear;
@@ -84,7 +80,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   monthText: {
-    fontSize:28,
+    fontSize: 28,
     fontWeight: 'bold',
     marginHorizontal: 10,
     width: 70,
@@ -105,7 +101,7 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_600,
     fontSize: 14,
     fontWeight: 'bold',
-    fontFamily: 'Pretendard-Light'
+    fontFamily: 'Pretendard-Light',
   },
   buttonPressed: {
     opacity: 0.7,

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import {colors} from '../../constants';
+import {colors} from '@/constants';
 
 const shuffleArray = (array: number[]) => {
   for (let i = array.length - 1; i > 0; i--) {

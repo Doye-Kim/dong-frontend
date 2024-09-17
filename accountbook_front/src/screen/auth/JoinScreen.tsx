@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import InputField from '../../components/auth/InputField';
-import {colors} from '../../constants';
-import CustomButton from '../../components/common/CustomButton';
+import InputField from '@/components/auth/InputField';
+import {colors} from '@/constants';
+import CustomButton from '@/components/common/CustomButton';
 
 const JoinScreen = () => {
   return (

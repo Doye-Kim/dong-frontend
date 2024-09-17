@@ -1,6 +1,6 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import PinPad from '../../components/auth/PinPad';
-import {colors} from '../../constants';
+import PinPad from '@/components/auth/PinPad';
+import {colors} from '@/constants';
 import {useEffect, useState} from 'react';
 
 const PinCodeScreen = () => {

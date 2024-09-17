@@ -1,19 +1,9 @@
-import {colors} from '@/constants';
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 import Category from './Category';
 import {useState} from 'react';
-import {LineChart} from 'react-native-chart-kit';
 import LineChartByCategory from './LineChartByCategory';
 import CategoryComparisonHeader from './CategoryComparisonHeader';
 import MonthlySpendingInfo from './MonthlySpendingInfo';
-import Divider from '../common/Divider';
 
 const data = {
   size: '10',

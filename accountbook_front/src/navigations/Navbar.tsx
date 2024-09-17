@@ -1,15 +1,15 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import CalendarScreen from '../screen/accountBook/calendar/CalendarScreen';
+import CalendarScreen from '@/screen/accountBook/calendar/CalendarScreen';
 import {
   HouseHoldIcon,
   HouseHoldFillIcon,
   MeatballMenuIcon,
   MeatballMenuFillIcon,
   WalletIcon,
-  WalletFillIcon
-} from '../assets/icons';
+  WalletFillIcon,
+} from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
 
 const Navbar = () => {
@@ -34,9 +34,13 @@ const Navbar = () => {
           name="가계부"
           component={CalendarScreen}
           options={{
-            tabBarIcon: ({focused, color, size}) => 
-              focused ? <HouseHoldFillIcon size={30} /> : <HouseHoldIcon size={30} />,
-            title: "가계부",
+            tabBarIcon: ({focused, color, size}) =>
+              focused ? (
+                <HouseHoldFillIcon size={30} />
+              ) : (
+                <HouseHoldIcon size={30} />
+              ),
+            title: '가계부',
             headerShown: true,
             // headerRight: () => NotificationButton(navigation),
           }}
@@ -45,7 +49,7 @@ const Navbar = () => {
           name="자산"
           component={CalendarScreen}
           options={{
-            tabBarIcon: ({focused, color, size}) => 
+            tabBarIcon: ({focused, color, size}) =>
               focused ? <WalletFillIcon size={30} /> : <WalletIcon size={30} />,
           }}
         />
@@ -53,8 +57,12 @@ const Navbar = () => {
           name="더보기"
           component={CalendarScreen}
           options={{
-            tabBarIcon: ({focused, color, size}) => 
-              focused ? <MeatballMenuFillIcon size={30} /> : <MeatballMenuIcon size={30} />,
+            tabBarIcon: ({focused, color, size}) =>
+              focused ? (
+                <MeatballMenuFillIcon size={30} />
+              ) : (
+                <MeatballMenuIcon size={30} />
+              ),
           }}
         />
       </Tab.Navigator>
