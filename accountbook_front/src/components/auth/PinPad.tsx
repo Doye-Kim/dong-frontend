@@ -85,10 +85,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
   },
-  image: {
-    width: 36,
-    height: 36,
-  },
 });
 
 export default Keypad;

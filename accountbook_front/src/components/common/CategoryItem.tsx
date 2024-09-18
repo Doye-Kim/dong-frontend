@@ -1,5 +1,6 @@
+import {CategoryCheckEmptyIcon, CategoryCheckFillIcon} from '@/assets/icons';
 import {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const CategoryItem = ({
   name,
@@ -24,11 +25,7 @@ const CategoryItem = ({
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={onPress}>
-        {isChecked ? (
-          <Image source={require('../../assets/fill-check.png')} />
-        ) : (
-          <Image source={require('../../assets/empty-check.png')} />
-        )}
+        {isChecked ? <CategoryCheckFillIcon /> : <CategoryCheckEmptyIcon />}
       </TouchableOpacity>
       <Text style={styles.text}>{name}</Text>
     </View>

@@ -1,6 +1,7 @@
+import {AccountIcon, CardIcon} from '@/assets/icons';
 import {colors} from '@/constants';
 import {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const AssetItem = ({
   title,
@@ -21,12 +22,9 @@ const AssetItem = ({
         setChecked(prev => !prev);
       }}>
       {assetOrCard ? (
-        <Image
-          source={require('@/assets/accountIcon.png')}
-          style={styles.icon}
-        />
+        <AccountIcon width={30} height={30} />
       ) : (
-        <Image source={require('@/assets/cardIcon.png')} style={styles.icon} />
+        <CardIcon width={30} height={30} />
       )}
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>

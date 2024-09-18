@@ -1,16 +1,10 @@
+import {FilterButton} from '@/assets/icons';
 import Divider from '@/components/common/Divider';
 import LineChartByDay from '@/components/report/LineChartByDay';
 import MonthlyComparison from '@/components/report/MonthlyComparison';
 import PieChartByCategory from '@/components/report/PieChartByCategory';
 import {colors} from '@/constants';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 const generateDummyData = () => {
   // 라벨 생성: 1부터 31까지
   const labels = [
@@ -75,7 +69,7 @@ const SpendingReportScreen = () => {
         <View style={styles.contentContainer}>
           <View style={styles.dayHeaderContainer}>
             <Text style={styles.dayTitle}>일일 추이</Text>
-            <Image source={require('../../assets/filtering-icon.png')} />
+            <FilterButton />
           </View>
           <LineChartByDay chartData={dayChartData} />
         </View>
