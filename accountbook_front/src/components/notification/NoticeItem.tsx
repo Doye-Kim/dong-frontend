@@ -1,13 +1,7 @@
+import NotiIcon from '@/components/common/NotiIcon';
 import {colors} from '@/constants';
 import React from 'react';
-import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
-
-const images: Record<number, any> = {
-  0: require('@/assets/noti-0.png'),
-  1: require('@/assets/noti-1.png'),
-  2: require('@/assets/noti-2.png'),
-  3: require('@/assets/noti-3.png'),
-};
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 
 interface NotiProps {
   read: boolean;
@@ -26,8 +20,6 @@ const NotiItem: React.FC<NotiProps> = ({
   icon,
   dateTime,
 }) => {
-  const imageSource = images[icon];
-
   const contentTextStyle = {
     ...styles.contentText,
     color: read ? colors.GRAY_500 : colors.BLACK,
@@ -41,7 +33,9 @@ const NotiItem: React.FC<NotiProps> = ({
           ? {backgroundColor: colors.GRAY_200}
           : {backgroundColor: colors.WHITE},
       ]}>
-      <Image source={imageSource} style={styles.image} />
+      <View style={styles.icon}>
+        <NotiIcon notiNumber={icon} />
+      </View>
       <View style={styles.contentContainer}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>{category}</Text>
@@ -72,9 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     padding: 5,
   },
-  image: {
-    width: 30,
-    height: 30,
+  icon: {
     margin: 10,
   },
   contentContainer: {
