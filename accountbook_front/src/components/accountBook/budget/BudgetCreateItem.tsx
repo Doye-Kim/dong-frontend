@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image } from 'react-native';
 import { colors } from '@/constants';
+import CategoryIcon from '@/components/common/CategoryIcon';
 
 type BudgetCategory = {
   id: string;
@@ -27,7 +28,7 @@ const BudgetCreateItem = ({ category, onUpdateCategory }: BudgetCreateItemProps)
 
   return (
     <View style={styles.categoryItem}>
-      <Image source={require("@/assets/accountIcon.png")} style={styles.categoryIcon}/>
+      <CategoryIcon categoryNumber={Number(category.id)} size={40}/>
       <Text style={styles.categoryName}>{category.name}</Text>
       <TextInput
         style={styles.categoryBudget}
@@ -48,13 +49,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 5,
   },
-  categoryIcon: {
-    width: 30,
-    marginRight: 10,
-  },
   categoryName: {
     flex: 1,
     fontSize: 18,
+    marginLeft: 10,
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
   },

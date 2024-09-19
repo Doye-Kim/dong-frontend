@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, FlatList, Image} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import {colors} from '@/constants';
+import CategoryIcon from '@/components/common/CategoryIcon';
 
 interface Category {
   categoryId: number;
@@ -23,10 +24,7 @@ function BudgetItemList({categories}: BudgetItemListProps) {
       <View style={styles.categoryContainer}>
         <View style={styles.categoryHeader}>
           <View style={styles.categoryLabel}>
-            <Image
-              source={require('../../../assets/accountIcon.png')}
-              style={styles.categoryIcon}
-            />
+            <CategoryIcon categoryNumber={Number(item.categoryId)} size={40} />
             <Text style={styles.categoryName}>{item.name}</Text>
             <Text>{usagePercentage * 100}%</Text>
           </View>
@@ -87,6 +85,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
     marginRight: 5,
+    marginLeft: 10,
   },
   remainingAmount: {
     fontSize: 20,

@@ -24,7 +24,7 @@ const AccountBookHeader = ({
             styles.arrowButton,
             pressed && styles.buttonPressed,
           ]}>
-          <LeftArrowIcon size={24} style={styles.arrowIcon} />
+          <LeftArrowIcon />
         </Pressable>
         <Text style={styles.monthText}>{month}월</Text>
         <Pressable
@@ -33,7 +33,7 @@ const AccountBookHeader = ({
             styles.arrowButton,
             pressed && styles.buttonPressed,
           ]}>
-          <RightArrowIcon size={24} style={styles.arrowIcon} />
+          <RightArrowIcon />
         </Pressable>
       </View>
       <View style={styles.rightContainer}>
@@ -42,7 +42,7 @@ const AccountBookHeader = ({
             styles.filterButton,
             pressed && styles.buttonPressed,
           ]}>
-          <FilterButton size={24} />
+          <FilterButton />
         </Pressable>
         <Pressable
           style={({pressed}) => [
@@ -76,13 +76,8 @@ const styles = StyleSheet.create({
   arrowButton: {
     padding: 0,
   },
-  arrowIcon: {
-    color: '#000000',
-  },
   monthText: {
     fontSize: 28,
-    fontWeight: 'bold',
-    marginHorizontal: 10,
     width: 70,
     textAlign: 'center',
     fontFamily: 'Pretendard-Bold',

@@ -39,7 +39,7 @@ function NoBudgetContent({}: NoBudgetContentProps) {
             onChangeText={handleBudgetChange}
             keyboardType="numeric"
             placeholder="0"
-            placeholderTextColor={colors.GRAY}
+            placeholderTextColor={colors.GRAY_200}
             onSubmitEditing={handleBudgetSubmit}
           />
           <Text style={styles.wonText}>원</Text>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import AccountBookHeader from '@/component/accountBook/common/AccountBookHeader';
+import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import {MonthYear} from '@/utils/date';
 import DateBox from './DateBox';
 import {colors} from '@/constants';

@@ -1,4 +1,3 @@
-import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CalendarScreen from '@/screen/accountBook/calendar/CalendarScreen';
@@ -11,6 +10,8 @@ import {
   WalletFillIcon,
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
+import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
+import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
 
 const Navbar = () => {
   const Tab = createBottomTabNavigator();
@@ -36,9 +37,9 @@ const Navbar = () => {
           options={{
             tabBarIcon: ({focused, color, size}) =>
               focused ? (
-                <HouseHoldFillIcon size={30} />
+                <HouseHoldFillIcon />
               ) : (
-                <HouseHoldIcon size={30} />
+                <HouseHoldIcon />
               ),
             title: '가계부',
             headerShown: true,
@@ -47,10 +48,10 @@ const Navbar = () => {
         />
         <Tab.Screen
           name="자산"
-          component={CalendarScreen}
+          component={BudgetMainScreen}
           options={{
             tabBarIcon: ({focused, color, size}) =>
-              focused ? <WalletFillIcon size={30} /> : <WalletIcon size={30} />,
+              focused ? <WalletFillIcon /> : <WalletIcon/>,
           }}
         />
         <Tab.Screen
@@ -59,9 +60,9 @@ const Navbar = () => {
           options={{
             tabBarIcon: ({focused, color, size}) =>
               focused ? (
-                <MeatballMenuFillIcon size={30} />
+                <MeatballMenuFillIcon />
               ) : (
-                <MeatballMenuIcon size={30} />
+                <MeatballMenuIcon />
               ),
           }}
         />
