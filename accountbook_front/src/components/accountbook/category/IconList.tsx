@@ -14,36 +14,36 @@ const data = [
 const IconList = ({onPress}: IconListProps) => {
   const renderItem = ({item}: {item: number}) => (
     <TouchableOpacity style={{margin: 4}} onPress={() => onPress(item)}>
-      <CategoryIcon categoryNumber={item} size={30} />
+      <CategoryIcon categoryNumber={item} size={40} />
     </TouchableOpacity>
   );
-  const ListHeader = () => (
-    <View style={styles.header}>
-      <Text style={styles.headerText}>아이콘 선택</Text>
-    </View>
-  );
   return (
-    <FlatList
-      ListHeaderComponent={ListHeader}
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={item => item.toString()}
-      numColumns={7}
-      contentContainerStyle={styles.flatListContainer}
-      showsVerticalScrollIndicator={true}
-    />
+    <View>
+      <Text style={styles.headerText}>아이콘 선택</Text>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => item.toString()}
+        numColumns={6}
+        contentContainerStyle={styles.flatListContainer}
+        showsVerticalScrollIndicator={true}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {},
+  header: {
+    marginBottom: 5,
+  },
   headerText: {
     fontFamily: 'Pretendard-Medium',
     color: colors.GRAY_500,
     fontSize: 15,
+    marginBottom: 5,
   },
   flatListContainer: {
-    flex: 1,
+    // flexGrow: 1,
   },
 });
 

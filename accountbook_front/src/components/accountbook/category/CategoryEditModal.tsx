@@ -47,11 +47,11 @@ const CategoryEditModal = ({
       <View style={styles.modalContainer}>
         <View style={styles.centeredView}>
           <View style={styles.infoContainer}>
-            <CategoryIcon categoryNumber={iconNumber} size={35} />
+            <CategoryIcon categoryNumber={iconNumber} size={45} />
             <View style={styles.nameContainer}>
               <View style={styles.inputContainer}>
                 <TextInput
-                  placeholderTextColor={colors.GRAY_600}
+                  placeholderTextColor={colors.GRAY_500}
                   placeholder="카테고리명을 입력하세요"
                   style={styles.input}
                   value={data?.category_name}
@@ -67,7 +67,7 @@ const CategoryEditModal = ({
             <TouchableOpacity
               onPress={onClose}
               style={[styles.button, styles.cancle]}>
-              <Text style={[styles.buttonText, {color: colors.GRAY_400}]}>
+              <Text style={[styles.buttonText, {color: colors.GRAY_500}]}>
                 취소
               </Text>
             </TouchableOpacity>
@@ -114,25 +114,28 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   nameContainer: {
-    margin: 5,
+    margin: 10,
   },
-  inputContainer: {},
+  inputContainer: {
+    borderBottomWidth: 1,
+    borderColor: colors.GRAY_500,
+  },
   maxLengthHint: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: colors.GRAY_600,
+    fontSize: 13,
+    color: colors.GRAY_500,
   },
   input: {
-    borderBottomWidth: 1,
-    borderColor: colors.GRAY_600,
     paddingBottom: 0,
     paddingLeft: 0,
-    fontFamily: 'Pretendard=SemiBold',
+    fontFamily: 'Pretendard-SemiBold',
     color: colors.BLACK,
-    fontSize: 14,
+    fontSize: 20,
   },
   iconListContainer: {
-    height: 200,
+    height: 170,
+    marginBottom: 20,
+    // flex: 1,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   cancle: {
-    borderColor: colors.GRAY_400,
+    borderColor: colors.GRAY_500,
   },
   complete: {
     borderColor: colors.PRIMARY,
