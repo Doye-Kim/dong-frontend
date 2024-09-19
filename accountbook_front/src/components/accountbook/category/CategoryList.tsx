@@ -3,11 +3,22 @@ import {StyleSheet, FlatList} from 'react-native';
 import CategoryItem from './CategoryItem';
 
 interface CategoryListProps {
-  data: object;
+  data: [];
+}
+
+interface CategoryItemProps {
+  item: {
+    category_id: number;
+    category_name: string;
+    image_number: number;
+    default: boolean;
+  };
 }
 
 const CategoryList = ({data}: CategoryListProps) => {
-  const renderItem = ({item}: {object}) => <CategoryItem item={item} />;
+  const renderItem = ({item}: CategoryItemProps) => (
+    <CategoryItem item={item} />
+  );
 
   return (
     <FlatList
