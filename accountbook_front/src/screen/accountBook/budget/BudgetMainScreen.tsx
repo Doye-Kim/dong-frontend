@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {StyleSheet, View, Text, Image, TextInput} from 'react-native';
 import { colors } from '@/constants';
-import AccountBookHeader from '@/component/accountBook/common/AccountBookHeader';
+import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import { getMonthYearDetails, getNewMonthYear } from '@/utils/date';
 import NoBudgetContent from '@/components/accountBook/budget/NoBudgetContent';
 import BudgetContent from '@/components/accountBook/budget/BudgetContent';
@@ -17,7 +17,7 @@ const BudgetMainScreen = () => {
   };
 
   // 총 예산. 나중에 요청을 통해 값을 가져옴
-  const [totalBudget, setTotalBudget] = useState(0);
+  const [totalBudget, setTotalBudget] = useState(10000);
 
   // 카테고리 목록. 임시로 일단 만들어둠.
   const categories_temp = [
