@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, SafeAreaView} from 'react-native';
 import {colors} from '@/constants';
-import CustomCalendar from '@/component/accountBook/calendar/CustomCalendar';
+import CustomCalendar from '@/components/accountBook/calendar/CustomCalendar';
 import {getMonthYearDetails, getNewMonthYear} from '@/utils/date';
 
 interface CalendarScreenProps {}

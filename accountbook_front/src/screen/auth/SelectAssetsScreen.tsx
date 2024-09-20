@@ -10,6 +10,8 @@ import {
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants/colors';
 import AssetItem from '@/components/common/AssetItem';
+import AssetList from '@/components/common/AssetList';
+import {useState} from 'react';
 
 const SelectAssetsScreen = () => {
   const data = {
@@ -67,14 +69,27 @@ const SelectAssetsScreen = () => {
     ],
   };
 
+  const [selectedList, setSelectedList] = useState([]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>목록에 나타낼</Text>
         <Text style={styles.title}>자산을 선택해 주세요</Text>
       </View>
-      <ScrollView style={styles.assetContainer}>
-        <View style={styles.accountContainer}>
+      <ScrollView style={styles.assetListContainer}>
+        <AssetList
+          title="계좌"
+          accountData={data.accounts}
+          setSelectedList={setSelectedList}
+          selectedList={selectedList}
+        />
+        <AssetList
+          title="카드"
+          cardData={data.cards}
+          setSelectedList={setSelectedList}
+          selectedList={selectedList}
+        />
+        {/* <View style={styles.assetContainer}>
           <SectionList
             sections={[{title: '계좌', data: data.accounts}]}
             keyExtractor={(item, index) => item.accountNumber + index}
@@ -90,7 +105,7 @@ const SelectAssetsScreen = () => {
             )}
           />
         </View>
-        <View style={styles.cardContainer}>
+        <View style={styles.assetContainer}>
           <SectionList
             sections={[{title: '카드', data: data.cards}]}
             keyExtractor={(item, index) => item.cardNo + index}
@@ -104,8 +119,8 @@ const SelectAssetsScreen = () => {
             renderSectionHeader={({section}) => (
               <Text style={styles.assetTitle}>{section.title}</Text>
             )}
-          />
-        </View>
+          /> */}
+        {/* </View> */}
       </ScrollView>
       <View style={styles.buttonContainer}>
         <CustomButton text="완료" />
@@ -126,7 +141,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontFamily: 'Pretendard-Bold',
   },
-  assetContainer: {
+  assetListContainer: {
     marginVertical: 10,
     height: Dimensions.get('screen').height - 320,
   },
@@ -134,10 +149,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
     color: colors.BLACK,
   },
-  accountContainer: {
-    flex: 1,
-  },
-  cardContainer: {
+  assetContainer: {
     flex: 1,
   },
   buttonContainer: {
