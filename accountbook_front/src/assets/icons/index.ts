@@ -15,6 +15,9 @@ export {default as CategoryCheckEmptyIcon} from './categoryCheckEmpty.svg';
 export {default as CategoryCheckFillIcon} from './categoryCheckFill.svg';
 export {default as CategoryAdd} from './categoryAdd.svg';
 export {default as CloseButton} from './close.svg';
+export {default as ExpandRight} from './expand-right.svg';
+export {default as ExpandLeft} from './expand-left.svg';
+export {default as DropdownButton} from './dropdown.svg';
 
 export {default as Noti0Icon} from './noti-0.svg';
 export {default as Noti1Icon} from './noti-1.svg';

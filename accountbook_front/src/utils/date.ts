@@ -28,6 +28,12 @@ function getDateLocaleFormat(dateString: Date | string) {
   return `${year}년 ${month}월 ${day}일`;
 }
 
+function getDateLocaleFormatDiff(dateString: Date | string) {
+  const {year, month, day} = getDateDetails(dateString);
+
+  return `${year}.${month}.${day}`;
+}
+
 function getMonthYearDetails(initialDate: Date) {
   /** Date를 입력받아 상세정보를 리턴하는 함수 */
   const month = initialDate.getMonth() + 1;
@@ -80,5 +86,6 @@ export {
   getMonthYearDetails,
   getNewMonthYear,
   isSameAsCurrentDate,
+  getDateLocaleFormatDiff,
 };
 export type {MonthYear};

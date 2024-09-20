@@ -1,26 +1,41 @@
 import {AccountIcon, CardIcon} from '@/assets/icons';
 import {colors} from '@/constants';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const AssetItem = ({
   title,
   info,
   assetOrCard,
+  setSelectedList,
+  selectedList,
 }: {
   title: string;
   info: string;
   assetOrCard: boolean;
+  selectedList: string[];
+  setSelectedList(selectedList: string[]): void;
 }) => {
-  const [checked, setChecked] = useState(false);
+  const conTitle = title.split(' ')[0];
+  const [checked, setChecked] = useState(selectedList.includes(conTitle));
+
+  const handlePress = () => {
+    if (checked) {
+      setSelectedList(prev => prev.filter(item => item !== conTitle));
+    } else {
+      setSelectedList(prev => [...prev, conTitle]);
+    }
+  };
+
+  useEffect(() => {
+    setChecked(selectedList.includes(conTitle));
+  }, [selectedList]);
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       style={[styles.container, checked && styles.checked]}
-      onPress={() => {
-        setChecked(prev => !prev);
-      }}>
+      onPress={handlePress}>
       {assetOrCard ? (
         <AccountIcon width={30} height={30} />
       ) : (

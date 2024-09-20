@@ -1,9 +1,15 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {colors} from '@/constants/colors';
 
-const CustomButton = ({text}: {text: string}) => {
+const CustomButton = ({
+  text,
+  onClose,
+}: {
+  text: string;
+  onClose?: () => void;
+}) => {
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={onClose}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
