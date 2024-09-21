@@ -12,6 +12,7 @@ import {
 import {View, StyleSheet} from 'react-native';
 import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
 import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
+import PaymentDevideScreen from '@/screen/accountBook/payment/PaymentDevideScreen';
 
 const Navbar = () => {
   const Tab = createBottomTabNavigator();
@@ -56,7 +57,7 @@ const Navbar = () => {
         />
         <Tab.Screen
           name="더보기"
-          component={CalendarScreen}
+          component={PaymentDevideScreen}
           options={{
             tabBarIcon: ({focused, color, size}) =>
               focused ? (

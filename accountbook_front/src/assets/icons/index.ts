@@ -8,6 +8,7 @@ export {default as LeftArrowIcon} from './leftArrow.svg';
 export {default as RightArrowIcon} from './rightArrow.svg';
 export {default as FilterButton} from './filterButton.svg';
 export {default as EditIcon} from './editIcon.svg';
+export {default as BackArrow} from './backArrow.svg';
 
 export {default as AccountIcon} from './account.svg';
 export {default as CardIcon} from './card.svg';
@@ -15,6 +16,8 @@ export {default as CategoryCheckEmptyIcon} from './categoryCheckEmpty.svg';
 export {default as CategoryCheckFillIcon} from './categoryCheckFill.svg';
 export {default as CategoryAdd} from './categoryAdd.svg';
 export {default as CloseButton} from './close.svg';
+export {default as PaymentAdd} from './paymentAdd.svg';
+export {default as PaymentDetailAdd} from './paymentDetailAdd.svg';
 export {default as ExpandRight} from './expand-right.svg';
 export {default as ExpandLeft} from './expand-left.svg';
 export {default as DropdownButton} from './dropdown.svg';

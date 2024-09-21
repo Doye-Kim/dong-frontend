@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     width: 70,
     textAlign: 'center',
     fontFamily: 'Pretendard-Bold',
+    color: colors.BLACK
   },
   filterButton: {
     padding: 5,
