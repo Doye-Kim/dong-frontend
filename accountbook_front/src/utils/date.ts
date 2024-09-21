@@ -28,6 +28,11 @@ function getDateLocaleFormat(dateString: Date | string) {
   return `${year}년 ${month}월 ${day}일`;
 }
 
+const getDateTimeLocaleFormat = (dateString: Date | string)  => {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+};
+
 function getDateLocaleFormatDiff(dateString: Date | string) {
   const {year, month, day} = getDateDetails(dateString);
 
@@ -80,12 +85,23 @@ function isSameAsCurrentDate(year: number, month: number, date: number) {
   return currentDate === inputDate;
 }
 
+const formatDateToDayOfWeek = (dateString: string) => {
+  /** 날짜를 ~일 ~요일로 변경하는 함수 */
+  const date = new Date(dateString);
+  const day = date.getDate(); // 날짜의 일 (1~31)
+  const weekDay = date.toLocaleDateString('ko-KR', { weekday: 'long' }); // 요일을 한글로 출력
+
+  return `${day}일 ${weekDay}`;
+};
+
 export {
   getDateWithSeparator,
   getDateLocaleFormat,
+  getDateTimeLocaleFormat,
   getMonthYearDetails,
   getNewMonthYear,
   isSameAsCurrentDate,
+  formatDateToDayOfWeek,
   getDateLocaleFormatDiff,
 };
 export type {MonthYear};
