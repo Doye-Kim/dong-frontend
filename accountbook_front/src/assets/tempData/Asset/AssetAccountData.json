@@ -1,0 +1,64 @@
+{
+  "accounts": [
+  {
+    "accountId": "1151145",
+    "bankName": "HG은행",
+    "accountNumber": "11111111111",
+    "accountName": "입출금이 자유로운 통장",
+    "accountNickname": "월급통장",
+    "hideStatus": "none",
+    "depositStatus": "0",
+    "accountBalance": "50000"
+  },
+  {
+    "accountId": "11522145",
+    "bankName": "HK은행",
+    "accountNumber": "22222222222",
+    "accountName": "자립예탁금",
+    "accountNickname": "고정지출통장",
+    "hideStatus": "none",
+    "depositStatus": "0",
+    "accountBalance": "150000"
+  },
+  {
+    "accountId": "1153345",
+    "bankName": "DY은행",
+    "accountNumber": "333333333333",
+    "accountName": "2030(비대면) 통장",
+    "accountNickname": "2030(비대면) 통장",
+    "hideStatus": "none",
+    "depositStatus": "0",
+    "accountBalance": "0"
+  },
+  {
+    "accountId": "1154445",
+    "bankName": "WY은행",
+    "accountNumber": "444444444444",
+    "accountName": "만기에 두배로 적금통장",
+    "accountNickname": "비상금통장",
+    "hideStatus": "hide_asset",
+    "depositStatus": "1",
+    "accountBalance": "200000"
+  }
+],
+"cards": [
+  {
+    "cardNo": "1111111111111111",
+    "cardIssuerName": "DE카드",
+    "cardName": "알뜰맥시신용카드",
+    "hideStatus": "none"
+  },
+  {
+    "cardNo": "2222222222222222",
+    "cardIssuerName": "HS카드",
+    "cardName": "사천오천카드",
+    "hideStatus": "hide_asset"
+  },
+  {
+    "cardNo": "3333333333333333",
+    "cardIssuerName": "싸피카드",
+    "cardName": "알뜰맥시신용카드",
+    "hideStatus": "none"
+  }
+]
+}
