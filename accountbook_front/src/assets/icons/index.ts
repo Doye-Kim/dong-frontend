@@ -21,6 +21,13 @@ export {default as PaymentDetailAdd} from './paymentDetailAdd.svg';
 export {default as ExpandRight} from './expand-right.svg';
 export {default as ExpandLeft} from './expand-left.svg';
 export {default as DropdownButton} from './dropdown.svg';
+export {default as DropdownButtonPrimary} from './dropdown_primary.svg';
+
+export {default as User} from './user.svg';
+export {default as DisabledUser} from './user-disabled.svg';
+export {default as FriendCheck} from './friend-check.svg';
+export {default as FriendCheckFill} from './friend-check-fill.svg';
+export {default as Search} from './search.svg';
 
 export {default as Noti0Icon} from './noti-0.svg';
 export {default as Noti1Icon} from './noti-1.svg';

@@ -17,6 +17,7 @@ end
 target 'AwesomeProject' do
   config = use_native_modules!
 
+  pod 'react-native-contacts', :path => '../node_modules/react-native-contacts' <-- add me
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

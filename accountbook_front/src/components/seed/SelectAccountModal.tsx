@@ -80,14 +80,14 @@ const SelectAccountModal = ({
           activeOpacity={1}>
           <View style={styles.contentContainer}>
             <Text style={styles.text}>계좌를 선택해 주세요</Text>
-            <View style={styles.listContainer}>
+            <ScrollView style={styles.listContainer}>
               <AssetList
                 accountData={data}
                 title=""
                 selectedList={selectedList}
                 setSelectedList={setSelectedList}
               />
-            </View>
+            </ScrollView>
             <View>
               <CustomButton text="확인" onClose={onClose} />
             </View>
