@@ -47,20 +47,17 @@ const SeedCreateScreen = () => {
   const onPressDate = () => {
     setIsOpneCalendar(prev => !prev);
   };
+
   const curDate = new Date();
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const [amount, setAmount] = useState('');
-  const textInputRef = useRef<TextInput | null>(null);
-  const handleAmountChange = (text: string) => {
-    const filteredText = text.replace(/[^0-9]/g, '');
-    setAmount(filteredText);
-  };
 
-  const getFormattedAmount = () => {
-    return amount ? `${amount}만원` : '';
+  const getFormattedAmount = (text: string) => {
+    const filteredText = text.replace(/[^0-9]/g, '');
+    setAmount(filteredText ? `${filteredText}만원` : '');
   };
 
   return (
@@ -87,6 +84,8 @@ const SeedCreateScreen = () => {
           endDate={endDate}
           setEndDate={setEndDate}
           onClose={() => setIsOpneCalendar(false)}
+          marginTop={100}
+          seedOrGame={true}
         />
       )}
       <View style={styles.animationContainer}>
@@ -114,20 +113,9 @@ const SeedCreateScreen = () => {
             <TextInput
               style={styles.formText}
               placeholder="0원"
-              value={getFormattedAmount()}
-              onChangeText={handleAmountChange}
+              value={amount}
+              onChangeText={getFormattedAmount}
               keyboardType="numeric"
-              onFocus={() => {
-                const cursorPosition = amount.length; // 숫자 길이
-                setTimeout(() => {
-                  if (textInputRef.current) {
-                    textInputRef.current.setNativeProps({
-                      selection: {start: cursorPosition, end: cursorPosition},
-                    });
-                  }
-                }, 0);
-              }}
-              ref={textInputRef}
             />
           </View>
           <Text style={styles.formText}>을</Text>

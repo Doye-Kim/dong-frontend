@@ -36,7 +36,10 @@ const getDateTimeLocaleFormat = (dateString: Date | string)  => {
 function getDateLocaleFormatDiff(dateString: Date | string) {
   const {year, month, day} = getDateDetails(dateString);
 
-  return `${year}.${month}.${day}`;
+  return `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(
+    2,
+    '0',
+  )}`;
 }
 
 function getMonthYearDetails(initialDate: Date) {

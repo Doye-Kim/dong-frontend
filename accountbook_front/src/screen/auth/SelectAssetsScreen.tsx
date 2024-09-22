@@ -2,14 +2,12 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  SectionList,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants/colors';
-import AssetItem from '@/components/common/AssetItem';
 import AssetList from '@/components/common/AssetList';
 import {useState} from 'react';
 
@@ -89,38 +87,6 @@ const SelectAssetsScreen = () => {
           setSelectedList={setSelectedList}
           selectedList={selectedList}
         />
-        {/* <View style={styles.assetContainer}>
-          <SectionList
-            sections={[{title: '계좌', data: data.accounts}]}
-            keyExtractor={(item, index) => item.accountNumber + index}
-            renderItem={({item}) => (
-              <AssetItem
-                title={`${item.bank} ${item.accountNumber}`}
-                info={item.accountName}
-                assetOrCard={true}
-              />
-            )}
-            renderSectionHeader={({section}) => (
-              <Text style={styles.assetTitle}> {section.title}</Text>
-            )}
-          />
-        </View>
-        <View style={styles.assetContainer}>
-          <SectionList
-            sections={[{title: '카드', data: data.cards}]}
-            keyExtractor={(item, index) => item.cardNo + index}
-            renderItem={({item}) => (
-              <AssetItem
-                title={`${item.cardName}`}
-                info={item.cardIssuerName}
-                assetOrCard={false}
-              />
-            )}
-            renderSectionHeader={({section}) => (
-              <Text style={styles.assetTitle}>{section.title}</Text>
-            )}
-          /> */}
-        {/* </View> */}
       </ScrollView>
       <View style={styles.buttonContainer}>
         <CustomButton text="완료" />

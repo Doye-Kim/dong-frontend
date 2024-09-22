@@ -1,14 +1,6 @@
-import React, {useState} from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {CalendarList, LocaleConfig} from 'react-native-calendars';
-import {colors} from '@/constants'; // 색상 정의 가져오기
+import {colors} from '@/constants';
 
 LocaleConfig.locales['ko'] = {
   monthNames: [
@@ -61,6 +53,8 @@ interface calendarModalProps {
   endDate: string;
   setStartDate: (startDate: string) => void;
   setEndDate: (endDate: string) => void;
+  marginTop: number;
+  seedOrGame: boolean; // seed면 true, game이면 false
 }
 const CalendarModal = ({
   isVisible,
@@ -70,11 +64,13 @@ const CalendarModal = ({
   setStartDate,
   endDate,
   setEndDate,
+  marginTop,
+  seedOrGame,
 }: calendarModalProps) => {
   const handleDayPress = day => {
     const today = new Date().toISOString().split('T')[0];
-    if (day.dateString < today) {
-      Alert.alert('현재 날짜 이전은 선택할 수 없습니다.'); // 알림 표시
+    if (seedOrGame && day.dateString < today) {
+      Alert.alert('현재 날짜 이전은 선택할 수 없습니다.');
       return;
     }
     if (!startDate) {
@@ -136,7 +132,7 @@ const CalendarModal = ({
       <View style={styles.container}>
         {/* 모달 외부 클릭 시 닫기 */}
         <TouchableOpacity
-          style={styles.overlay}
+          style={[styles.overlay, {paddingTop: marginTop}]}
           onPress={onClose}
           activeOpacity={1}>
           <View style={styles.calendarContainer}>
@@ -166,7 +162,7 @@ const CalendarModal = ({
               markingType={'period'}
               markedDates={{
                 ...getWeekendDates(),
-                ...getPastDates(),
+                ...(seedOrGame ? getPastDates() : {}),
                 [startDate || '']: {
                   selected: true,
                   startingDay: true,
@@ -219,7 +215,6 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     width: '100%',
-    paddingTop: 100,
     backgroundColor: 'transparent',
     alignItems: 'center',
   },
