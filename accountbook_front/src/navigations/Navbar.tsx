@@ -10,9 +10,9 @@ import {
   WalletFillIcon,
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
-import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
-import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
+
 import PaymentDevideScreen from '@/screen/accountBook/payment/PaymentDevideScreen';
+import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
 
 const Navbar = () => {
   const Tab = createBottomTabNavigator();
@@ -49,7 +49,7 @@ const Navbar = () => {
         />
         <Tab.Screen
           name="자산"
-          component={BudgetMainScreen}
+          component={AssetMainScreen}
           options={{
             tabBarIcon: ({focused, color, size}) =>
               focused ? <WalletFillIcon /> : <WalletIcon/>,

@@ -1,0 +1,21 @@
+{
+  "count": 2,
+  "data": [
+    {
+      "id": "6",
+      "title": "이현규 이별 선물",
+      "entireRound": "6",
+      "endDate": "2024-09-30",
+      "status": "PROCEEDING",
+      "passedRound": "2"
+    },
+    {
+      "id": "9",
+      "title": "이현규 이별 PARTY",
+      "entireRound": "1",
+      "endDate": "2024-09-30",
+      "status": "PROCEEDING",
+      "passedRound": "0"
+    }
+  ]
+}

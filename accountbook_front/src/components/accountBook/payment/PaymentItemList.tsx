@@ -10,6 +10,7 @@ type Payment = {
   payments_id: string;
   merchantName: string;
   categoryName: string;
+  categoryNumber?: string;
   balance: number;
   cardName: string;
   memo: string;
@@ -30,7 +31,6 @@ type PaymentDetailNavigationProp = StackNavigationProp<RootStackParamList, 'Paym
 
 const groupPaymentsByDate = (payments: Payment[]) => {
   if (!payments || payments.length === 0) return {};
-
   return payments.reduce((acc, payment) => {
     const date = payment.createdDate.slice(0, 10); // Extract the date (YYYY-MM-DD)
     if (!acc[date]) {
@@ -44,7 +44,7 @@ const groupPaymentsByDate = (payments: Payment[]) => {
 const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
   const navigation = useNavigation<PaymentDetailNavigationProp>();
   const groupedPayments: GroupedPayments = groupPaymentsByDate(payments);
-
+  // console.log(groupedPayments);
   const handlePaymentPress = (paymentId: string) => {
     navigation.navigate('PaymentDetail', { paymentId });
   };
@@ -55,7 +55,7 @@ const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
       key={item.payments_id}
       onPress={() => handlePaymentPress(item.payments_id)}
     >
-      <CategoryIcon categoryNumber={0} size={40} /> 
+      <CategoryIcon categoryNumber={item.categoryNumber? Number(item.categoryNumber) : 0} size={40} /> 
       <View style={styles.itemContent}>
         <View style={styles.itemHeader}>
           <View style={styles.merchantInfo}>
@@ -74,12 +74,15 @@ const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
     </TouchableOpacity>
   );
 
-  const renderGroup = ({ item }: {item: string}) => (
-    <View key={item} style={styles.dateGroup}>
-      <Text style={styles.dateHeader}>{formatDateToDayOfWeek(item)}</Text>
-      {groupedPayments[item].map(payment => renderPayment(payment))}
-    </View>
-  );
+  const renderGroup = ({ item }: { item: string }) => {
+    console.log(groupedPayments[item]); // 날짜 (ex. "2024-09-06")가 올바르게 출력되는지 확인
+    return (
+      <View key={item} style={styles.dateGroup}>
+        <Text style={styles.dateHeader}>{formatDateToDayOfWeek(item)}</Text>
+        {groupedPayments[item].map(payment => renderPayment(payment))}
+      </View>
+    );
+  };
 
   return (
     <FlatList
@@ -93,8 +96,9 @@ const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0,
     paddingHorizontal: 10,
+    marginBottom: 60,
   },
   dateGroup: {
     marginTop: 20,

@@ -1,0 +1,36 @@
+{
+  "games": [
+    {
+      "gameId": "2587",
+      "categoryId": "4",
+      "status": "done",
+      "gameCount": "1",
+      "participants": ["30", "40", "60"],
+      "rank": "1"
+    },
+    {
+      "gameId": "2584",
+      "categoryId": "7",
+      "status": "ongoing",
+      "gameCount": "1",
+      "participants": ["30", "40", "60"],
+      "rank": "2"
+    },
+    {
+      "gameId": "15656",
+      "categoryId": "15",
+      "status": "before",
+      "gameCount": "1",
+      "participants": ["30", "40", "60"],
+      "rank": "3"
+    },
+    {
+      "gameId": "15690",
+      "categoryId": "15",
+      "status": "ongoing",
+      "gameCount": "9",
+      "participants": ["30", "40", "60"],
+      "rank": "3"
+    }
+  ]
+}

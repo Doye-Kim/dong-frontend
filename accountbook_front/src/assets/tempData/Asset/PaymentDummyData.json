@@ -1,0 +1,104 @@
+{
+  "paymentResponse": [
+    {
+      "payments_id": "1",
+      "merchantName": "스타벅스",
+      "categoryName": "식사",
+      "categoryNumber": "4",
+      "balance": -5600,
+      "cardName": "신한카드",
+      "memo": "아메리카노",
+      "createdDate": "2024-09-15T08:30:22"
+    },
+    {
+      "payments_id": "2",
+      "merchantName": "롯데마트",
+      "categoryName": "쇼핑",
+      "categoryNumber": "1",
+      "balance": -89000,
+      "cardName": "현대카드",
+      "memo": "주간 식료품",
+      "createdDate": "2024-09-14T15:45:11"
+    },
+    {
+      "payments_id": "3",
+      "merchantName": "CGV",
+      "categoryName": "엔터테인먼트",
+      "categoryNumber": "10",
+      "balance": -28000,
+      "cardName": "삼성카드",
+      "memo": "",
+      "createdDate": "2024-09-13T19:20:05"
+    },
+    {
+      "payments_id": "4",
+      "merchantName": "쿠팡",
+      "categoryName": "쇼핑",
+      "categoryNumber": "16",
+      "balance": -45600,
+      "cardName": "카카오뱅크 체크카드",
+      "memo": "생활용품",
+      "createdDate": "2024-09-12T10:15:30"
+    },
+    {
+      "payments_id": "5",
+      "merchantName": "버스",
+      "categoryName": "교통",
+      "categoryNumber": "5",
+      "balance": -1250,
+      "cardName": "티머니",
+      "memo": "",
+      "createdDate": "2024-09-11T07:55:18"
+    },
+    {
+      "payments_id": "6",
+      "merchantName": "넷플릭스",
+      "categoryName": "구독",
+      "categoryNumber": "22",
+      "balance": -17000,
+      "cardName": "우리카드",
+      "memo": "월 구독료",
+      "createdDate": "2024-09-10T00:00:01"
+    },
+    {
+      "payments_id": "7",
+      "merchantName": "맥도날드",
+      "categoryName": "식사",
+      "categoryNumber": "19",
+      "balance": -8900,
+      "cardName": "KB국민카드",
+      "memo": "저녁식사",
+      "createdDate": "2024-09-09T18:30:45"
+    },
+    {
+      "payments_id": "8",
+      "merchantName": "GS25",
+      "categoryName": "편의점",
+      "categoryNumber": "15",
+      "balance": -3500,
+      "cardName": "농협카드",
+      "memo": "",
+      "createdDate": "2024-09-08T22:10:33"
+    },
+    {
+      "payments_id": "9",
+      "merchantName": "아마존",
+      "categoryName": "쇼핑",
+      "categoryNumber": "9",
+      "balance": -52000,
+      "cardName": "신한카드",
+      "memo": "책 구매",
+      "createdDate": "2024-09-07T14:25:17"
+    },
+    {
+      "payments_id": "10",
+      "merchantName": "스포티파이",
+      "categoryName": "구독",
+      "categoryNumber": "12",
+      "balance": -10900,
+      "cardName": "현대카드",
+      "memo": "음악 스트리밍",
+      "createdDate": "2024-09-06T09:00:00"
+    }
+  ]
+}
