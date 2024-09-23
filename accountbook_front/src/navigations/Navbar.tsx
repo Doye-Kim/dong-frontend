@@ -8,11 +8,12 @@ import {
   MeatballMenuFillIcon,
   WalletIcon,
   WalletFillIcon,
+  PaymentDetailAdd,
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
 
-import PaymentDevideScreen from '@/screen/accountBook/payment/PaymentDevideScreen';
 import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
+import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
 
 const Navbar = () => {
   const Tab = createBottomTabNavigator();
@@ -57,7 +58,7 @@ const Navbar = () => {
         />
         <Tab.Screen
           name="더보기"
-          component={PaymentDevideScreen}
+          component={ExtraMainScreen}
           options={{
             tabBarIcon: ({focused, color, size}) =>
               focused ? (

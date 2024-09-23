@@ -1,0 +1,53 @@
+{
+  "size": 3,
+  "gifticons": [
+      {
+          "gifticon_id": 1,
+          "name": "스타벅스 아메리카노 T",
+          "price": 10000,
+          "stock": 100
+      },
+      {
+          "gifticon_id": 2,
+          "name": "베스킨 라빈스 패밀리",
+          "price": 20000,
+          "stock": 200
+      },
+      {
+          "gifticon_id": 3,
+          "name": "CU 5000원 상품권",
+          "price": 50000,
+          "stock": 300
+      },
+      {
+        "gifticon_id": 3,
+        "name": "CU 5000원 상품권",
+        "price": 50000,
+        "stock": 300
+      },
+      {
+        "gifticon_id": 3,
+        "name": "CU 5000원 상품권",
+        "price": 50000,
+        "stock": 300
+      },
+      {
+        "gifticon_id": 3,
+        "name": "CU 5000원 상품권",
+        "price": 50000,
+        "stock": 300
+      },
+      {
+        "gifticon_id": 3,
+        "name": "CU 5000원 상품권",
+        "price": 50000,
+        "stock": 300
+      },
+      {
+        "gifticon_id": 3,
+        "name": "CU 5000원 상품권",
+        "price": 50000,
+        "stock": 300
+    }
+  ]
+}

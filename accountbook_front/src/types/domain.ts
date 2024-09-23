@@ -45,4 +45,11 @@ type Seed = {
   passedRound: string;
 }
 
-export type {Payment, Account, Card, Game, Seed};
+type Gift = {
+  gifticon_id: number,
+  name: string;
+  price: number;
+  stock: number;
+}
+
+export type {Payment, Account, Card, Game, Seed, Gift};

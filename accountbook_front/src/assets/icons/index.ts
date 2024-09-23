@@ -22,8 +22,10 @@ export {default as ExpandRight} from './expand-right.svg';
 export {default as ExpandLeft} from './expand-left.svg';
 export {default as DropdownButton} from './dropdown.svg';
 export {default as DropdownButtonPrimary} from './dropdown_primary.svg';
+export {default as StoreIcon} from './store.svg';
 
 export {default as User} from './user.svg';
+export {default as UserProfileImage} from './userProfileImage.svg';
 export {default as DisabledUser} from './user-disabled.svg';
 export {default as FriendCheck} from './friend-check.svg';
 export {default as FriendCheckFill} from './friend-check-fill.svg';
