@@ -7,6 +7,7 @@ import {
 } from '@/assets/icons';
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
+import UserListItem from '@/components/game/UserListItem';
 import {colors} from '@/constants';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -116,32 +117,13 @@ const GameFriendsScreen = () => {
     return phone; // 길이가 10자리나 11자리가 아니면 원래 문자열 반환
   };
 
-  const renderItem = ({item: contact}: {item: Contact}) => {
-    const isSelected = selectedFriends.some(
-      friend => friend.name === contact.displayName,
-    );
-
+  const renderItem = ({item}: {item: Contact}) => {
     return (
-      <TouchableOpacity
-        style={styles.friendContainer}
-        onPress={() => handlePressFriend(contact)}>
-        <User width={40} height={40} />
-        <View style={styles.contactDetails}>
-          <Text key={contact.recordID} style={styles.nameText}>
-            {contact.displayName}
-          </Text>
-          {contact.phoneNumbers[0] && (
-            <Text style={styles.numberText}>
-              {formatPhoneNumber(contact.phoneNumbers[0].number)}
-            </Text>
-          )}
-        </View>
-        {isSelected ? (
-          <FriendCheckFill width={40} height={40} />
-        ) : (
-          <FriendCheck width={40} height={40} />
-        )}
-      </TouchableOpacity>
+      <UserListItem
+        item={item}
+        selectedFriends={selectedFriends}
+        setSelectedFriends={setSelectedFriends}
+      />
     );
   };
 
@@ -211,29 +193,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  friendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-  },
-  contactDetails: {
-    flex: 1,
-    marginLeft: 10,
-  },
   listContainer: {
     marginTop: 10,
     height: 320,
-  },
-  nameText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-  numberText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.GRAY_600,
   },
   searchContainer: {
     borderRadius: 20,

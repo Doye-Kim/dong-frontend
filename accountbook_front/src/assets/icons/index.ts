@@ -22,7 +22,11 @@ export {default as ExpandRight} from './expand-right.svg';
 export {default as ExpandLeft} from './expand-left.svg';
 export {default as DropdownButton} from './dropdown.svg';
 export {default as DropdownButtonPrimary} from './dropdown_primary.svg';
+export {default as DropdownButtonWhite} from './dropdown_white.svg';
+export {default as AddSquareSettlement} from './add-square-settlement.svg';
+export {default as AddCircle} from './add-circle.svg';
 export {default as StoreIcon} from './store.svg';
+
 
 export {default as User} from './user.svg';
 export {default as UserProfileImage} from './userProfileImage.svg';

@@ -42,7 +42,7 @@ const AccountBookHeader = ({
             styles.filterButton,
             pressed && styles.buttonPressed,
           ]}>
-          <FilterButton />
+          <FilterButton width={35} height={35} />
         </Pressable>
         <Pressable
           style={({pressed}) => [
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: 70,
     textAlign: 'center',
     fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK
+    color: colors.BLACK,
   },
   filterButton: {
     padding: 5,
@@ -89,15 +89,19 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     backgroundColor: colors.ORANGE_200,
-    borderRadius: 15,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    height: 35,
   },
   iconText: {
     color: colors.ORANGE_600,
-    fontSize: 14,
+    fontSize: 16,
+    lineHeight: 30,
+    textAlignVertical: 'center',
     fontWeight: 'bold',
-    fontFamily: 'Pretendard-Light',
+    fontFamily: 'Pretendard-Medium',
   },
   buttonPressed: {
     opacity: 0.7,
