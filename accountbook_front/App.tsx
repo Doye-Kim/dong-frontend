@@ -2,8 +2,9 @@ import React, {useCallback, useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, StyleSheet, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Navbar from './src/navigations/Navbar';
+import RootNavigator from './src/navigations/root/RootNavigator';
 import {NavigationContainer} from '@react-navigation/native';
+import SplashScreen from "react-native-splash-screen";
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -34,9 +35,16 @@ const App = () => {
     return unsubscribe;
   }, [getFcmToken]);
 
+  useEffect(() => {
+    SplashScreen.hide()
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 100);
+  });
+
   return (
     <NavigationContainer>
-      <Navbar />
+      <RootNavigator />
     </NavigationContainer>
   );
 };

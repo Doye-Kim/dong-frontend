@@ -2,49 +2,30 @@ import {PaymentAdd} from '@/assets/icons';
 import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
 import {colors} from '@/constants';
+import {Payment} from '@/types/domain';
 import {getMonthYearDetails, getNewMonthYear} from '@/utils';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
 
 interface PaymentMainScreenProps {}
+
+type PaymentListData = Payment[];
 
 const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
   const currentMonthYear = getMonthYearDetails(new Date());
   const [monthYear, setMonthYear] = useState(currentMonthYear);
+  const [paymentListData, setPaymentListData] =
+    useState<PaymentListData>([]);
 
   const handleUpdateMonth = (increment: number) => {
     setMonthYear(prev => getNewMonthYear(prev, increment));
   };
 
-  const paymentList = [
-    {
-      payments_id: '1',
-      merchantName: '우버택시',
-      categoryName: '쇼핑',
-      balance: -10000,
-      cardName: '프렌즈 체크카드',
-      memo: '메모 벅벅',
-      createdDate: '2021-11-08T11:44:30.327959',
-    },
-    {
-      payments_id: '2',
-      merchantName: '송도언',
-      categoryName: '계좌송금',
-      balance: -20000,
-      cardName: '카카오 페이 머니',
-      memo: '메모 벅벅',
-      createdDate: '2021-11-04T11:44:30.327959',
-    },
-    {
-      payments_id: '3',
-      merchantName: '송도언',
-      categoryName: '계좌송금',
-      balance: -20000,
-      cardName: '카카오 페이 머니',
-      memo: '메모 벅벅',
-      createdDate: '2021-11-04T11:44:30.327959',
-    },
-  ];
+  useEffect(() => {
+    setPaymentListData(PaymentDummyData.paymentResponse);
+  });
+
   const balance = 1919929219;
   const income = 99999999;
 
@@ -73,7 +54,7 @@ const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
           <PaymentAdd style={styles.addButton} />
         </TouchableOpacity>
       </View>
-      <PaymentItemList payments={paymentList}/>
+      <PaymentItemList payments={paymentListData} />
     </View>
   );
 };
