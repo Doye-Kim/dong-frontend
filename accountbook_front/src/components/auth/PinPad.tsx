@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {colors} from '@/constants';
+import {BackArrow} from '@/assets/icons';
 
 const shuffleArray = (array: number[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -17,24 +18,30 @@ const shuffleArray = (array: number[]) => {
   return array;
 };
 
-const Keypad = ({setPin}: {setPin: (pin: number[]) => void}) => {
+const Keypad = ({
+  pin,
+  setPin,
+}: {
+  pin: number[];
+  setPin: (pin: number[]) => void;
+}) => {
   const [numbers, setNumbers] = useState<number[]>([]);
-  const selectNumbers = useRef<number[]>([]);
+  // const selectNumbers = useRef<number[]>([]);
   useEffect(() => {
-    const initialNumbers = [...Array(10).keys()];
-    setNumbers(shuffleArray(initialNumbers));
-  }, []);
+    if (pin.length === 0) {
+      const initialNumbers = [...Array(10).keys()];
+      setNumbers(shuffleArray(initialNumbers));
+    }
+  }, [pin.length, setPin]);
 
   const handlePress = (num: number) => {
-    selectNumbers.current.push(num);
-    setPin([...selectNumbers.current]);
-    console.log('Pressed:', num);
+    setPin([...pin, num]);
+    // console.log('Pressed:', num);
   };
 
   const handleBackspace = () => {
-    selectNumbers.current.pop();
-    setPin([...selectNumbers.current]);
-    console.log('Pressed backspace');
+    setPin(pin.slice(0, -1));
+    // console.log('Pressed backspace');
   };
 
   const renderItem = ({item}: {item: number}) => (
@@ -52,7 +59,9 @@ const Keypad = ({setPin}: {setPin: (pin: number[]) => void}) => {
         numColumns={3}
         contentContainerStyle={styles.grid}
       />
-      <TouchableOpacity style={styles.leftButton} onPress={handleBackspace} />
+      <TouchableOpacity style={styles.leftButton} onPress={handleBackspace}>
+        <BackArrow width={35} height={35} />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -12,7 +12,7 @@ const CategorySpendingInfo = ({
   percentage: number;
   spending: number;
 }) => {
-  console.log(name, percentage, spending);
+  // console.log(name, percentage, spending);
   return (
     <View
       style={[

@@ -13,12 +13,12 @@ const CategoryItem = ({
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const onPress = () => {
-    console.log('onPress', isChecked);
+    // console.log('onPress', isChecked);
     setIsChecked(prev => !prev);
   };
 
   useEffect(() => {
-    console.log('useEffect', isChecked);
+    // console.log('useEffect', isChecked);
     if (isChecked) setHideList(prev => [...prev, categoryId]);
     else setHideList(prev => prev.filter(id => id !== categoryId));
   }, [isChecked]);

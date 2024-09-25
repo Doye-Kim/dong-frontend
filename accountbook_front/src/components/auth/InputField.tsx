@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     height: 60,
-    marginBottom: 50,
+    marginBottom: 60,
     borderColor: colors.GRAY_400,
     padding: deviceHeight > 700 ? 8 : 5,
   },
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   inputError: {
     borderWidth: 1,
     borderColor: colors.RED_300,
-    padding: deviceHeight > 700 ? 8 : 5,
+    padding: deviceHeight > 700 ? 5 : 3,
   },
   error: {
     color: colors.RED_500,

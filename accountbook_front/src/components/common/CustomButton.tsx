@@ -3,13 +3,13 @@ import {colors} from '@/constants/colors';
 
 const CustomButton = ({
   text,
-  onClose,
+  onPress,
 }: {
   text: string;
-  onClose?: () => void;
+  onPress?: () => void;
 }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onClose}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.PRIMARY,
     minWidth: 320,
-    minHeight: 50,
+    minHeight: 60,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',

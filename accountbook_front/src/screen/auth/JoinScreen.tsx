@@ -1,61 +1,134 @@
+import React, {useCallback, useEffect, useRef} from 'react';
+import messaging from '@react-native-firebase/messaging';
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import InputField from '@/components/auth/InputField';
 import {colors} from '@/constants';
 import CustomButton from '@/components/common/CustomButton';
+import useForm from '@/hooks/useForm';
+import {validateJoin} from '@/utils/validate';
+import {postPhoneAuth, postSignup} from '@/api/auth';
+import {setEncryptStorage} from '@/utils/encryptedStorage';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
+import {authNavigations} from '@/constants';
 
-const JoinScreen = () => {
+type AuthHomeScreenProps = {
+  navigation: StackNavigationProp<
+    AuthStackParamList,
+    typeof authNavigations.AUTH_HOME
+  >;
+};
+const JoinScreen = ({navigation}: AuthHomeScreenProps) => {
+  // FCM
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  });
+
+  const getFcmToken = useCallback(async () => {
+    const data = await messaging().getToken();
+    // console.log('fcm', data);
+    return data;
+  }, []);
+
+  // 앱 켜놨을 때 알림 받는 코드
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log(
+        remoteMessage.notification?.title,
+        remoteMessage.notification?.body,
+      );
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, [getFcmToken]);
+
+  const phoneRef = useRef<TextInput | null>(null);
+  const phoneAuthRef = useRef<TextInput | null>(null);
+
+  const join = useForm({
+    initialValue: {name: '', phone: '', phoneAuthPassword: ''},
+    validate: validateJoin,
+  });
+  const handlePressPhoneAuth = async () => {
+    try {
+      const data = await postPhoneAuth(join.values.phone);
+      console.log(data);
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
+  const handleSubmit = async () => {
+    const {name, phone, phoneAuthPassword} = join.values;
+    const fcmTokenKey = await getFcmToken();
+    try {
+      const data = await postSignup({
+        name,
+        phone,
+        phoneAuthPassword,
+        fcmTokenKey,
+      });
+      console.log(data);
+      await setEncryptStorage('user', JSON.stringify(data));
+      navigation.navigate(authNavigations.PIN, {pageNumber: 1});
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
         <InputField
           autoFocus
           placeholder="이름을 입력해주세요"
-          //   error={signup.errors.email}
-          //   touched={signup.touched.email}
+          error={join.errors.name}
+          touched={join.touched.name}
           inputMode="text"
           returnKeyType="next"
           blurOnSubmit={false}
-          //   onSubmitEditing={() => passwordRef.current?.focus()}
-          //   {...signup.getTextInputProps('email')}
+          onSubmitEditing={() => phoneRef.current?.focus()}
+          {...join.getTextInputProps('name')}
         />
         <View style={styles.authContainer}>
           <View style={styles.numberContainer}>
             <InputField
-              autoFocus
+              ref={phoneRef}
               placeholder="전화번호를 입력해주세요"
-              //   error={signup.errors.email}
-              //   touched={signup.touched.email}
+              error={join.errors.phone}
+              touched={join.touched.phone}
               inputMode="numeric"
               returnKeyType="next"
               blurOnSubmit={false}
-              //   onSubmitEditing={() => passwordRef.current?.focus()}
-              //   {...signup.getTextInputProps('email')}
+              onSubmitEditing={() => phoneAuthRef.current?.focus()}
+              {...join.getTextInputProps('phone')}
             />
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handlePressPhoneAuth}>
             <Text style={styles.buttonText}>인증번호 받기</Text>
           </TouchableOpacity>
         </View>
         <InputField
-          autoFocus
+          ref={phoneAuthRef}
           placeholder="인증번호를 입력해주세요"
-          //   error={signup.errors.email}
-          //   touched={signup.touched.email}
+          error={join.errors.phoneAuthPassword}
+          touched={join.touched.phoneAuthPassword}
           inputMode="numeric"
-          returnKeyType="next"
+          returnKeyType="join"
           blurOnSubmit={false}
-          //   onSubmitEditing={() => passwordRef.current?.focus()}
-          //   {...signup.getTextInputProps('email')}
+          {...join.getTextInputProps('phoneAuthPassword')}
         />
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton text="확인" />
+        <CustomButton text="확인" onPress={handleSubmit} />
       </View>
     </SafeAreaView>
   );

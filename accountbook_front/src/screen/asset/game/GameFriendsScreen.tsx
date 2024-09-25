@@ -69,7 +69,7 @@ const GameFriendsScreen = () => {
 
   const handlePressSelectedFriend = data => {
     if (data.name !== '나') {
-      console.log('sk', data);
+      // console.log('sk', data);
       setSelectedFriends(prev =>
         prev.filter(friend => friend.name !== data.name),
       );

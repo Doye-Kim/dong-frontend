@@ -1,8 +1,17 @@
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants/colors';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
+import {authNavigations} from '@/constants';
 
-const AuthHomeScreen = () => {
+type AuthHomeScreenProps = {
+  navigation: StackNavigationProp<
+    AuthStackParamList,
+    typeof authNavigations.AUTH_HOME
+  >;
+};
+const AuthHomeScreen = ({navigation}: AuthHomeScreenProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -13,7 +22,10 @@ const AuthHomeScreen = () => {
         <Image source={require('../../assets/logo.png')}></Image>
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton text="시작하기" />
+        <CustomButton
+          text="시작하기"
+          onPress={() => navigation.navigate(authNavigations.JOIN)}
+        />
       </View>
     </SafeAreaView>
   );
