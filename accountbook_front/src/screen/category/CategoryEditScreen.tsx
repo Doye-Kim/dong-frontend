@@ -1,4 +1,4 @@
-import CategoryList from '@/components/accountbook/category/CategoryList';
+import CategoryList from '@/components/accountBook/category/CategoryList';
 import {Dimensions, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 
 const data = {

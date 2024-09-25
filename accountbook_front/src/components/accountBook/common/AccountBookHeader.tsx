@@ -3,6 +3,9 @@ import {Pressable, StyleSheet, View, Text} from 'react-native';
 import {FilterButton, LeftArrowIcon, RightArrowIcon} from '@/assets/icons';
 import {colors} from '@/constants';
 import {MonthYear} from '@/utils/date';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
 interface CustomCalendarHeaderProps {
   monthYear: MonthYear;
@@ -14,6 +17,8 @@ const AccountBookHeader = ({
   onChangeMonth,
 }: CustomCalendarHeaderProps) => {
   const {month, year} = monthYear;
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
 
   return (
     <View style={styles.headerContainer}>
@@ -41,14 +46,16 @@ const AccountBookHeader = ({
           style={({pressed}) => [
             styles.filterButton,
             pressed && styles.buttonPressed,
-          ]}>
+          ]}
+          onPress={() => navigation.navigate('헤더', {screen: '카테고리'})}>
           <FilterButton width={35} height={35} />
         </Pressable>
         <Pressable
           style={({pressed}) => [
             styles.iconButton,
             pressed && [styles.iconButtonPressed, styles.buttonPressed],
-          ]}>
+          ]}
+          onPress={() => navigation.navigate('헤더', {screen: '분석'})}>
           <Text style={styles.iconText}>분석</Text>
         </Pressable>
       </View>

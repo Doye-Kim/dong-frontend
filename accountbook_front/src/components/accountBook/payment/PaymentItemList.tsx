@@ -75,7 +75,7 @@ const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
   );
 
   const renderGroup = ({ item }: { item: string }) => {
-    console.log(groupedPayments[item]); // 날짜 (ex. "2024-09-06")가 올바르게 출력되는지 확인
+    
     return (
       <View key={item} style={styles.dateGroup}>
         <Text style={styles.dateHeader}>{formatDateToDayOfWeek(item)}</Text>
