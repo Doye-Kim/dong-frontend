@@ -5,7 +5,6 @@ import {colors} from '@/constants';
 import {useEffect, useState} from 'react';
 import {
   Dimensions,
-  FlatList,
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
@@ -75,10 +74,8 @@ const RoundFriends = ({data}: RoundProps) => {
 
   const handlePressSelectedFriend = data => {
     if (data.name !== '나' && data.id > -1) {
-      console.log('sk', data);
       setSelectedFriends(prev => prev.filter(friend => friend.id !== data.id));
     } else if (data.name !== '나' && data.id < 0) {
-      console.log(ghostFriends.length);
       setGhostFriends(prev =>
         prev.filter(ghost => ghost.name !== `친구${ghostFriends.length}`),
       );

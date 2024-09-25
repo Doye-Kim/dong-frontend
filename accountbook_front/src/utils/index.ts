@@ -1,3 +1,4 @@
 export * from './date';
-export * from './getIcon';
+export * from './icons';
 export * from './hexToRgba';
+export * from './common';

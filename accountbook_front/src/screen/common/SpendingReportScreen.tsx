@@ -17,7 +17,7 @@ const generateDummyData = () => {
   const data = [
     ...Array.from({length: 31}, () => Math.floor(Math.random() * 33)),
   ];
-  console.log(data);
+  // console.log(data);
   return {
     labels,
     datasets: [
