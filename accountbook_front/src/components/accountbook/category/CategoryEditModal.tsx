@@ -1,8 +1,6 @@
 import {
-  Alert,
-  Dimensions,
-  Modal,
-  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -12,15 +10,11 @@ import {
 import IconList from './IconList';
 import {colors} from '@/constants';
 import CategoryIcon from '@/components/common/CategoryIcon';
-import {useRef, useState} from 'react';
-const width = Dimensions.get('window').width;
-
-interface CategoryData {
-  category_id: number;
-  category_name: string;
-  image_number: number;
-  default: boolean;
-}
+import {useState} from 'react';
+import {ResponseCategory, patchCategory, postCategory} from '@/api/category';
+import {Modal, Portal} from 'react-native-paper';
+import Toast from 'react-native-toast-message';
+import useCategoryStore from '@/store/useCategoryStore';
 
 const CategoryEditModal = ({
   isVisible,
@@ -29,32 +23,67 @@ const CategoryEditModal = ({
 }: {
   isVisible: boolean;
   onClose: () => void;
-  data: CategoryData | null;
+  data: ResponseCategory | null;
 }) => {
-  const [iconNumber, setIconNumber] = useState(data?.image_number || 0);
+  const [imageNumber, setImageNumber] = useState(data?.imageNumber || 0);
+  const [categoryName, setCategoryName] = useState(data?.name || '');
+  const {fetchCategories} = useCategoryStore();
+  // console.log으로 상태 점검
+  console.log('isVisible:', isVisible);
+  console.log('data:', data);
 
   const handleIconPress = (iconId: number) => {
-    setIconNumber(iconId);
+    console.log(iconId);
+    setImageNumber(iconId);
   };
+
+  const handlePressComplete = async () => {
+    try {
+      if (data) {
+        const res = await patchCategory(data.categoryId, {
+          categoryName,
+          imageNumber,
+        });
+        console.log(res);
+      } else {
+        const res = await postCategory({categoryName, imageNumber});
+        console.log(res);
+      }
+
+      fetchCategories();
+      onClose();
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '카테고리를 추가/수정하는 데 문제가 생겼어요',
+        text2: '나중에 다시 시도해 주세요',
+      });
+    }
+  };
+
+  const handleChangeText = (text: string) => {
+    setCategoryName(text);
+  };
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-      }}>
-      <View style={styles.modalContainer}>
-        <View style={styles.centeredView}>
+    <Portal>
+      <Modal
+        visible={isVisible}
+        onDismiss={onClose}
+        contentContainerStyle={styles.modalContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.centeredView}>
           <View style={styles.infoContainer}>
-            <CategoryIcon categoryNumber={iconNumber} size={45} />
+            <CategoryIcon categoryNumber={imageNumber} size={45} />
             <View style={styles.nameContainer}>
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholderTextColor={colors.GRAY_500}
                   placeholder="카테고리명을 입력하세요"
                   style={styles.input}
-                  value={data?.category_name}
+                  value={categoryName}
+                  onChangeText={handleChangeText}
                 />
               </View>
               <Text style={styles.maxLengthHint}>최대 12자 입력</Text>
@@ -72,33 +101,31 @@ const CategoryEditModal = ({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={onClose}
+              onPress={handlePressComplete}
               style={[styles.button, styles.complete]}>
               <Text style={[styles.buttonText, {color: colors.PRIMARY}]}>
                 완료
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
-    </Modal>
+        </KeyboardAvoidingView>
+      </Modal>
+    </Portal>
   );
 };
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   centeredView: {
     backgroundColor: colors.WHITE,
     margin: 20,
-    borderRadius: 15,
+    borderRadius: 30,
     padding: 10,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.BLACK,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -135,7 +162,6 @@ const styles = StyleSheet.create({
   iconListContainer: {
     height: 170,
     marginBottom: 20,
-    // flex: 1,
   },
   buttonContainer: {
     flexDirection: 'row',

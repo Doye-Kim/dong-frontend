@@ -1,20 +1,19 @@
 import {colors} from '@/constants';
-import {
-  Modal,
-  Alert,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {CloseButton} from '@/assets/icons';
+import {Modal, Portal} from 'react-native-paper';
+import {deleteCategory} from '@/api/category';
+import Toast from 'react-native-toast-message';
+import useCategoryStore from '@/store/useCategoryStore';
 
 const ActionModal = ({
   isVisible,
+  categoryId,
   onClose,
   onEdit,
 }: {
   isVisible: boolean;
+  categoryId: number;
   onClose: () => void;
   onEdit: () => void;
 }) => {
@@ -22,15 +21,32 @@ const ActionModal = ({
     onClose();
     onEdit();
   };
+  const {fetchCategories} = useCategoryStore();
+  const handlePressDelete = async () => {
+    try {
+      const res = await deleteCategory(categoryId);
+      console.log(res);
+      Toast.show({
+        type: 'success',
+        text1: '삭제 완료!',
+      });
+      fetchCategories();
+      onClose();
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '삭제하는 과정에 문제가 생겼어요',
+        text2: '나중에 다시 시도해 주세요',
+      });
+    }
+  };
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-      }}>
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose}>
+    <Portal>
+      <Modal
+        visible={isVisible}
+        onDismiss={onClose}
+        contentContainerStyle={styles.modalContainer}>
         <View style={styles.contentsView}>
           <View style={styles.header}>
             <Text style={styles.headerText}>더보기</Text>
@@ -41,12 +57,12 @@ const ActionModal = ({
           <TouchableOpacity onPress={() => handleEdit()}>
             <Text style={styles.text}>수정하기</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handlePressDelete}>
             <Text style={styles.text}>삭제하기</Text>
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 };
 
@@ -63,12 +79,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
+    fontSize: 22,
     color: colors.BLACK,
+    marginBottom: 15,
   },
   text: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
+    fontSize: 20,
     color: colors.GRAY_800,
     margin: 5,
   },

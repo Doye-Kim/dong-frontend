@@ -5,39 +5,34 @@ import {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CategoryEditModal from './CategoryEditModal';
 import ActionModal from './ActionModal';
-import DefaultAlert from './DefaultAlert';
+import {ResponseCategory} from '@/api/category';
+import Toast from 'react-native-toast-message';
 
-interface categoryItemProps {
-  item: {
-    category_id: number;
-    category_name: string;
-    image_number: number;
-    default: boolean;
-  };
-}
-const CategoryItem = ({item}: categoryItemProps) => {
+const CategoryItem = ({item}: {item: ResponseCategory}) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isActionModalVisible, setIsActionModalVisible] = useState(false);
-  const [modalData, setModalData] = useState(null);
-  const [defaultAlertVisible, setDefaultAlertVisible] = useState(false);
-  const onPress = (item: categoryItemProps) => {
-    if (item.category_id === -1) {
+  const [modalData, setModalData] = useState<ResponseCategory | null>(null);
+
+  const onPress = (item: ResponseCategory) => {
+    if (item.categoryId === -1) {
+      console.log('추가');
       setModalData(null);
       setIsEditModalVisible(true);
       setIsActionModalVisible(false);
     }
   };
 
-  const onLongPress = (item: categoryItemProps) => {
-    if (item.category_id !== -1) {
-      if (item.default) {
-        setDefaultAlertVisible(true);
-        setTimeout(() => {
-          setDefaultAlertVisible(false);
-        }, 2000);
+  const onLongPress = (item: ResponseCategory) => {
+    if (item.categoryId !== -1) {
+      if (item.categoryType === 'DEFAULT') {
+        Toast.show({
+          type: 'error',
+          text1: '기본 카테고리는 수정/삭제 할 수 없어요',
+        });
       } else {
-        setIsEditModalVisible(true);
-        setIsActionModalVisible(false);
+        setModalData(item);
+        setIsEditModalVisible(false);
+        setIsActionModalVisible(true);
       }
     }
   };
@@ -49,13 +44,13 @@ const CategoryItem = ({item}: categoryItemProps) => {
         onPress={() => onPress(item)}
         style={styles.container}>
         <View style={styles.icon}>
-          {item.category_id < 0 ? (
+          {item.categoryId < 0 ? (
             <CategoryAdd width={35} height={35} />
           ) : (
-            <CategoryIcon categoryNumber={item.category_id} size={35} />
+            <CategoryIcon categoryNumber={item.imageNumber} size={35} />
           )}
         </View>
-        <Text style={styles.name}>{item.category_name}</Text>
+        <Text style={styles.name}>{item.name}</Text>
       </TouchableOpacity>
       {isEditModalVisible && (
         <CategoryEditModal
@@ -67,12 +62,14 @@ const CategoryItem = ({item}: categoryItemProps) => {
       {isActionModalVisible && (
         <ActionModal
           isVisible={isActionModalVisible}
-          onClose={() => setIsActionModalVisible(false)}
-          data={modalData}
+          onClose={() => {
+            setIsActionModalVisible(false);
+            setIsEditModalVisible(false);
+          }}
+          categoryId={item.categoryId}
           onEdit={() => setIsEditModalVisible(true)}
         />
       )}
-      {defaultAlertVisible && <DefaultAlert isVisible={defaultAlertVisible} />}
     </>
   );
 };

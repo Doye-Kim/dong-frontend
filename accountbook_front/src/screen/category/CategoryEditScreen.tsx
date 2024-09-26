@@ -1,55 +1,46 @@
+import {getCategories} from '@/api/category';
 import CategoryList from '@/components/accountBook/category/CategoryList';
-import {Dimensions, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
-
-const data = {
-  size: '10',
-  categories: [
-    {category_id: 0, category_name: '식비', image_number: 0, default: true},
-    {category_id: 1, category_name: '카페', image_number: 1, default: true},
-    {category_id: 2, category_name: '배달음식', image_number: 2, default: true},
-    {category_id: 3, category_name: '편의점', image_number: 3, default: false},
-    {category_id: 4, category_name: '술/유흥', image_number: 4, default: false},
-    {category_id: 5, category_name: '생활', image_number: 5, default: true},
-    {
-      category_id: 6,
-      category_name: '패션/미용',
-      image_number: 6,
-      default: false,
-    },
-    {
-      category_id: 7,
-      category_name: '대중교통',
-      image_number: 7,
-      default: false,
-    },
-    {
-      category_id: 8,
-      category_name: '택시',
-      image_number: 8,
-      default: false,
-    },
-    {category_id: 9, category_name: '자동차', image_number: 9, default: true},
-    {category_id: -1, category_name: '추가', image_number: -1, default: false},
-  ],
-};
+import useCategoryStore from '@/store/useCategoryStore';
+import {useEffect} from 'react';
+import {Dimensions, SafeAreaView, View, StyleSheet} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const CategoryEditScreen = () => {
+  const {setCategories} = useCategoryStore();
+  const getCategory = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+      console.log(data);
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '데이터를 불러오는 데 실패했습니다. 다시 시도해주세요',
+      });
+    }
+  };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scroll}>
-        <CategoryList data={data.categories} />
-      </ScrollView>
+      <View style={styles.listContainer}>
+        <CategoryList />
+      </View>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginHorizontal: 20,
-    marginVertical: 50,
+    marginVertical: 20,
     alignItems: 'center',
   },
-  scroll: {
-    height: Dimensions.get('screen').height - 100,
+  listContainer: {
+    height: Dimensions.get('screen').height - 250,
   },
 });
 export default CategoryEditScreen;
