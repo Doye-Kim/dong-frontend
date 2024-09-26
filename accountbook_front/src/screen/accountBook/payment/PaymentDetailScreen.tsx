@@ -10,14 +10,12 @@ import {
   ScrollView,
 } from 'react-native';
 import {useRoute, RouteProp} from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
-import {BackArrow, MeatballMenuIcon} from '@/assets/icons';
+import {MeatballMenuIcon} from '@/assets/icons';
 import {getDateTimeLocaleFormat} from '@/utils';
 import {colors} from '@/constants';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 type RouteParams = {
-  PaymentDetail: {paymentId: string};
+  PaymentDetail?: {paymentId: string};
 };
 
 type Payment = {
@@ -34,7 +32,7 @@ type Payment = {
 
 const PaymentDetailScreen = () => {
   const route = useRoute<RouteProp<RouteParams, 'PaymentDetail'>>();
-  const navigation = useNavigation();
+  const paymentId = route.params?.paymentId;
 
   const [paymentData, setPaymentData] = useState<Payment>({
     payments_id: '1',
@@ -49,96 +47,86 @@ const PaymentDetailScreen = () => {
   });
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}>
-              <BackArrow />
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{paymentData.merchantName}</Text>
+          <View style={styles.headerRight}>
+            <Text style={styles.amountText}>
+              {paymentData.balance.toLocaleString()}원
+            </Text>
+            <TouchableOpacity onPress={() => {}} style={styles.moreButton}>
+              <MeatballMenuIcon />
             </TouchableOpacity>
           </View>
+        </View>
 
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>{paymentData.merchantName}</Text>
-            <View style={styles.headerRight}>
-              <Text style={styles.amountText}>
-                {paymentData.balance.toLocaleString()}원
-              </Text>
-              <TouchableOpacity onPress={() => {}} style={styles.moreButton}>
-                <MeatballMenuIcon />
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>분류</Text>
+            <View style={styles.categoryContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  paymentData.type === 'income' && styles.selectedButton,
+                ]}>
+                <Text
+                  style={[
+                    styles.categoryButtonText,
+                    paymentData.type === 'income' && styles.selectedButtonText,
+                  ]}>
+                  수입
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  paymentData.type === 'expense' && styles.selectedButton,
+                ]}>
+                <Text
+                  style={[
+                    styles.categoryButtonText,
+                    paymentData.type === 'expense' && styles.selectedButtonText,
+                  ]}>
+                  지출
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.detailsContainer}>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>분류</Text>
-              <View style={styles.categoryContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.categoryButton,
-                    paymentData.type === 'income' && styles.selectedButton,
-                  ]}>
-                  <Text
-                    style={[
-                      styles.categoryButtonText,
-                      paymentData.type === 'income' && styles.selectedButtonText,
-                    ]}>
-                    수입
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.categoryButton,
-                    paymentData.type === 'expense' && styles.selectedButton,
-                  ]}>
-                  <Text
-                    style={[
-                      styles.categoryButtonText,
-                      paymentData.type === 'expense' && styles.selectedButtonText,
-                    ]}>
-                    지출
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>일시</Text>
-              <Text style={styles.detailValue}>
-                {getDateTimeLocaleFormat(paymentData.createdDate)}
-              </Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>카테고리</Text>
-              <Text style={styles.detailValue}>{paymentData.categoryName}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>메모</Text>
-              <TextInput
-                style={styles.memoInput}
-                placeholder="메모를 입력하세요"
-                placeholderTextColor={colors.GRAY_400}
-                onChangeText={text =>
-                  setPaymentData({...paymentData, memo: text})
-                }
-                value={paymentData.memo}
-              />
-            </View>
-            <View style={styles.switchContainer}>
-              <Text style={styles.detailLabel}>지출에서 제외</Text>
-              <Switch value={false} onValueChange={() => {}} />
-            </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>일시</Text>
+            <Text style={styles.detailValue}>
+              {getDateTimeLocaleFormat(paymentData.createdDate)}
+            </Text>
           </View>
-        </ScrollView>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>저장</Text>
-          </TouchableOpacity>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>카테고리</Text>
+            <Text style={styles.detailValue}>{paymentData.categoryName}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>메모</Text>
+            <TextInput
+              style={styles.memoInput}
+              placeholder="메모를 입력하세요"
+              placeholderTextColor={colors.GRAY_400}
+              onChangeText={text =>
+                setPaymentData({...paymentData, memo: text})
+              }
+              value={paymentData.memo}
+            />
+          </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.detailLabel}>지출에서 제외</Text>
+            <Switch value={false} onValueChange={() => {}} />
+          </View>
         </View>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+      </ScrollView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>저장</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -214,7 +202,7 @@ const styles = StyleSheet.create({
   categoryButtonText: {
     color: colors.GRAY_600,
     fontSize: 14,
-    bottom: 1
+    bottom: 1,
   },
   selectedButtonText: {
     color: colors.PRIMARY,
@@ -245,7 +233,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: colors.WHITE,
     fontSize: 18,
-    fontFamily: 'Pretendard-Bold'
+    fontFamily: 'Pretendard-Bold',
   },
 });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
 import {FilterButton, LeftArrowIcon, RightArrowIcon} from '@/assets/icons';
-import {colors} from '@/constants';
+import {accountBookHeaderNavigations, accountBookNavigations, colors} from '@/constants';
 import {MonthYear} from '@/utils/date';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -47,7 +47,7 @@ const AccountBookHeader = ({
             styles.filterButton,
             pressed && styles.buttonPressed,
           ]}
-          onPress={() => navigation.navigate('헤더', {screen: '카테고리'})}>
+          onPress={() => navigation.navigate(accountBookNavigations.HEADER, {screen: accountBookHeaderNavigations.FILTER})}>
           <FilterButton width={35} height={35} />
         </Pressable>
         <Pressable
@@ -55,7 +55,7 @@ const AccountBookHeader = ({
             styles.iconButton,
             pressed && [styles.iconButtonPressed, styles.buttonPressed],
           ]}
-          onPress={() => navigation.navigate('헤더', {screen: '분석'})}>
+          onPress={() => navigation.navigate(accountBookNavigations.HEADER, {screen: accountBookHeaderNavigations.REPORT})}>
           <Text style={styles.iconText}>분석</Text>
         </Pressable>
       </View>

@@ -1,5 +1,6 @@
+import React from 'react';
+import Navbar from '../tab/Navbar';
 import useUserStore from '@/store/useUserStore';
-import Navbar from '@/navigations/stack/Navbar';
 import AuthStackNavigator from '../stack/AuthStackNavigator';
 import {useEffect, useState} from 'react';
 import {getEncryptStorage} from '@/utils/encryptedStorage';

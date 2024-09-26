@@ -1,12 +1,13 @@
 import {PaymentAdd} from '@/assets/icons';
 import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
-import {colors} from '@/constants';
+import {accountBookNavigations, colors} from '@/constants';
 import {Payment} from '@/types/domain';
 import {getMonthYearDetails, getNewMonthYear} from '@/utils';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
+import { useNavigation } from '@react-navigation/native';
 
 interface PaymentMainScreenProps {}
 
@@ -15,8 +16,9 @@ type PaymentListData = Payment[];
 const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
   const currentMonthYear = getMonthYearDetails(new Date());
   const [monthYear, setMonthYear] = useState(currentMonthYear);
-  const [paymentListData, setPaymentListData] =
-    useState<PaymentListData>([]);
+  const [paymentListData, setPaymentListData] = useState<PaymentListData>([]);
+
+  const navigation = useNavigation();
 
   const handleUpdateMonth = (increment: number) => {
     setMonthYear(prev => getNewMonthYear(prev, increment));
@@ -50,7 +52,7 @@ const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
             </Text>
           </View>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate(accountBookNavigations.PAYMENTADD)}>
           <PaymentAdd style={styles.addButton} />
         </TouchableOpacity>
       </View>

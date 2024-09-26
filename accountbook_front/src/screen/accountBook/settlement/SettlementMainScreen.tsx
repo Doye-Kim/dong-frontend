@@ -4,7 +4,7 @@ import SettlementList from '@/components/accountBook/settlement/SettlementList';
 import {colors} from '@/constants';
 import {getMonthYearDetails, getNewMonthYear} from '@/utils';
 import {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const data = [
   {
@@ -244,7 +244,9 @@ const SettlementMainScreen = () => {
       <ScrollView style={styles.listContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.labelText}>진행 중인 정산</Text>
-          <AddSquareSettlement width={40} height={40} />
+          <TouchableOpacity onPress={() => {}}>
+            <AddSquareSettlement width={40} height={40} />
+          </TouchableOpacity>
         </View>
         <View>
           <SettlementList data={ongoingData} isFinished={false} />

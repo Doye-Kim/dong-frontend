@@ -1,13 +1,11 @@
 import {BackArrow, PaymentDetailAdd} from '@/assets/icons';
 import PaymentDevideItemList from '@/components/accountBook/payment/PaymentDevideItemList';
 import {colors} from '@/constants';
-import {Payment} from '@/types/domain';
 import {getDateTimeLocaleFormat} from '@/utils';
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,24 +14,38 @@ import {
 
 interface PaymentDevideScreenProps {}
 
+type Payment = {
+  payments_id: number;
+  merchantName: string;
+  categoryId: number;
+  categoryName: string;
+  balance: number;
+  paymentName: string;
+  memo: string;
+  paymentTime: string;
+  paymentState: string;
+  paymentType: string;
+}
+
 const PaymentDevideScreen = ({}: PaymentDevideScreenProps) => {
   const [paymentData, setPaymentData] = useState<Payment>({
-    payments_id: '1',
+    payments_id: 1,
     merchantName: '올리브영',
+    categoryId: 5,
     categoryName: '쇼핑',
-    type: 'expense',
     balance: 20000,
-    cardName: '프렌즈 체크카드',
+    paymentName: '쇼핑',
     memo: '벅',
-    status: 'ACCEPT',
-    createdDate: '2024-08-26T08:30:00.000Z',
+    paymentTime: '2024-08-26T08:30:00.000Z',
+    paymentState: 'INCLUDE',
+    paymentType: 'EXPENSE',
   });
 
   const [paymentDevideList, setPaymentDevideList] = useState<Payment[]>([]);
   const addPaymentDevide = () => {
     const newPaymentDivide = {
       ...paymentData,
-      payments_id: Date.now().toString(),
+      payments_id: Date.now()
     };
 
     setPaymentDevideList(prevList => [...prevList, newPaymentDivide]);
@@ -58,13 +70,13 @@ const PaymentDevideScreen = ({}: PaymentDevideScreenProps) => {
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>분류</Text>
           <Text style={styles.detailValue}>
-            {paymentData.type === 'expense' ? '지출' : '수입'}
+            {paymentData.paymentType === 'expense' ? '지출' : '수입'}
           </Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>일시</Text>
           <Text style={styles.detailValue}>
-            {getDateTimeLocaleFormat(paymentData.createdDate)}
+            {getDateTimeLocaleFormat(paymentData.paymentTime)}
           </Text>
         </View>
         <View style={styles.detailItem}>

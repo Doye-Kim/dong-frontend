@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {colors} from '@/constants';
+import {accountBookNavigations, accountBookTabNavigations, colors} from '@/constants';
 import BudgetCreateItem from '@/components/accountBook/budget/BudgetCreateItem';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
 type BudgetCategory = {
   id: string;
@@ -38,6 +41,8 @@ const BudgetCreateScreen = () => {
     );
   };
 
+  const navigation = useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+
   return (
     <View style={styles.container}>
       <Text style={styles.totalBudgetText}>이번 달 총 예산</Text>
@@ -64,7 +69,7 @@ const BudgetCreateScreen = () => {
             onUpdateCategory={onUpdateCategory}
           />
         ))}
-        <TouchableOpacity style={styles.completeButton}>
+        <TouchableOpacity style={styles.completeButton} onPress={() => navigation.goBack()}>
           <Text style={styles.completeButtonText}>완료</Text>
         </TouchableOpacity>
       </ScrollView>
