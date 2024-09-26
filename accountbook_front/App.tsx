@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import RootNavigator from './src/navigations/root/RootNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-
+import {Provider as PaperProvider} from 'react-native-paper';
 const App = () => {
   // const isDarkMode = useColorScheme() === 'dark';
   // const backgroundStyle = {
@@ -12,10 +12,12 @@ const App = () => {
   // };
   return (
     <>
+    <PaperProvider>
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
       <Toast />
+    </PaperProvider>
     </>
   );
 };

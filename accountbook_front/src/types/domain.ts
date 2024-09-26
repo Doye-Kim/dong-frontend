@@ -46,7 +46,7 @@ type Seed = {
 }
 
 type Gift = {
-  gifticon_id: number,
+  id: number,
   name: string;
   price: number;
   stock: number;

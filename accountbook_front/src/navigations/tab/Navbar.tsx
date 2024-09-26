@@ -11,10 +11,10 @@ import {
 import { View, StyleSheet } from 'react-native';
 
 import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
-import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
 import AccountBookStackNavigator from '../stack/accountBook/AccountBookStackNavigator';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { accountBookNavigations, colors, mainNavigations } from '@/constants';
+import ExtraStackNavigator from '../stack/ExtraStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -61,7 +61,7 @@ const Navbar = () => {
           })}
         />
         <Tab.Screen name={mainNavigations.ASSET} component={AssetMainScreen} options={{tabBarLabel: '자산'}}/>
-        <Tab.Screen name={mainNavigations.EXTRA} component={ExtraMainScreen} options={{tabBarLabel: '더보기'}}/>
+        <Tab.Screen name={mainNavigations.EXTRA} component={ExtraStackNavigator} options={{tabBarLabel: '더보기'}}/>
       </Tab.Navigator>
     </View>
   );

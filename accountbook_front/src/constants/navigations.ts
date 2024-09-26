@@ -14,7 +14,7 @@ const mainNavigations = {
 const accountBookNavigations = {
   TABBAR: 'AccountBookTabbar',
   HEADER: 'AccountBookHeader',
-  PAYMENTDETAIL : 'PaymentDetail',
+  PAYMENTDETAIL: 'PaymentDetail',
   PAYMENTADD: 'PaymentAdd',
   BUDGETCREATE: 'BudgetCreate',
   BUDGET: 'Budget',
@@ -31,5 +31,19 @@ const accountBookHeaderNavigations = {
   FILTER: 'CategoryFilter',
   REPORT: 'Report',
 } as const;
-
-export {authNavigations, mainNavigations, accountBookNavigations, accountBookTabNavigations, accountBookHeaderNavigations};
+// #todo 내기 목록 추가
+const extraNavigations = {
+  MAIN: 'ExtraMain',
+  MARKET: 'PointMarket',
+  CATEGORY: 'CategoryEdit',
+  BUDGET: 'Budget',
+  REPORT: 'Report',
+} as const;
+export {
+  authNavigations,
+  mainNavigations,
+  accountBookNavigations,
+  accountBookTabNavigations,
+  accountBookHeaderNavigations,
+  extraNavigations,
+};
