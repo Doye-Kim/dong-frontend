@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   HouseHoldIcon,
   HouseHoldFillIcon,
@@ -8,7 +8,7 @@ import {
   WalletIcon,
   WalletFillIcon,
 } from '@/assets/icons';
-import { View, StyleSheet } from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
 import AccountBookStackNavigator from '../stack/accountBook/AccountBookStackNavigator';
@@ -22,8 +22,8 @@ const Navbar = () => {
   return (
     <View style={styles.container}>
       <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
             let Icon;
             switch (route.name) {
               case mainNavigations.ACCOUNTBOOK:
@@ -43,18 +43,21 @@ const Navbar = () => {
           tabBarStyle: styles.tabBarStyle,
           headerShown: false,
           tabBarLabelStyle: styles.tabBarText,
-        })}
-      >
-        <Tab.Screen 
-          name={mainNavigations.ACCOUNTBOOK} 
+        })}>
+        <Tab.Screen
+          name={mainNavigations.ACCOUNTBOOK}
           component={AccountBookStackNavigator}
-          options={({ route }) => ({
+          options={({route}) => ({
             tabBarLabel: '가계부',
-            tabBarStyle: ((route) => {
-              const routeName = getFocusedRouteNameFromRoute(route) ?? "AccountBookMain";
+            tabBarStyle: (route => {
+              const routeName =
+                getFocusedRouteNameFromRoute(route) ?? 'AccountBookMain';
               console.log(routeName);
-              if (routeName === accountBookNavigations.PAYMENTDETAIL || routeName === accountBookNavigations.HEADER) {
-                return { display: 'none' };
+              if (
+                routeName === accountBookNavigations.PAYMENTDETAIL ||
+                routeName === accountBookNavigations.HEADER
+              ) {
+                return {display: 'none'};
               }
               return styles.tabBarStyle;
             })(route),
@@ -82,8 +85,8 @@ const styles = StyleSheet.create({
   tabBarText: {
     fontSize: 12,
     fontFamily: 'Pretendard-Light',
-    color: colors.BLACK
-  }
+    color: colors.BLACK,
+  },
 });
 
 export default Navbar;

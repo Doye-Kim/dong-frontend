@@ -1,22 +1,26 @@
-import React from 'react';
-import {StyleSheet, FlatList} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList} from 'react-native';
 import CategoryItem from './CategoryItem';
+import {ResponseCategory} from '@/api/category';
+import useCategoryStore from '@/store/useCategoryStore';
 
-interface CategoryListProps {
-  data: [];
-}
+const CategoryList = () => {
+  const categories = useCategoryStore(state => state.categories);
+  const [data, setData] = useState<ResponseCategory[]>([]);
 
-interface CategoryItemProps {
-  item: {
-    category_id: number;
-    category_name: string;
-    image_number: number;
-    default: boolean;
-  };
-}
+  useEffect(() => {
+    setData([
+      ...categories,
+      {
+        categoryId: -1,
+        name: '추가',
+        categoryType: 'ADD',
+        imageNumber: -1,
+      },
+    ]);
+  }, [categories]); // categories가 변경될 때마다 data 업데이트
 
-const CategoryList = ({data}: CategoryListProps) => {
-  const renderItem = ({item}: CategoryItemProps) => (
+  const renderItem = ({item}: {item: ResponseCategory}) => (
     <CategoryItem item={item} />
   );
 
@@ -24,8 +28,9 @@ const CategoryList = ({data}: CategoryListProps) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => item.category_id.toString()}
+      keyExtractor={item => item.categoryId.toString()}
       numColumns={4}
+      style={{height: '100%'}}
     />
   );
 };

@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {
-  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -28,27 +27,11 @@ type AuthHomeScreenProps = {
 };
 const JoinScreen = ({navigation}: AuthHomeScreenProps) => {
   // FCM
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
-  });
-
   const getFcmToken = useCallback(async () => {
     const data = await messaging().getToken();
     // console.log('fcm', data);
     return data;
   }, []);
-
-  // 앱 켜놨을 때 알림 받는 코드
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log(
-        remoteMessage.notification?.title,
-        remoteMessage.notification?.body,
-      );
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-    return unsubscribe;
-  }, [getFcmToken]);
 
   const phoneRef = useRef<TextInput | null>(null);
   const phoneAuthRef = useRef<TextInput | null>(null);
@@ -68,6 +51,7 @@ const JoinScreen = ({navigation}: AuthHomeScreenProps) => {
   const handleSubmit = async () => {
     const {name, phone, phoneAuthPassword} = join.values;
     const fcmTokenKey = await getFcmToken();
+    console.log(fcmTokenKey);
     try {
       const data = await postSignup({
         name,
