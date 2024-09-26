@@ -1,20 +1,25 @@
-import { ExpandRight, StoreIcon, UserProfileImage} from '@/assets/icons';
+import {ExpandRight, StoreIcon, UserProfileImage} from '@/assets/icons';
 import NotificationHeader from '@/components/common/NotificationHeader';
-import {colors} from '@/constants';
-import {useNavigation} from '@react-navigation/native';
+import {colors, extraNavigations} from '@/constants';
+import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 interface ExtraMainScreenProps {}
 
 const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ExtraStackParamList>>();
 
   const DATALIST = [
-    {id: '1', title: '카테고리 편집', screen: 'CategoryEditScreen'},
-    {id: '2', title: '예산 관리', screen: 'BudgetMainScreen'},
-    {id: '3', title: '월간 소비 리포트', screen: 'SpendingReportScreen'},
-    {id: '4', title: '내기 목록', screen: 'BudgetMainScreen'},
+    {id: '1', title: '카테고리 편집', navigationKey: extraNavigations.CATEGORY},
+    {id: '2', title: '예산 관리', navigationKey: extraNavigations.BUDGET},
+    {
+      id: '3',
+      title: '월간 소비 리포트',
+      navigationKey: extraNavigations.REPORT,
+    },
+    {id: '4', title: '내기 목록', navigationKey: extraNavigations.REPORT}, // 내기 목록도 REPORT로 설정된 경우
   ];
 
   return (
@@ -31,14 +36,19 @@ const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
       <Text style={styles.sectionHeaderText}>포인트</Text>
       <View style={styles.pointContainer}>
         <Text style={styles.pointText}>5,000p</Text>
-        <TouchableOpacity style={styles.storeButton}>
+        <TouchableOpacity
+          style={styles.storeButton}
+          onPress={() => navigation.navigate(extraNavigations.MARKET)}>
           <StoreIcon />
           <Text style={styles.storeText}>포인트 상점</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.sectionHeaderText}>가계부</Text>
-      {DATALIST.map(item => (
-        <TouchableOpacity style={styles.listItemContainer} onPress={() => {}}>
+      {DATALIST.map((item, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.listItemContainer}
+          onPress={() => navigation.navigate(item.navigationKey)}>
           <Text style={styles.listTitleText}>{item.title}</Text>
           <ExpandRight />
         </TouchableOpacity>
