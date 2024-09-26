@@ -17,7 +17,7 @@ const BudgetMainScreen = () => {
   };
 
   // 총 예산. 나중에 요청을 통해 값을 가져옴
-  const [totalBudget, setTotalBudget] = useState(10000);
+  const [totalBudget, setTotalBudget] = useState(0);
 
   // 카테고리 목록. 임시로 일단 만들어둠.
   const categories_temp = [

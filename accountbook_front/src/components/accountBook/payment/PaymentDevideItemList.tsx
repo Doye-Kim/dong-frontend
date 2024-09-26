@@ -1,8 +1,21 @@
 import { colors } from '@/constants';
-import { Payment } from '@/types/domain';
 import { getDateTimeLocaleFormat } from '@/utils';
 import React from 'react';
 import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
+
+
+type Payment = {
+  payments_id: number;
+  merchantName: string;
+  categoryId: number;
+  categoryName: string;
+  balance: number;
+  paymentName: string;
+  memo: string;
+  paymentTime: string;
+  paymentState: string;
+  paymentType: string;
+}
 
 interface PaymentDevideItemListProps {
   devideList? : Payment[];
@@ -16,11 +29,11 @@ const renderItem = ({ item }: { item: Payment }) => (
     </View>
     <View style={styles.itemDetailContainer}>
       <Text style={styles.itemHeader}>분류</Text>
-      <Text style={styles.itemDetail}>{item.type === 'expense' ? '지출' : '수입'}</Text>
+      <Text style={styles.itemDetail}>{item.paymentType === 'expense' ? '지출' : '수입'}</Text>
     </View>
     <View style={styles.itemDetailContainer}>
       <Text style={styles.itemHeader}>일시</Text>
-      <Text style={styles.itemDetail}>{getDateTimeLocaleFormat(item.createdDate)}</Text>
+      <Text style={styles.itemDetail}>{getDateTimeLocaleFormat(item.paymentTime)}</Text>
     </View>
     <View style={styles.itemDetailContainer}>
       <Text style={styles.itemHeader}>카테고리</Text>
@@ -38,7 +51,7 @@ const PaymentDevideItemList = ({devideList}: PaymentDevideItemListProps) => {
     <FlatList
       data={devideList}
       renderItem={renderItem}
-      keyExtractor={(item) => item.payments_id}
+      keyExtractor={(item, index) => `list1-${item.payments_id}-${index}`}
       style={styles.list}
     />
   )

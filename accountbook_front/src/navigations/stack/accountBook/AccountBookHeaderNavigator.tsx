@@ -1,12 +1,12 @@
-import { colors } from '@/constants';
+import {accountBookHeaderNavigations, colors} from '@/constants';
 import CategoryFilterScreen from '@/screen/common/CategoryFilterScreen';
 import SpendingReportScreen from '@/screen/common/SpendingReportScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 
 export type AccountBookHeaderParamList = {
-  카테고리: undefined;
-  분석: undefined;
+  [accountBookHeaderNavigations.FILTER]: undefined;
+  [accountBookHeaderNavigations.REPORT]: undefined;
 };
 
 const Stack = createStackNavigator();
@@ -15,7 +15,7 @@ const AccountBookHeaderNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name={'카테고리'}
+        name={accountBookHeaderNavigations.FILTER}
         component={CategoryFilterScreen}
         options={({navigation}) => ({
           title: '카테고리 필터링',
@@ -32,9 +32,9 @@ const AccountBookHeaderNavigator = () => {
         })}
       />
       <Stack.Screen
-        name="분석"
+        name={accountBookHeaderNavigations.REPORT}
         component={SpendingReportScreen}
-        options={{title: ""}}
+        options={{title: ''}}
       />
     </Stack.Navigator>
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
     marginRight: 20,
-  }
-})
+  },
+});
 
 export default AccountBookHeaderNavigator;

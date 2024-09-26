@@ -1,33 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '@/constants';
-import CategoryIcon from '@/components/common/CategoryIcon';
-import { formatDateToDayOfWeek } from '@/utils';
-
-type Payment = {
-  payments_id: string;
-  merchantName: string;
-  categoryName: string;
-  categoryNumber?: string;
-  balance: number;
-  cardName: string;
-  memo: string;
-  createdDate: string;
-};
+import {StyleSheet, View, FlatList, Text} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {accountBookNavigations, colors} from '@/constants';
+import PaymentItem from './PaymentItem'; // 새로 만든 PaymentItem 컴포넌트
+import {formatDateToDayOfWeek} from '@/utils';
+import {Payment} from '@/types/domain';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
 type GroupedPayments = Record<string, Payment[]>;
 
 interface PaymentItemListProps {
   payments?: Payment[];
 }
-
-type RootStackParamList = {
-  PaymentDetail: { paymentId: string };
-};
-
-type PaymentDetailNavigationProp = StackNavigationProp<RootStackParamList, 'PaymentDetail'>;
 
 const groupPaymentsByDate = (payments: Payment[]) => {
   if (!payments || payments.length === 0) return {};
@@ -38,48 +23,29 @@ const groupPaymentsByDate = (payments: Payment[]) => {
     }
     acc[date].push(payment);
     return acc;
-  }, {} as Record<string, Payment[]>);
+  }, {} as GroupedPayments);
 };
 
-const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
-  const navigation = useNavigation<PaymentDetailNavigationProp>();
+const PaymentItemList = ({payments = []}: PaymentItemListProps) => {
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
   const groupedPayments: GroupedPayments = groupPaymentsByDate(payments);
-  // console.log(groupedPayments);
+
   const handlePaymentPress = (paymentId: string) => {
-    navigation.navigate('PaymentDetail', { paymentId });
+    navigation.navigate(accountBookNavigations.PAYMENTDETAIL, {paymentId});
   };
 
-  const renderPayment = (item: Payment) => (
-    <TouchableOpacity 
-      style={styles.itemContainer} 
-      key={item.payments_id}
-      onPress={() => handlePaymentPress(item.payments_id)}
-    >
-      <CategoryIcon categoryNumber={item.categoryNumber? Number(item.categoryNumber) : 0} size={40} /> 
-      <View style={styles.itemContent}>
-        <View style={styles.itemHeader}>
-          <View style={styles.merchantInfo}>
-            <Text style={styles.merchantName}>{item.merchantName}</Text>
-            <Text style={styles.details}>
-              {item.categoryName} | {item.cardName}
-            </Text>
-          </View>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balance}>
-              {item.balance.toLocaleString()}원
-            </Text>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderGroup = ({ item }: { item: string }) => {
-    
+  const renderGroup = ({item}: {item: string}) => {
     return (
       <View key={item} style={styles.dateGroup}>
         <Text style={styles.dateHeader}>{formatDateToDayOfWeek(item)}</Text>
-        {groupedPayments[item].map(payment => renderPayment(payment))}
+        {groupedPayments[item].map(payment => (
+          <PaymentItem
+            key={payment.payments_id}
+            payment={payment}
+            onPress={handlePaymentPress}
+          />
+        ))}
       </View>
     );
   };
@@ -88,7 +54,7 @@ const PaymentItemList = ({ payments = [] }: PaymentItemListProps) => {
     <FlatList
       data={Object.keys(groupedPayments)}
       renderItem={renderGroup}
-      keyExtractor={(item) => item}
+      keyExtractor={item => item}
       style={styles.container}
     />
   );
@@ -110,46 +76,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingBottom: 6,
     borderBottomWidth: 0.5,
-    borderColor: colors.GRAY_600
-  },
-  itemContainer: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemContent: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  merchantInfo: {
-    flex: 1,
-  },
-  merchantName: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  balance: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  details: {
-    fontSize: 13,
-    color: colors.GRAY_500,
-    marginTop: 2,
+    borderColor: colors.GRAY_600,
   },
 });
 

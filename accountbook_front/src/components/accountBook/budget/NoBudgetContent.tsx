@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {StyleSheet, View, Image, Text, TextInput} from 'react-native';
-import { colors } from '@/constants'
+import { accountBookNavigations, colors } from '@/constants'
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { BudgetParamList } from '@/navigations/BudgetNavigation';
+import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
-type NoBudgetScreenNavigationProp = StackNavigationProp<BudgetParamList, 'NoBudget'>;
+type NoBudgetScreenNavigationProp = StackNavigationProp<AccountBookStackParamList>;
 
 interface NoBudgetContentProps {}
 
@@ -19,7 +19,7 @@ function NoBudgetContent({}: NoBudgetContentProps) {
   };
 
   const handleBudgetSubmit = () => {
-    navigation.navigate('BudgetCreate');
+    navigation.navigate(accountBookNavigations.BUDGETCREATE);
   };
 
   return (
