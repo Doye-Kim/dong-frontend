@@ -7,18 +7,21 @@ import {getMonthYearDetails, getNewMonthYear} from '@/utils';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
 interface PaymentMainScreenProps {}
 
 type PaymentListData = Payment[];
+
+type PaymentMainScreenNavigationProp = NavigationProp<AccountBookStackParamList>;
 
 const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
   const currentMonthYear = getMonthYearDetails(new Date());
   const [monthYear, setMonthYear] = useState(currentMonthYear);
   const [paymentListData, setPaymentListData] = useState<PaymentListData>([]);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<PaymentMainScreenNavigationProp>();
 
   const handleUpdateMonth = (increment: number) => {
     setMonthYear(prev => getNewMonthYear(prev, increment));
@@ -27,6 +30,10 @@ const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
   useEffect(() => {
     setPaymentListData(PaymentDummyData.paymentResponse);
   });
+
+  const handlePaymentPress = (paymentId: number) => {
+    navigation.navigate(accountBookNavigations.PAYMENTDETAIL, {paymentId});
+  }
 
   const balance = 1919929219;
   const income = 99999999;
@@ -56,7 +63,7 @@ const PaymentMainScreen = ({}: PaymentMainScreenProps) => {
           <PaymentAdd style={styles.addButton} />
         </TouchableOpacity>
       </View>
-      <PaymentItemList payments={paymentListData} />
+      <PaymentItemList payments={paymentListData} onPaymentPress={handlePaymentPress}/>
     </View>
   );
 };

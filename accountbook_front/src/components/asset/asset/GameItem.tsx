@@ -1,10 +1,15 @@
 import {RightArrowButton} from '@/assets/icons';
 import CategoryIcon from '@/components/common/CategoryIcon';
-import {colors} from '@/constants';
+import {assetNavigations, colors, gameNavigations} from '@/constants';
+import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
+import { GameStackParamList } from '@/navigations/stack/asset/GameStackNavigation';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 interface GameItemProps {
+  gameId: number;
   categoryId: string;
   gameCount: string;
   rank: string;
@@ -13,12 +18,16 @@ interface GameItemProps {
 }
 
 const GameItem = ({
+  gameId,
   categoryId,
   gameCount,
   rank,
   numberOfParticipants,
   isLast
 }: GameItemProps) => {
+
+  const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
+
   return (
     <View style={[styles.container, isLast && styles.lastItem]}>
       <View style={styles.leftContainer}>
@@ -31,7 +40,7 @@ const GameItem = ({
           {' '}
           / {numberOfParticipants}
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate(assetNavigations.GAME, {screen: gameNavigations.DETAIL, params: {gameId: gameId}})}>
           <RightArrowButton />
         </TouchableOpacity>
       </View>

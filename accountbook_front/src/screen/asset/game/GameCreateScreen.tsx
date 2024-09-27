@@ -3,9 +3,12 @@ import CalendarModal from '@/components/common/CalendarModal';
 import CustomButton from '@/components/common/CustomButton';
 import DropdownCategory from '@/components/game/DropdownCategory';
 import ImageIcon from '@/components/game/ImageIcon';
-import {colors} from '@/constants';
+import {colors, gameNavigations} from '@/constants';
+import { GameStackParamList } from '@/navigations/stack/asset/GameStackNavigation';
 import {getDateLocaleFormatDiff} from '@/utils';
 import {category} from '@/utils/categories';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {useState} from 'react';
 import {
   KeyboardAvoidingView,
@@ -26,6 +29,7 @@ const GameCreateScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [amount, setAmount] = useState('0원');
   const curDate = new Date();
+  const navigtaion = useNavigation<StackNavigationProp<GameStackParamList>>();
 
   const onPressDate = () => {
     setIsOpneCalendar(prev => !prev);
@@ -125,7 +129,7 @@ const GameCreateScreen = () => {
           />
         )}
         <View style={styles.buttonContainer}>
-          <CustomButton text="다음" />
+          <CustomButton text="다음" onPress={() => navigtaion.navigate(gameNavigations.FRIENDS)}/>
         </View>
       </View>
     </KeyboardAvoidingView>

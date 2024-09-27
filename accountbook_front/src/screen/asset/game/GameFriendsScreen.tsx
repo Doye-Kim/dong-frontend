@@ -8,7 +8,10 @@ import {
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
 import UserListItem from '@/components/game/UserListItem';
-import {colors} from '@/constants';
+import {colors, gameNavigations} from '@/constants';
+import { GameStackParamList } from '@/navigations/stack/asset/GameStackNavigation';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {useEffect, useRef, useState} from 'react';
 import {
   FlatList,
@@ -58,6 +61,7 @@ const GameFriendsScreen = () => {
 
   const [searchContacts, setSearchContacts] = useState<Contact[]>([]);
   const [searchWord, setSearchWord] = useState('');
+  const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   useEffect(() => {
     const fetchContacts = async () => {
       const contactsData = await requestContactsPermission();
@@ -165,7 +169,7 @@ const GameFriendsScreen = () => {
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton text="내기 신청하기" />
+        <CustomButton text="내기 신청하기" onPress={() => navigation.navigate(gameNavigations.PREPARE)}/>
       </View>
     </SafeAreaView>
   );

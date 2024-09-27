@@ -6,16 +6,22 @@ import { Payment } from '@/types/domain';
 
 interface PaymentItemProps {
   payment: Payment;
-  onPress: (paymentId: string) => void;
+  onPress?: (paymentId: number) => void;
 }
 
 const PaymentItem = ({ payment, onPress }: PaymentItemProps) => {
   const { payments_id, merchantName, categoryName, categoryNumber, balance, cardName } = payment;
 
+  const handlePress = (payments_id: number) => {
+    if (onPress) {
+      onPress(payments_id);
+    }
+  };
+
   return (
     <TouchableOpacity 
       style={styles.itemContainer} 
-      onPress={() => onPress(payments_id)}
+      onPress={() => handlePress(Number(payments_id))}
     >
       <CategoryIcon categoryNumber={categoryNumber ? Number(categoryNumber) : 0} size={40} />
       <View style={styles.itemContent}>

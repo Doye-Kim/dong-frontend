@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {colors} from '@/constants';
+import {assetDetailNavigations, assetNavigations, colors} from '@/constants';
 import AssetItem from './AssetItem';
 import {Account, Card} from '@/types/domain';
+import {useNavigation} from '@react-navigation/native';
+import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 interface AssetItemListProps {
   accountData?: Account[];
@@ -10,17 +13,26 @@ interface AssetItemListProps {
 }
 
 const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
+  const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
+
   if (accountData) {
     return (
       <View style={styles.container}>
         <Text style={styles.sectionHeader}>계좌</Text>
         {accountData.map(account => (
           <AssetItem
+            id={Number(account.accountId)}
             key={account.accountId}
             title={account.accountNickname}
             balance={account.accountBalance}
             isAccount={true}
             hide={account.hideStatus === 'hide_asset' ? true : false}
+            handleNavigate={() =>
+              navigation.navigate(assetNavigations.DETAIL, {
+                screen: assetDetailNavigations.ACCOUNTDETAIL,
+                params: {accountId: Number(account.accountId)},
+              })
+            }
           />
         ))}
       </View>
@@ -33,11 +45,18 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
         <Text style={styles.sectionHeader}>카드</Text>
         {cardData.map(card => (
           <AssetItem
+            id={card.id}
             key={card.cardNo}
             title={`${card.cardIssuerName}`}
             cardName={card.cardName}
             isAccount={false}
             hide={card.hideStatus === 'hide_asset' ? true : false}
+            handleNavigate={() =>
+              navigation.navigate(assetNavigations.DETAIL, {
+                screen: assetDetailNavigations.CARDDETAIL,
+                params: {cardId: Number(card.id)},
+              })
+            }
           />
         ))}
       </View>

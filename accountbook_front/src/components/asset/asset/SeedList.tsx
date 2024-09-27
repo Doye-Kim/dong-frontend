@@ -16,6 +16,7 @@ const SeedList = ({seedData}: SeedListProps) => {
       {seedData.map(seed => (
         <SeedItem
           key={seed.id}
+          id={Number(seed.id)}
           title={seed.title}
           entireRound={seed.entireRound}
           endDate={seed.endDate}

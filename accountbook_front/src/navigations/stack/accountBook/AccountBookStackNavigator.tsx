@@ -11,7 +11,7 @@ import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]: undefined;
   [accountBookNavigations.HEADER]: {screen: keyof AccountBookHeaderParamList};
-  [accountBookNavigations.PAYMENTDETAIL]: {paymentId: string};
+  [accountBookNavigations.PAYMENTDETAIL]: {paymentId: number};
   [accountBookNavigations.PAYMENTADD]: undefined;
   [accountBookNavigations.BUDGETCREATE]: undefined;
   [accountBookNavigations.BUDGET]: undefined;

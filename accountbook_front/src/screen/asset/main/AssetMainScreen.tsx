@@ -6,7 +6,7 @@ import {
 import AssetItemList from '@/components/asset/asset/AssetItemList';
 import AssetListHeader from '@/components/asset/asset/AssetListHeader';
 import NotificationHeader from '@/components/common/NotificationHeader';
-import {colors} from '@/constants';
+import {assetNavigations, colors, gameNavigations, seedNavigations} from '@/constants';
 import {Account, Card, Game, Seed} from '@/types/domain';
 import React, {useEffect, useState, useMemo} from 'react';
 import {
@@ -22,6 +22,9 @@ import AssetAccountData from '@/assets/tempData/Asset/AssetAccountData.json';
 import GameListData from '@/assets/tempData/Asset/GameListData.json';
 import SeedsDataList from '@/assets/tempData/Asset/SeedsDataList.json';
 import SeedList from '@/components/asset/asset/SeedList';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
 
 type AssetData = {
   accounts: Account[];
@@ -41,6 +44,7 @@ const AssetMainScreen = () => {
   const [showHiddenAssets, setShowHiddenAssets] = useState(false);
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [seedData, setSeedData] = useState<SeedData | null>(null);
+  const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
 
   useEffect(() => {
     setAssetData(AssetAccountData);
@@ -118,12 +122,13 @@ const AssetMainScreen = () => {
           <Text style={styles.hiddenAssetsText}>
             {showHiddenAssets ? '자산 숨기기' : '숨긴 자산 보기'}
           </Text>
-          {showHiddenAssets ? <ArrowDropDownButton /> : <ArrowDropUpButton />}
+          {showHiddenAssets ? <ArrowDropUpButton /> : <ArrowDropDownButton />}
         </TouchableOpacity>
 
         {/* 내기 */}
         <GameList gameData={filteredGames} />
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(assetNavigations.GAME, {screen: gameNavigations.CREATE, params: {gameId: undefined}})}>
           <View style={styles.buttonContainer}>
             <AddRoundButton />
             <Text style={styles.buttonText}>생성</Text>
@@ -132,7 +137,7 @@ const AssetMainScreen = () => {
 
         {/* 종잣돈 */}
         <SeedList seedData={filteredSeeds} />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate(assetNavigations.SEED, {screen: seedNavigations.CREATE, params: {seedId: undefined}})}>
           <View style={styles.buttonContainer}>
             <AddRoundButton />
             <Text style={styles.buttonText}>생성</Text>

@@ -1,9 +1,13 @@
-import {colors} from '@/constants';
+import {assetNavigations, colors, seedNavigations} from '@/constants';
+import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
+import { SeedStackParamList } from '@/navigations/stack/asset/SeedStackNavigator';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 
 interface SeedItemProps {
+  id: number;
   title: string;
   entireRound: string;
   endDate: string;
@@ -11,15 +15,16 @@ interface SeedItemProps {
 }
 
 const SeedItem = ({
+  id,
   title,
   entireRound,
   endDate,
   passedRound,
 }: SeedItemProps) => {
   const progressPercentage = Number(passedRound) / Number(entireRound);
-
+  const navigation = useNavigation<NavigationProp<AssetStackParamList>>();
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate(assetNavigations.SEED, {screen: seedNavigations.DETAIL, params: {seedId: id}})}>
       <View style={styles.itemHeader}>
         <Text style={styles.itemTitle}>{title}</Text>
         <View style={styles.countContainer}>

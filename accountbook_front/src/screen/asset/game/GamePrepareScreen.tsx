@@ -1,8 +1,12 @@
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
-import {colors} from '@/constants';
+import {assetNavigations, colors, gameNavigations} from '@/constants';
+import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
+import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
 import {category} from '@/utils/categories';
 import getGameImage from '@/utils/getGameImage';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {
   Image,
   SafeAreaView,
@@ -11,6 +15,11 @@ import {
   Text,
   View,
 } from 'react-native';
+
+type CombinedNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<AssetStackParamList, keyof AssetStackParamList>,
+  StackNavigationProp<GameStackParamList, keyof GameStackParamList>
+>;
 
 const myInfo = {
   userId: 1111,
@@ -43,6 +52,13 @@ const GamePrepareScreen = () => {
     if (a.join === b.join) return 0;
     return a.join ? -1 : 1;
   });
+  const navigation = useNavigation<CombinedNavigationProp>();
+
+  const pressButtonStart = () => {
+    // 게임 생성 로직도 여기다가 작성
+    navigation.navigate(gameNavigations.DETAIL, {gameId: 1}); // 여기도 게임아이디가 지금 게임아이디로 가야할듯
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -74,9 +90,12 @@ const GamePrepareScreen = () => {
       </View>
       <View style={styles.buttonContainer}>
         {myInfo.userId === data.managerId ? (
-          <CustomButton text="시작" />
+          <CustomButton text="시작" onPress={pressButtonStart} />
         ) : (
-          <CustomButton text="나가기" />
+          <CustomButton
+            text="나가기"
+            onPress={() => navigation.navigate(assetNavigations.MAIN)}
+          />
         )}
       </View>
     </SafeAreaView>

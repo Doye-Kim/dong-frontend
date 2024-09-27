@@ -1,63 +1,61 @@
 import {BackArrow, ExpandRight} from '@/assets/icons';
 import Toggle from '@/components/common/Toggle';
 import {colors} from '@/constants';
-import {Account} from '@/types/domain';
+import {Account, Card} from '@/types/domain';
 import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-interface AssetManageScreenProps {}
+interface CardManageScreenProps {}
 
-const assetData = {
-  accountId: '1151145',
-  bankName: 'HG은행',
-  accountNumber: '11111111111',
-  accountName: '입출금이 자유로운 통장',
-  accountNickname: '월급통장',
+const cardData = {
+  id: 1,
+  cardNo: '11111111111',
+  cardIssuerName: 'HG은행',
+  cardName: '월급카드',
   hideStatus: 'none',
-  depositStatus: '0',
-  accountBalance: '50000',
+  nickname: '별명',
+  // accountBalance: '50000',
 };
 
-const AssetManageScreen = ({}: AssetManageScreenProps) => {
-  const [asset, setAsset] = useState<Account | null>(assetData);
+const CardManageScreen = ({}: CardManageScreenProps) => {
+  const [asset, setAsset] = useState<Card | null>(cardData);
   return (
     <View style={styles.container}>
       <View style={styles.accountTitleContainer}>
-        <Text style={styles.accountNicknameText}>{asset?.accountNickname}</Text>
+        <Text style={styles.accountNicknameText}>{asset?.nickname}</Text>
         <Text style={styles.accountInfoText}>
-          {asset?.bankName} {asset?.accountNumber}
+          {asset?.cardName} {asset?.cardNo}
         </Text>
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.accountNicknameContainer}>
-          <Text style={styles.accountNicknameTitle}>계좌별명</Text>
+          <Text style={styles.accountNicknameTitle}>카드별명</Text>
           <TouchableOpacity style={styles.nicknameSetupContainer}>
-            <Text style={styles.accountNicknameSetup}>
-              {asset?.accountNickname}
-            </Text>
+            <Text style={styles.accountNicknameSetup}>{asset?.nickname}</Text>
             <ExpandRight />
           </TouchableOpacity>
         </View>
         <View style={styles.manageContainer}>
           <View style={styles.manageTitleContainer}>
-            <Text style={styles.manageTitleMain}>화면에서 금액 숨기기</Text>
-            <Text style={styles.manageTitleInfo}>
-              숨기면 총 자산과 가계부에서 제외돼요
-            </Text>
-          </View>
-          <View style={styles.toggleButton}>
-          <Toggle isEnabled={false} toggleSwitch={() => {}} />
-          </View>
-        </View>
-        <View style={styles.manageContainer}>
-          <View style={styles.manageTitleContainer}>
             <Text style={styles.manageTitleMain}>계좌 숨기기</Text>
-            <Text style={styles.manageTitleInfo}>
-              자산 목록에서 숨겨져요
-            </Text>
+            <Text style={styles.manageTitleInfo}>자산 목록에서 숨겨져요</Text>
           </View>
           <View style={styles.toggleButton}>
-          <Toggle isEnabled={true} toggleSwitch={() => {}} />
+            <Toggle
+              isEnabled={asset?.hideStatus === 'none' ? false : true}
+              toggleSwitch={() => {
+                setAsset(prevAsset => {
+                  if (prevAsset) {
+                    return {
+                      ...prevAsset,
+                      hideStatus:
+                        prevAsset.hideStatus === 'none' ? 'hide' : 'none',
+                    };
+                  }
+                  return prevAsset;
+                });
+              }}
+            />
           </View>
         </View>
       </View>
@@ -129,8 +127,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   toggleButton: {
-    marginRight : 25,
-  }
+    marginRight: 25,
+  },
 });
 
-export default AssetManageScreen;
+export default CardManageScreen;
