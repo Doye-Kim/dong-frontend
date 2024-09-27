@@ -39,6 +39,34 @@ const extraNavigations = {
   BUDGET: 'Budget',
   REPORT: 'Report',
 } as const;
+
+const assetNavigations = {
+  MAIN: 'AssetMain',
+  DETAIL: 'AssetDetailNavigator',
+  GAME: 'GameNavigator',
+  SEED: 'SeedNavigator',
+} as const;
+
+const assetDetailNavigations = {
+  ACCOUNTDETAIL: 'AccountDetail',
+  ACCOUNTMANAGE: 'AccountManage',
+  CARDDETAIL: 'CardDetail',
+  CARDMANAGE: 'CardManage',
+  PAYMENTDETAIL: 'PaymentDetail',
+} as const;
+
+const gameNavigations = {
+  DETAIL: 'GameDetail',
+  CREATE: 'GameCreate',
+  FRIENDS: 'GameFriends',
+  PREPARE: 'GamePrepare',
+} as const;
+
+const seedNavigations = {
+  CREATE: 'SeedCreate',
+  DETAIL: 'SeedDetail',
+} as const;
+
 export {
   authNavigations,
   mainNavigations,
@@ -46,4 +74,8 @@ export {
   accountBookTabNavigations,
   accountBookHeaderNavigations,
   extraNavigations,
+  assetNavigations,
+  assetDetailNavigations,
+  gameNavigations,
+  seedNavigations,
 };

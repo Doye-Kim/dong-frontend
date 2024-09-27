@@ -16,6 +16,7 @@ const GameList = ({gameData}: GameListProps) => {
       {gameData.map((game, index) => (
         <GameItem
           key={game.gameId}
+          gameId={Number(game.gameId)}
           categoryId={game.categoryId}
           gameCount={game.gameCount}
           rank={game.rank}

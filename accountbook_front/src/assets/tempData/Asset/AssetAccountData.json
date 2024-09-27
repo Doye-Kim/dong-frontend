@@ -43,22 +43,28 @@
 ],
 "cards": [
   {
+    "id": 1,
     "cardNo": "1111111111111111",
     "cardIssuerName": "DE카드",
     "cardName": "알뜰맥시신용카드",
-    "hideStatus": "none"
+    "hideStatus": "none",
+    "nickname": "별명"
   },
   {
+    "id": 2,
     "cardNo": "2222222222222222",
     "cardIssuerName": "HS카드",
     "cardName": "사천오천카드",
-    "hideStatus": "hide_asset"
+    "hideStatus": "hide_asset",
+    "nickname": "별명"
   },
   {
+    "id": 3,
     "cardNo": "3333333333333333",
     "cardIssuerName": "싸피카드",
     "cardName": "알뜰맥시신용카드",
-    "hideStatus": "none"
+    "hideStatus": "none",
+    "nickname": "별명"
   }
 ]
 }

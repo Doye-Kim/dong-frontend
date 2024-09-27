@@ -4,22 +4,26 @@ import {colors} from '@/constants';
 import {AccountIcon, CardIcon} from '@/assets/icons';
 
 interface AssetItemProps {
+  id: number
   title: string;
   cardName?: string;
   balance?: string;
   isAccount: boolean;
   hide: boolean;
+  handleNavigate?: () => void;
 }
 
 const AssetItem = ({
+  id,
   title,
   cardName,
   balance,
   isAccount,
   hide,
+  handleNavigate,
 }: AssetItemProps): React.ReactElement => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handleNavigate ? handleNavigate : () => {}}>
       <View style={styles.titleContainer}>
         {isAccount ? (
           <AccountIcon width={30} height={30} />

@@ -10,11 +10,16 @@ import {
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
 
-import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
 import AccountBookStackNavigator from '../stack/accountBook/AccountBookStackNavigator';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { accountBookNavigations, colors, mainNavigations } from '@/constants';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {
+  accountBookNavigations,
+  assetNavigations,
+  colors,
+  mainNavigations,
+} from '@/constants';
 import ExtraStackNavigator from '../stack/ExtraStackNavigator';
+import AssetStackNavigatior from '../stack/asset/AssetStackNavigatior';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,7 +57,6 @@ const Navbar = () => {
             tabBarStyle: (route => {
               const routeName =
                 getFocusedRouteNameFromRoute(route) ?? 'AccountBookMain';
-              console.log(routeName);
               if (
                 routeName === accountBookNavigations.PAYMENTDETAIL ||
                 routeName === accountBookNavigations.HEADER
@@ -63,8 +67,28 @@ const Navbar = () => {
             })(route),
           })}
         />
-        <Tab.Screen name={mainNavigations.ASSET} component={AssetMainScreen} options={{tabBarLabel: '자산'}}/>
-        <Tab.Screen name={mainNavigations.EXTRA} component={ExtraStackNavigator} options={{tabBarLabel: '더보기'}}/>
+        <Tab.Screen
+          name={mainNavigations.ASSET}
+          component={AssetStackNavigatior}
+          options={({route}) => {
+            const routeName =
+              getFocusedRouteNameFromRoute(route) ?? assetNavigations.MAIN;
+            return {
+              tabBarLabel: '자산',
+              tabBarStyle:
+                routeName === assetNavigations.DETAIL ||
+                routeName === assetNavigations.GAME  ||
+                routeName === assetNavigations.SEED
+                  ? {display: 'none'}
+                  : styles.tabBarStyle,
+            };
+          }}
+        />
+        <Tab.Screen
+          name={mainNavigations.EXTRA}
+          component={ExtraStackNavigator}
+          options={{tabBarLabel: '더보기'}}
+        />
       </Tab.Navigator>
     </View>
   );

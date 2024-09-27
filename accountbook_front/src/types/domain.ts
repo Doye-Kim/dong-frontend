@@ -21,10 +21,12 @@ type Account = {
 }
 
 type Card = {
+  id: number;
   cardNo: string;
   cardIssuerName: string;
   cardName: string;
   hideStatus: string;
+  nickname: string;
 }
 
 type Game = {

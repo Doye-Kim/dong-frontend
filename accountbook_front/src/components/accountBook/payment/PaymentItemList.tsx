@@ -12,6 +12,7 @@ type GroupedPayments = Record<string, Payment[]>;
 
 interface PaymentItemListProps {
   payments?: Payment[];
+  onPaymentPress: (paymentId: number) => void;
 }
 
 const groupPaymentsByDate = (payments: Payment[]) => {
@@ -26,14 +27,13 @@ const groupPaymentsByDate = (payments: Payment[]) => {
   }, {} as GroupedPayments);
 };
 
-const PaymentItemList = ({payments = []}: PaymentItemListProps) => {
+const PaymentItemList = ({
+  payments = [],
+  onPaymentPress,
+}: PaymentItemListProps) => {
   const navigation =
     useNavigation<StackNavigationProp<AccountBookStackParamList>>();
   const groupedPayments: GroupedPayments = groupPaymentsByDate(payments);
-
-  const handlePaymentPress = (paymentId: string) => {
-    navigation.navigate(accountBookNavigations.PAYMENTDETAIL, {paymentId});
-  };
 
   const renderGroup = ({item}: {item: string}) => {
     return (
@@ -43,7 +43,7 @@ const PaymentItemList = ({payments = []}: PaymentItemListProps) => {
           <PaymentItem
             key={payment.payments_id}
             payment={payment}
-            onPress={handlePaymentPress}
+            onPress={() => onPaymentPress(Number(payment.payments_id))}
           />
         ))}
       </View>
