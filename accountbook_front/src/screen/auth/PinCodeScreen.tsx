@@ -37,12 +37,14 @@ const PinCodeScreen = ({route, navigation}) => {
           break;
         case 3:
           handleLogin();
+          break;
       }
     }
   }, [pin]);
 
   const MAX_LOGIN_ATTEMPTS = 5;
   const [loginAttempts, setLoginAttempts] = useState(0); // Track failed attempts
+
   const handleLogin = async (retry = false) => {
     const storedData = await getEncryptStorage('user');
     const password = pin.join('');
@@ -123,7 +125,6 @@ const PinCodeScreen = ({route, navigation}) => {
     if (!validationError) {
       try {
         const data = await patchPassword({userId, password});
-        setIsLogin(true);
         Toast.show({
           type: 'success',
           text1: 'SUCCESS',
@@ -137,6 +138,7 @@ const PinCodeScreen = ({route, navigation}) => {
           text1: 'ERROR',
           text2: '비밀번호를 저장하는 과정에 문제가 발생했습니다.',
         });
+        setPin([]);
       }
     } else {
       setPin([]);

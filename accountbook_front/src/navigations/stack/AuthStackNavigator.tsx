@@ -69,7 +69,7 @@ function AuthStackNavigator({
             name={authNavigations.SELECT_ASSETS}
             component={SelectAssetsScreen}
             options={{
-              headerTitle: '등록 자산 선택',
+              headerTitle: ' ',
             }}
           />
         </>
