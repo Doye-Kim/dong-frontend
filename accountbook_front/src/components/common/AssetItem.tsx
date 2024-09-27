@@ -1,42 +1,64 @@
+import {
+  RegisterAccountInfo,
+  AccountInfo,
+  RegisterCardInfo,
+  CardInfo,
+} from '@/api/asset';
 import {AccountIcon, CardIcon} from '@/assets/icons';
 import {colors} from '@/constants';
 import {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const AssetItem = ({
-  title,
-  info,
-  assetOrCard,
+  item,
+  accountOrCard,
   setSelectedList,
   selectedList,
 }: {
-  title: string;
-  info: string;
-  assetOrCard: boolean;
-  selectedList: string[];
-  setSelectedList(selectedList: string[]): void;
+  item: RegisterAccountInfo | AccountInfo | RegisterCardInfo | CardInfo;
+  accountOrCard: boolean;
+  setSelectedList(
+    selectedList: (
+      item:
+        | RegisterAccountInfo[]
+        | AccountInfo[]
+        | RegisterCardInfo[]
+        | CardInfo[],
+    ) => void,
+  ): void;
+  selectedList: Array<
+    RegisterAccountInfo | AccountInfo | RegisterCardInfo | CardInfo
+  >;
 }) => {
-  const conTitle = title.split(' ')[0];
-  const [checked, setChecked] = useState(selectedList.includes(conTitle));
+  const [checked, setChecked] = useState(selectedList.includes(item));
 
-  const handlePress = () => {
+  const handlePressItem = () => {
     if (checked) {
-      setSelectedList(prev => prev.filter(item => item !== conTitle));
+      setSelectedList(prev => prev.filter(i => i !== item));
     } else {
-      setSelectedList(prev => [...prev, conTitle]);
+      setSelectedList(prev => [...prev, item]);
     }
   };
 
+  const title = accountOrCard
+    ? `${'bank' in item ? item.bank : item.bankName} ${
+        'accountNo' in item ? item.accountNo : item.accountNumber
+      }`
+    : `${'nickname' in item ? item.nickname : item.cardName}`;
+  const info = accountOrCard
+    ? `${'name' in item ? item.name : item.accountName}`
+    : `${'issuer' in item ? item.issuer : item.cardIssuerName}`;
+
   useEffect(() => {
-    setChecked(selectedList.includes(conTitle));
+    setChecked(selectedList.includes(item));
   }, [selectedList]);
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       style={[styles.container, checked && styles.checked]}
-      onPress={handlePress}>
-      {assetOrCard ? (
+      onPress={handlePressItem}>
+      {accountOrCard ? (
         <AccountIcon width={30} height={30} />
       ) : (
         <CardIcon width={30} height={30} />
