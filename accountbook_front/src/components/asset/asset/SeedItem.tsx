@@ -1,7 +1,8 @@
 import {assetNavigations, colors, seedNavigations} from '@/constants';
-import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
-import { SeedStackParamList } from '@/navigations/stack/asset/SeedStackNavigator';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import {SeedStackParamList} from '@/navigations/stack/asset/SeedStackNavigator';
+import {getDateLocaleFormatDiff} from '@/utils';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
@@ -24,7 +25,14 @@ const SeedItem = ({
   const progressPercentage = Number(passedRound) / Number(entireRound);
   const navigation = useNavigation<NavigationProp<AssetStackParamList>>();
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate(assetNavigations.SEED, {screen: seedNavigations.DETAIL, params: {seedId: id}})}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate(assetNavigations.SEED, {
+          screen: seedNavigations.DETAIL,
+          params: {seedId: id},
+        })
+      }>
       <View style={styles.itemHeader}>
         <Text style={styles.itemTitle}>{title}</Text>
         <View style={styles.countContainer}>
@@ -34,28 +42,33 @@ const SeedItem = ({
       </View>
       <ProgressBar
         progress={progressPercentage}
-        color={colors.ORANGE_600}
+        color={colors.PRIMARY}
         style={styles.progressBar}
       />
+      <Text style={styles.endDateText}>
+        ~{getDateLocaleFormatDiff(endDate)}
+      </Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
     paddingVertical: 10,
-    marginVertical: 8,
-    marginHorizontal: 15,
+    // marginHorizontal: 10,
+    backgroundColor: colors.GRAY_200,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    margin: 5,
   },
   itemHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
   itemTitle: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Bold',
+    fontSize: 18,
+    fontFamily: 'Pretendard-SemiBold',
     color: colors.BLACK,
   },
   countContainer: {
@@ -63,8 +76,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressBar: {
-    height: 15,
+    margin: 10,
+    height: 20,
     borderRadius: 20,
+    backgroundColor: colors.GRAY_400,
   },
   roundText: {
     fontSize: 18,
@@ -72,10 +87,16 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   entireRoundText: {
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: 'Pretendard-Medium',
     marginRight: 5,
     color: colors.BLACK,
+  },
+  endDateText: {
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
+    color: colors.GRAY_500,
+    textAlign: 'right',
   },
 });
 

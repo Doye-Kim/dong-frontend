@@ -18,7 +18,6 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
   if (accountData) {
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionHeader}>계좌</Text>
         {accountData.map(account => (
           <AssetItem
             id={Number(account.accountId)}
@@ -42,7 +41,6 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
   if (cardData) {
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionHeader}>카드</Text>
         {cardData.map(card => (
           <AssetItem
             id={card.id}
@@ -70,10 +68,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionHeader: {
-    fontFamily: 'Pretendard-Medium',
+    fontFamily: 'Pretendard-SemiBold',
     color: colors.BLACK,
-    fontSize: 20,
-    paddingHorizontal: 10,
+    fontSize: 18,
     paddingVertical: 10,
   },
 });

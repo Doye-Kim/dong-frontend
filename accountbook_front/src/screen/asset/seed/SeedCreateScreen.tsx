@@ -7,22 +7,21 @@ import {
   View,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import {Calendar} from 'react-native-calendars';
 import {colors} from '@/constants';
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import CalendarModal from '@/components/common/CalendarModal';
 import CustomButton from '@/components/common/CustomButton';
 import {DropdownButton} from '@/assets/icons';
 import DropdownMenu from './DropdownMenu';
 import {getDateLocaleFormatDiff} from '@/utils';
 import SelectAccountModal from '@/components/seed/SelectAccountModal';
-
-type PeriodOptions = 'Daily' | 'Weekly' | 'Monthly';
+import {PeriodOptions, postSeed} from '@/api/seed';
+import Toast from 'react-native-toast-message';
 
 const period: Record<PeriodOptions, string> = {
-  Daily: '매일',
-  Weekly: '매주',
-  Monthly: '매달',
+  DAILY: '매일',
+  WEEKLY: '매주',
+  MONTHLY: '매달',
 };
 
 const SeedCreateScreen = () => {
@@ -32,9 +31,17 @@ const SeedCreateScreen = () => {
     useState(false);
   const [isOpenSaveAccountDropdown, setIsOpenSaveAccountDropdown] =
     useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState('Daily');
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodOptions>('DAILY');
   const [sendAccount, setSendAccount] = useState('');
   const [saveAccount, setSaveAccount] = useState('');
+  const [unit, setUnit] = useState('원');
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [title, setTitle] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const curDate = new Date();
 
   const handlePeriodDropdown = () => {
     setIsOpenPeriodDropdown(prev => !prev);
@@ -48,16 +55,70 @@ const SeedCreateScreen = () => {
     setIsOpneCalendar(prev => !prev);
   };
 
-  const curDate = new Date();
-
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  const [amount, setAmount] = useState('');
+  const handleOnChangeTitle = (text: string) => {
+    setTitle(text);
+  };
 
   const getFormattedAmount = (text: string) => {
     const filteredText = text.replace(/[^0-9]/g, '');
-    setAmount(filteredText ? `${filteredText}만원` : '');
+    setAmount(filteredText ? `${filteredText}` : '');
+    if (filteredText) setUnit('만원');
+    else setUnit('원');
+  };
+
+  const onPressStart = async () => {
+    if (startDate === endDate || !startDate || !endDate) {
+      Toast.show({
+        type: 'error',
+        text1: '날짜를 똑바로 입력해 주세요',
+      });
+    } else if (!title) {
+      Toast.show({
+        type: 'error',
+        text1: '무엇을 위해 모을 건지 입력해 주세요',
+      });
+    } else if (!amount) {
+      Toast.show({
+        type: 'error',
+        text1: '얼마를 모을 건지 입력해 주세요',
+      });
+    } else if (!sendAccount || !saveAccount) {
+      Toast.show({
+        type: 'error',
+        text1: '계좌를 선택해 주세요',
+      });
+    } else if (sendAccount.id === saveAccount.id) {
+      Toast.show({
+        type: 'error',
+        text1: '송금 계좌와 입금 계좌가 같습니다',
+      });
+    } else {
+      const RequestBody = {
+        depositAccountId: saveAccount.id,
+        withdrawalAccountId: sendAccount.id,
+        title: title,
+        periodStatus: selectedPeriod,
+        targetAmount: Number(amount) * 10000,
+        startDate: startDate,
+        endDate: endDate,
+      };
+      console.log(RequestBody);
+      try {
+        const data = await postSeed(RequestBody);
+        console.log(data);
+        Toast.show({
+          type: 'success',
+          text1: '종잣돈 생성 완료',
+        });
+      } catch (err) {
+        console.log(err.response.data);
+        Toast.show({
+          type: 'error',
+          text1: '종잣돈을 저장하는 과정에 문제가 생겼습니다',
+          text2: '다시 시도해 주세요',
+        });
+      }
+    }
   };
 
   return (
@@ -84,7 +145,7 @@ const SeedCreateScreen = () => {
           endDate={endDate}
           setEndDate={setEndDate}
           onClose={() => setIsOpneCalendar(false)}
-          marginTop={100}
+          marginTop={130}
           seedOrGame={true}
         />
       )}
@@ -103,7 +164,11 @@ const SeedCreateScreen = () => {
       <View style={styles.seedFormContainer}>
         <View style={styles.rowContainer}>
           <View style={styles.inputContainer}>
-            <TextInput style={styles.formText} />
+            <TextInput
+              style={styles.formText}
+              value={title}
+              onChangeText={handleOnChangeTitle}
+            />
           </View>
           <Text style={styles.formText}>을/를 위해</Text>
         </View>
@@ -111,12 +176,13 @@ const SeedCreateScreen = () => {
           <Text style={styles.formText}>총</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.formText}
-              placeholder="0원"
+              style={styles.moneyText}
+              placeholder="0"
               value={amount}
               onChangeText={getFormattedAmount}
               keyboardType="numeric"
             />
+            <Text style={styles.moneyText}>{unit}</Text>
           </View>
           <Text style={styles.formText}>을</Text>
           <TouchableOpacity
@@ -137,7 +203,7 @@ const SeedCreateScreen = () => {
           <TouchableOpacity
             style={styles.inputContainer}
             onPress={() => setIsOpenSendAccountDropdown(true)}>
-            <Text style={styles.formText}>{sendAccount}</Text>
+            <Text style={styles.formText}>{sendAccount.bank}</Text>
           </TouchableOpacity>
           <Text style={styles.formText}>계좌에서</Text>
         </View>
@@ -145,13 +211,13 @@ const SeedCreateScreen = () => {
           <TouchableOpacity
             style={styles.inputContainer}
             onPress={() => setIsOpenSaveAccountDropdown(true)}>
-            <Text style={styles.formText}>{saveAccount}</Text>
+            <Text style={styles.formText}>{saveAccount.bank}</Text>
           </TouchableOpacity>
           <Text style={styles.formText}>계좌로 모을 거예요</Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton text="시작" />
+        <CustomButton text="시작" onPress={onPressStart} />
       </View>
       {isOpenSaveAccountDropdown && (
         <SelectAccountModal
@@ -175,8 +241,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginVertical: 50,
+    marginVertical: 20,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   animationContainer: {
     width: 200,
@@ -201,7 +268,7 @@ const styles = StyleSheet.create({
     color: colors.PRIMARY,
   },
   seedFormContainer: {
-    marginTop: 20,
+    marginVertical: 20,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -216,6 +283,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  moneyText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 24,
+    color: colors.BLACK,
+    paddingVertical: 0,
   },
   formText: {
     margin: 5,
@@ -234,8 +308,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 });
 export default SeedCreateScreen;

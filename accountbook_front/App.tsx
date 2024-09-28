@@ -1,11 +1,20 @@
-// import {StyleSheet, useColorScheme} from 'react-native';
+import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 // import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RootNavigator from './src/navigations/root/RootNavigator';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {Provider as PaperProvider} from 'react-native-paper';
 import messaging from '@react-native-firebase/messaging';
+import {colors} from '@/constants';
+
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.WHITE,
+  },
+};
 
 const App = () => {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -45,7 +54,7 @@ const App = () => {
 
   return (
     <PaperProvider>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <RootNavigator />
       </NavigationContainer>
       <Toast />

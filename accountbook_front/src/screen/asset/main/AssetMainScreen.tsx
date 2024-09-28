@@ -6,7 +6,12 @@ import {
 import AssetItemList from '@/components/asset/asset/AssetItemList';
 import AssetListHeader from '@/components/asset/asset/AssetListHeader';
 import NotificationHeader from '@/components/common/NotificationHeader';
-import {assetNavigations, colors, gameNavigations, seedNavigations} from '@/constants';
+import {
+  assetNavigations,
+  colors,
+  gameNavigations,
+  seedNavigations,
+} from '@/constants';
 import {Account, Card, Game, Seed} from '@/types/domain';
 import React, {useEffect, useState, useMemo} from 'react';
 import {
@@ -24,7 +29,9 @@ import SeedsDataList from '@/assets/tempData/Asset/SeedsDataList.json';
 import SeedList from '@/components/asset/asset/SeedList';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
+import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import {getSeeds} from '@/api/seed';
+import Toast from 'react-native-toast-message';
 
 type AssetData = {
   accounts: Account[];
@@ -46,10 +53,24 @@ const AssetMainScreen = () => {
   const [seedData, setSeedData] = useState<SeedData | null>(null);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
 
+  const getSeedData = async () => {
+    try {
+      const data = await getSeeds();
+      console.log(data);
+      setSeedData(data.data);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: '종잣돈을 불러오는 데 문제가 발생했습니다.',
+        text2: '새로고침 해주세요',
+      });
+    }
+  };
   useEffect(() => {
     setAssetData(AssetAccountData);
     setGameData(GameListData);
-    setSeedData(SeedsDataList.data);
+    // setSeedData(SeedsDataList.data);
+    getSeedData();
   }, []);
 
   // 숨긴 계좌 보이기를 했을 때, 가장 밑에 보이게끔
@@ -111,8 +132,9 @@ const AssetMainScreen = () => {
         <AssetListHeader username={username} assetAmount={assetAmount} />
 
         {/* 자산 */}
+        <Text style={styles.headerText}>계좌</Text>
         <AssetItemList accountData={filteredAccounts} />
-        <View style={styles.assetSeparator}></View>
+        <Text style={styles.headerText}>카드</Text>
         <AssetItemList cardData={filteredCards} />
 
         {/* 자산 숨기기 버튼 */}
@@ -126,9 +148,16 @@ const AssetMainScreen = () => {
         </TouchableOpacity>
 
         {/* 내기 */}
+
+        <Text style={styles.headerText}>진행중인 내기</Text>
         <GameList gameData={filteredGames} />
         <TouchableOpacity
-          onPress={() => navigation.navigate(assetNavigations.GAME, {screen: gameNavigations.CREATE, params: {gameId: undefined}})}>
+          onPress={() =>
+            navigation.navigate(assetNavigations.GAME, {
+              screen: gameNavigations.CREATE,
+              params: {gameId: undefined},
+            })
+          }>
           <View style={styles.buttonContainer}>
             <AddRoundButton />
             <Text style={styles.buttonText}>생성</Text>
@@ -136,12 +165,18 @@ const AssetMainScreen = () => {
         </TouchableOpacity>
 
         {/* 종잣돈 */}
+        <Text style={styles.headerText}>종잣돈 모으기</Text>
         <SeedList seedData={filteredSeeds} />
-        <TouchableOpacity onPress={() => navigation.navigate(assetNavigations.SEED, {screen: seedNavigations.CREATE, params: {seedId: undefined}})}>
-          <View style={styles.buttonContainer}>
-            <AddRoundButton />
-            <Text style={styles.buttonText}>생성</Text>
-          </View>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() =>
+            navigation.navigate(assetNavigations.SEED, {
+              screen: seedNavigations.CREATE,
+              params: {seedId: undefined},
+            })
+          }>
+          <AddRoundButton />
+          <Text style={styles.buttonText}>생성</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -151,11 +186,13 @@ const AssetMainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
     backgroundColor: colors.WHITE,
   },
   assetSeparator: {
-    backgroundColor: colors.GRAY_400,
+    backgroundColor: colors.GRAY_300,
     height: 5,
+    borderRadius: 5,
   },
   hiddenAssetsButton: {
     flexDirection: 'row',
@@ -173,19 +210,25 @@ const styles = StyleSheet.create({
   hiddenAssetsIcon: {
     marginLeft: 5,
   },
+  headerText: {
+    fontFamily: 'Pretendard-SemiBold',
+    color: colors.BLACK,
+    fontSize: 18,
+    paddingVertical: 10,
+  },
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 20,
     backgroundColor: colors.ORANGE_200,
-    height: 60,
-    marginHorizontal: 20,
+    height: 55,
+    marginHorizontal: 5,
     marginBottom: 10,
   },
   buttonText: {
     fontSize: 20,
-    fontFamily: 'Pretendard-SemiBold',
+    fontFamily: 'Pretendard-Bold',
     color: colors.PRIMARY,
     marginLeft: 10,
   },

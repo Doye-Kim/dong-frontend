@@ -1,12 +1,11 @@
+import {PeriodOptions} from '@/api/seed';
 import {colors} from '@/constants';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
-type PeriodOptions = 'Daily' | 'Weekly' | 'Monthly';
-
 const period: Record<PeriodOptions, string> = {
-  Daily: '매일',
-  Weekly: '매주',
-  Monthly: '매달',
+  DAILY: '매일',
+  WEEKLY: '매주',
+  MONTHLY: '매달',
 };
 
 interface DropdownMenuProps {
