@@ -1,11 +1,10 @@
+import {SeedStatusOptions} from '@/api/seed';
 import {colors} from '@/constants';
 import {View, Text, Dimensions, StyleSheet} from 'react-native';
 
-type statusOptions = 'PROCEEDING' | 'CANCELED' | 'COMPLETED';
-
-const status: Record<statusOptions, string> = {
+const status: Record<SeedStatusOptions, string> = {
   PROCEEDING: '진행중',
-  CANCELED: '해지',
+  CANCEL: '해지',
   COMPLETED: '완료',
 };
 
@@ -15,7 +14,7 @@ interface SeedTitleProps {
   title: string;
   targetAmount: number;
   entireRound: number;
-  dataStatus: string;
+  dataStatus: SeedStatusOptions;
   passedRound: number;
   totalTransferredAmount: number;
 }

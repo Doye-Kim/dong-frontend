@@ -1,131 +1,95 @@
-import CustomButton from '@/components/common/CustomButton';
+import {ResponseSeed, deleteSeed, getSeed} from '@/api/seed';
 import SeedInfo from '@/components/seed/SeedInfo';
 import SeedTitle from '@/components/seed/SeedTitle';
-import {colors} from '@/constants';
+import {assetNavigations, colors} from '@/constants';
+import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useEffect, useState} from 'react';
 import {
-  Dimensions,
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-type statusOptions = 'PROCEEDING' | 'CANCELED' | 'COMPLETED';
+const SeedDetailScreen = ({route}: {route: any}) => {
+  const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
+  const {seedId} = route.params;
+  const [seed, setSeed] = useState<ResponseSeed>();
 
-const status: Record<statusOptions, string> = {
-  PROCEEDING: '진행중',
-  CANCELED: '해지',
-  COMPLETED: '완료',
-};
+  const getSeedData = async () => {
+    try {
+      const data = await getSeed(seedId);
+      console.log(data);
+      setSeed(data);
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: '종잣돈을 불러오는 데 문제가 생겼어요',
+      });
+    }
+  };
+  useEffect(() => {
+    getSeedData();
+  }, []);
 
-const data = {
-  id: 11,
-  depositAccount: '한국은행',
-  withdrawAccount: '카카오뱅크',
-  title: '이현규 이별 PARTY',
-  period: 'MONTHLY',
-  targetAmount: 500,
-  entireRound: 13,
-  endDate: '2025-09-30',
-  status: 'PROCEEDING', // PROCEEDING, CANCELED, COMPLETED
-  passedRound: 10,
-  dueDate: '2024-09-25', // 다음 출금 예정일
-  totalTransferredAmount: 266, // 현재까지 송금한 금액
-  rounds: [
-    {
-      id: 51,
-      status: 'FAIL',
-      transferDate: '2024-09-25',
-    },
-    {
-      id: 52,
-      status: 'SUCCESS',
-      transferDate: '2024-10-25',
-    },
-    {
-      id: 53,
-      status: 'SUCCESS',
-      transferDate: '2024-11-25',
-    },
-    {
-      id: 54,
-      status: 'SUCCESS',
-      transferDate: '2024-12-25',
-    },
-    {
-      id: 55,
-      status: 'FAIL',
-      transferDate: '2025-01-25',
-    },
-    {
-      id: 56,
-      status: 'FAIL',
-      transferDate: '2025-02-25',
-    },
-    {
-      id: 57,
-      status: 'SUCCESS',
-      transferDate: '2025-03-25',
-    },
-    {
-      id: 58,
-      status: 'SUCCESS',
-      transferDate: '2025-04-25',
-    },
-    {
-      id: 59,
-      status: 'SUCCESS',
-      transferDate: '2025-05-25',
-    },
-    {
-      id: 60,
-      status: 'SUCCESS',
-      transferDate: '2025-06-25',
-    },
-    {
-      id: 61,
-      status: 'NONE',
-      transferDate: '2025-07-25',
-    },
-    {
-      id: 62,
-      status: 'NONE',
-      transferDate: '2025-08-25',
-    },
-    {
-      id: 63,
-      status: 'NONE',
-      transferDate: '2025-09-25',
-    },
-  ],
-};
+  const deleteSeedFunc = async () => {
+    try {
+      await deleteSeed(seedId);
+      navigation.navigate(assetNavigations.MAIN);
+      console.log(seedId);
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: '해지하는 데 문제가 생겼어요',
+      });
+    }
+  };
+  const onPressDelete = () => {
+    Alert.alert('Confirm', '정말 해지하시겠습니까?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          deleteSeedFunc();
+        },
+      },
+    ]);
+  };
 
-const width = Dimensions.get('window').width - 20;
-
-const SeedDetailScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <SeedTitle
-        title={data.title}
-        targetAmount={data.targetAmount}
-        entireRound={data.entireRound}
-        dataStatus={data.status}
-        passedRound={data.passedRound}
-        totalTransferredAmount={data.totalTransferredAmount}
-      />
-      <SeedInfo
-        depositAccount={data.depositAccount}
-        withdrawAccount={data.withdrawAccount}
-        endDate={data.endDate}
-        dueDate={data.dueDate}
-        perPaymentDeposit={Math.round(data.targetAmount / data.entireRound)}
-      />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>해지하기</Text>
-        </TouchableOpacity>
-      </View>
+      {seed && (
+        <>
+          <SeedTitle
+            title={seed.title}
+            targetAmount={seed.targetAmount}
+            entireRound={seed.entireRound}
+            dataStatus={seed.status}
+            passedRound={seed.passedRound}
+            totalTransferredAmount={seed.totalTransferredAmount}
+          />
+          <SeedInfo
+            depositAccount={seed.depositAccount}
+            withdrawAccount={seed.withdrawalAccount}
+            endDate={seed.endDate}
+            dueDate={seed.dueDate}
+            perPaymentDeposit={Math.round(seed.targetAmount / seed.entireRound)}
+          />
+        </>
+      )}
+      <TouchableOpacity style={styles.buttonContainer} onPress={onPressDelete}>
+        <Text style={styles.buttonText}>해지하기</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -134,15 +98,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
-    marginBottom: 70,
   },
   buttonContainer: {
     flex: 1,
     marginTop: 50,
-    alignItems: 'center',
-  },
-  button: {
     backgroundColor: colors.ORANGE_500,
     height: 50,
     width: 200,

@@ -11,36 +11,9 @@ import AssetList from '../common/AssetList';
 import {colors} from '@/constants';
 import CustomButton from '../common/CustomButton';
 import {useEffect, useState} from 'react';
-const data = [
-  {
-    bank: 'HG은행',
-    accountNumber: '11111111111',
-    accountName: '입출금이 자유로운 통장',
-    accountTypeCode: '1',
-    accountBalance: '254500',
-  },
-  {
-    bank: 'HK은행',
-    accountNumber: '22222222222',
-    accountName: '또르르 지유예금',
-    accountTypeCode: '1',
-    accountBalance: '100',
-  },
-  {
-    bank: 'DY은행',
-    accountNumber: '333333333333',
-    accountName: '프짱 자립예탁금 통장',
-    accountTypeCode: '1',
-    accountBalance: '27800',
-  },
-  {
-    bank: 'WY은행',
-    accountNumber: '444444444444',
-    accountName: '만기에 두배로 럭키비키 적금통장',
-    accountTypeCode: '3',
-    accountBalance: '1500000',
-  },
-];
+import {AccountInfo, getAssets} from '@/api/asset';
+import Toast from 'react-native-toast-message';
+
 const SelectAccountModal = ({
   isVisible,
   onClose,
@@ -50,8 +23,35 @@ const SelectAccountModal = ({
   onClose: () => void;
   setAccount(account: string): void;
 }) => {
+  const [accountList, setAccountList] = useState<AccountInfo[]>([]);
   const [selectedList, setSelectedList] = useState([]);
 
+  const getAccountList = async () => {
+    try {
+      const data = await getAssets();
+      console.log(data.accountList);
+      if (data.accountList.length > 1) {
+        setAccountList(data.accountList);
+      } else {
+        Toast.show({
+          type: 'info',
+          text1: '종잣돈을 생성하려면 계좌가 두 개 이상 있어야 해요',
+        });
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '계좌를 불러오는 데 문제가 발생했습니다.',
+      });
+    }
+  };
+  useEffect(() => {
+    getAccountList();
+  }, []);
+
+  const handlePressComplete = () => {
+    onClose();
+  };
   useEffect(() => {
     if (selectedList.length > 1) {
       setSelectedList(prev => {
@@ -82,14 +82,14 @@ const SelectAccountModal = ({
             <Text style={styles.text}>계좌를 선택해 주세요</Text>
             <ScrollView style={styles.listContainer}>
               <AssetList
-                accountData={data}
+                accountData={accountList}
                 title=""
                 selectedList={selectedList}
                 setSelectedList={setSelectedList}
               />
             </ScrollView>
             <View>
-              <CustomButton text="확인" onClose={onClose} />
+              <CustomButton text="확인" onPress={handlePressComplete} />
             </View>
           </View>
         </TouchableOpacity>
