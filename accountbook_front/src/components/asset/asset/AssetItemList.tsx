@@ -56,8 +56,7 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
               })
             }
           />
-        ))
-    };
+        ))}
       </View>
     );
   }
