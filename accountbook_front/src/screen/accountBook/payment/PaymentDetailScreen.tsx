@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,122 +10,184 @@ import {
   ScrollView,
 } from 'react-native';
 import {useRoute, RouteProp} from '@react-navigation/native';
-import {MeatballMenuIcon} from '@/assets/icons';
+import {EditIcon, MeatballMenuIcon} from '@/assets/icons';
 import {getDateTimeLocaleFormat} from '@/utils';
 import {colors} from '@/constants';
+import axiosInstance from '@/api/axios';
+import {Payment} from '@/types/domain';
 
 type RouteParams = {
-  PaymentDetail?: {paymentId: string};
-};
-
-type Payment = {
-  payments_id: string;
-  merchantName: string;
-  categoryName: string;
-  type: 'expense' | 'income';
-  balance: number;
-  cardName: string;
-  memo: string;
-  status: string;
-  createdDate: string;
+  PaymentDetail?: {paymentId: number};
 };
 
 const PaymentDetailScreen = () => {
   const route = useRoute<RouteProp<RouteParams, 'PaymentDetail'>>();
   const paymentId = route.params?.paymentId;
+  // const [paymentData, setPaymentData] = useState<Payment>();
+
+  const handlePostPayment = async (payment: Payment) => {
+    try {
+      const response = await axiosInstance.post('/payments', {
+        merchantName: payment.merchantName,
+        categoryId: payment.categoryId,
+        balance: payment.balance,
+        paymentName: payment.paymentName,
+        memo: payment.memo,
+        paymentTime: payment.paymentTime,
+        type: payment.paymentType,
+
+        cardIssuerName: '임시-수정필요', // 이거도 비워서 낼 수 있어야함
+        // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
+        asset: 'ACCOUNT', // 수정 필요
+        assetId: 10, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 값 불러오는 함수. 아직 작동안함
+  const fetchPaymentData = async (paymentId: number) => {
+    try {
+      const response = await axiosInstance.get(`/payments/${paymentId}`);
+      setPaymentData(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    // if (paymentId !== undefined) {
+    //   fetchPaymentData(paymentId);
+    // }
+  }, [paymentId]);
 
   const [paymentData, setPaymentData] = useState<Payment>({
-    payments_id: '1',
+    paymentsId: 1,
     merchantName: '올리브영',
+    categoryId: 0,
     categoryName: '쇼핑',
-    type: 'expense',
     balance: 20000,
-    cardName: '프렌즈 체크카드',
-    memo: '',
-    status: 'ACCEPT',
-    createdDate: '2024-08-26T08:30:00.000Z',
+    paymentName: '쇼핑',
+    memo: '메모',
+    paymentTime: '2024-08-26T08:30:00.000Z',
+    paymentState: 'INCLUDE',
+    paymentType: 'EXPENSE',
   });
+
+  const togglePaymentType = (type: 'INCOME' | 'EXPENSE') => {
+    setPaymentData(prevPayment => ({
+      ...prevPayment,
+      paymentType: type,
+    }));
+  };
+
+  const toggleIncludeExclude = () => {
+    setPaymentData(prevPayment => ({
+      ...prevPayment,
+      paymentState:
+        prevPayment.paymentState === 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
+    }));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{paymentData.merchantName}</Text>
-          <View style={styles.headerRight}>
-            <Text style={styles.amountText}>
-              {paymentData.balance.toLocaleString()}원
-            </Text>
-            <TouchableOpacity onPress={() => {}} style={styles.moreButton}>
-              <MeatballMenuIcon />
+      {paymentData !== undefined ? (
+        <>
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.header}>
+              <TextInput
+                style={styles.headerTitle}
+                placeholder="상품 이름을 입력하세요"
+                placeholderTextColor={colors.GRAY_500}
+                onChangeText={text =>
+                  setPaymentData({...paymentData, paymentName: text})
+                }
+                value={paymentData.merchantName}
+              />
+              <View style={styles.headerBelow}>
+                <Text style={styles.amountText}>
+                  {paymentData.balance.toLocaleString()}원
+                </Text>
+                <TouchableOpacity>
+                  <MeatballMenuIcon />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.detailsContainer}>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>분류</Text>
+                <View style={styles.categoryContainer}>
+                  {['INCOME', 'EXPENSE'].map(type => (
+                    <TouchableOpacity
+                      key={type}
+                      style={[
+                        styles.categoryButton,
+                        paymentData.paymentType === type &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        togglePaymentType(type as 'INCOME' | 'EXPENSE')
+                      }>
+                      <Text
+                        style={[
+                          styles.categoryButtonText,
+                          paymentData.paymentType === type &&
+                            styles.selectedButtonText,
+                        ]}>
+                        {type === 'INCOME' ? '수입' : '지출'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>일시</Text>
+                <Text style={styles.detailValue}>
+                  {getDateTimeLocaleFormat(paymentData.paymentTime)}
+                </Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>카테고리</Text>
+                <Text style={styles.detailValue}>
+                  {paymentData.categoryName}
+                </Text>
+              </View>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>메모</Text>
+                <TextInput
+                  style={styles.memoInput}
+                  placeholder="메모를 입력하세요"
+                  placeholderTextColor={colors.GRAY_400}
+                  onChangeText={text =>
+                    setPaymentData({...paymentData, memo: text})
+                  }
+                  value={paymentData.memo}
+                />
+              </View>
+              <View style={styles.switchContainer}>
+                <Text style={styles.detailLabel}>지출에서 제외</Text>
+                <Switch
+                  value={paymentData.paymentState === 'INCLUDE' ? true : false}
+                  onValueChange={toggleIncludeExclude}
+                />
+              </View>
+            </View>
+          </ScrollView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={() => handlePostPayment(paymentData)}>
+              <Text style={styles.saveButtonText}>저장</Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>분류</Text>
-            <View style={styles.categoryContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.categoryButton,
-                  paymentData.type === 'income' && styles.selectedButton,
-                ]}>
-                <Text
-                  style={[
-                    styles.categoryButtonText,
-                    paymentData.type === 'income' && styles.selectedButtonText,
-                  ]}>
-                  수입
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.categoryButton,
-                  paymentData.type === 'expense' && styles.selectedButton,
-                ]}>
-                <Text
-                  style={[
-                    styles.categoryButtonText,
-                    paymentData.type === 'expense' && styles.selectedButtonText,
-                  ]}>
-                  지출
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>일시</Text>
-            <Text style={styles.detailValue}>
-              {getDateTimeLocaleFormat(paymentData.createdDate)}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>카테고리</Text>
-            <Text style={styles.detailValue}>{paymentData.categoryName}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>메모</Text>
-            <TextInput
-              style={styles.memoInput}
-              placeholder="메모를 입력하세요"
-              placeholderTextColor={colors.GRAY_400}
-              onChangeText={text =>
-                setPaymentData({...paymentData, memo: text})
-              }
-              value={paymentData.memo}
-            />
-          </View>
-          <View style={styles.switchContainer}>
-            <Text style={styles.detailLabel}>지출에서 제외</Text>
-            <Switch value={false} onValueChange={() => {}} />
-          </View>
-        </View>
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>저장</Text>
-        </TouchableOpacity>
-      </View>
+        </>
+      ) : (
+        <Text style={styles.loadingText}>데이터를 불러오는 중입니다.</Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -142,7 +204,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  headerRight: {
+  headerBelow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -155,6 +217,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
+    padding: 0,
   },
   moreButton: {
     padding: 8,
@@ -234,6 +297,10 @@ const styles = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 18,
     fontFamily: 'Pretendard-Bold',
+  },
+  loadingText: {
+    fontSize: 30,
+    color: colors.BLACK,
   },
 });
 

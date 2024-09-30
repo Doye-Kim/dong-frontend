@@ -42,6 +42,11 @@ function getDateLocaleFormatDiff(dateString: Date | string) {
   )}`;
 }
 
+function getTimeLocalFormat(dateString: Date | string): string {
+  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+  return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
 function getMonthYearDetails(initialDate: Date) {
   /** Date를 입력받아 상세정보를 리턴하는 함수 */
   const month = initialDate.getMonth() + 1;
@@ -101,6 +106,7 @@ export {
   getDateWithSeparator,
   getDateLocaleFormat,
   getDateTimeLocaleFormat,
+  getTimeLocalFormat,
   getMonthYearDetails,
   getNewMonthYear,
   isSameAsCurrentDate,

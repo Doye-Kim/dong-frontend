@@ -4,11 +4,11 @@ import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader
 import {MonthYear} from '@/utils/date';
 import DateBox from './DateBox';
 import {colors} from '@/constants';
+import useDateStore from '@/store/useDateStore';
 
 interface CustomCalendarProps {
   monthYear: MonthYear;
   selectedDate: number;
-  onChangeMonth: (increment: number) => void;
   onPressDate: (date: number) => void;
   expenses: {[key: number]: number}; // 날짜별 금액 정보
 }
@@ -16,7 +16,6 @@ interface CustomCalendarProps {
 const CustomCalendar = ({
   monthYear,
   selectedDate,
-  onChangeMonth,
   onPressDate,
   expenses,
 }: CustomCalendarProps) => {
@@ -37,7 +36,7 @@ const CustomCalendar = ({
 
   return (
     <>
-      <AccountBookHeader monthYear={monthYear} onChangeMonth={onChangeMonth} />
+      <AccountBookHeader />
 
       {/* 날짜 표시될 부분 */}
       <View style={styles.container}>

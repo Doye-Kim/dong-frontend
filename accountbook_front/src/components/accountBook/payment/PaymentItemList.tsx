@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, FlatList, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {accountBookNavigations, colors} from '@/constants';
+import {colors} from '@/constants';
 import PaymentItem from './PaymentItem'; // 새로 만든 PaymentItem 컴포넌트
 import {formatDateToDayOfWeek} from '@/utils';
 import {Payment} from '@/types/domain';
@@ -11,14 +11,14 @@ import {AccountBookStackParamList} from '@/navigations/stack/accountBook/Account
 type GroupedPayments = Record<string, Payment[]>;
 
 interface PaymentItemListProps {
-  payments?: Payment[];
+  payments: Payment[];
   onPaymentPress: (paymentId: number) => void;
 }
 
 const groupPaymentsByDate = (payments: Payment[]) => {
   if (!payments || payments.length === 0) return {};
   return payments.reduce((acc, payment) => {
-    const date = payment.createdDate.slice(0, 10); // Extract the date (YYYY-MM-DD)
+    const date = payment.paymentTime.slice(0, 10); // Extract the date (YYYY-MM-DD)
     if (!acc[date]) {
       acc[date] = [];
     }
@@ -28,7 +28,7 @@ const groupPaymentsByDate = (payments: Payment[]) => {
 };
 
 const PaymentItemList = ({
-  payments = [],
+  payments,
   onPaymentPress,
 }: PaymentItemListProps) => {
   const navigation =
@@ -41,9 +41,9 @@ const PaymentItemList = ({
         <Text style={styles.dateHeader}>{formatDateToDayOfWeek(item)}</Text>
         {groupedPayments[item].map(payment => (
           <PaymentItem
-            key={payment.payments_id}
+            key={payment.paymentsId}
             payment={payment}
-            onPress={() => onPaymentPress(Number(payment.payments_id))}
+            onPress={() => onPaymentPress(payment.paymentsId)}
           />
         ))}
       </View>

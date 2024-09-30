@@ -18,6 +18,12 @@ import {
 } from '@/constants';
 import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import PaymentMainScreen from '@/screen/accountBook/payment/PaymentMainScreen';
+import axiosInstance from '@/api/axios';
+import useDateStore from '@/store/useDateStore';
+import {getDateWithSeparator} from '@/utils';
+import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
+import {Payment} from '@/types/domain';
+import useUserStore from '@/store/useUserStore';
 
 const {width} = Dimensions.get('window');
 const TAB_WIDTH = (width * 0.8) / 4;
@@ -35,12 +41,47 @@ const AccountBookTabNavigator: React.FC = () => {
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
+  const date = useDateStore(state => state.date);
+  const [paymentData, setPaymentData] = useState<Record<string, Payment[]>>({});
+
+  const isLogin = useUserStore((state) => state.isLogin);
+
+  const fetchPaymentList = async (date: string) => {
+    const formattedDate = getDateWithSeparator(
+      useDateStore.getState().date,
+      '-',
+    );
+    console.log(formattedDate);
+    try {
+      const response = await axiosInstance.get('./payments', {
+        params: {
+          date,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('내역 받아오기', error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route) ?? '';
-    const isDetailScreen = routeName === accountBookNavigations.PAYMENTDETAIL;
-    setIsTabBarVisible(!isDetailScreen);
-    setIsSwipeEnabled(!isDetailScreen);
-  }, [route]);
+    if (isLogin) {
+      const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
+
+      if (!paymentData[yearMonth]) {
+        setTimeout(() => {
+          fetchPaymentList(yearMonth).then(data => {
+            setPaymentData(prev => ({
+              ...prev,
+              [yearMonth]: data,
+            }));
+          });
+        }, 50);
+      }
+    }
+  }, [date, paymentData, isLogin]);
 
   const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -55,11 +96,15 @@ const AccountBookTabNavigator: React.FC = () => {
   };
 
   const renderScene = ({route}: any) => {
+    const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
+    const paymentList =
+      paymentData[yearMonth] || PaymentDummyData.paymentResponse; // 해당 년월의 데이터 사용
+
     switch (route.key) {
       case accountBookTabNavigations.CALENDAR:
-        return <CalendarScreen />;
+        return <CalendarScreen paymentList={paymentList} />;
       case accountBookTabNavigations.PAYMENT:
-        return <PaymentMainScreen />;
+        return <PaymentMainScreen paymentList={paymentList} />;
       case accountBookTabNavigations.SETTLEMENT:
         return <SettlementMainScreen />;
       case accountBookTabNavigations.BUDGET:
@@ -68,6 +113,13 @@ const AccountBookTabNavigator: React.FC = () => {
         return null;
     }
   };
+
+  useEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+    const isDetailScreen = routeName === accountBookNavigations.PAYMENTDETAIL;
+    setIsTabBarVisible(!isDetailScreen);
+    setIsSwipeEnabled(!isDetailScreen);
+  }, [route]);
 
   return (
     <>

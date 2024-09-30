@@ -1,17 +1,26 @@
 import {ResponseCategory, getCategories} from '@/api/category';
+import { category } from '@/utils/categories';
 import Toast from 'react-native-toast-message';
 import {create} from 'zustand';
 
 interface CategoryState {
   categories: ResponseCategory[];
+  selectedCategories: number[];
   setCategories: (categories: ResponseCategory[]) => void;
+  setSelectedCategories: (categoryIds: number[] | ((prev: number[]) => number[])) => void;
   fetchCategories: () => Promise<void>;
 }
 
 const useCategoryStore = create<CategoryState>(set => ({
   categories: [],
+  selectedCategories: [],
   setCategories: (categories: ResponseCategory[]) => {
     set({categories});
+  },
+  setSelectedCategories: (categoryIds) => {
+    set((state) => ({
+      selectedCategories: typeof categoryIds === 'function' ? categoryIds(state.selectedCategories) : categoryIds,
+    }));
   },
   fetchCategories: async () => {
     try {

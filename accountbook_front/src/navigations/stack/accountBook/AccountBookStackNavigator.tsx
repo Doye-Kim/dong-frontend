@@ -7,6 +7,7 @@ import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScree
 import {accountBookNavigations} from '@/constants';
 import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
 import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
+import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]: undefined;
@@ -39,7 +40,7 @@ const AccountBookStackNavigator = () => {
       />
       <Stack.Screen
         name={accountBookNavigations.PAYMENTADD}
-        component={PaymentDetailScreen}
+        component={PaymentAddScreen}
         options={{headerTitle: ''}}
       />
       <Stack.Screen

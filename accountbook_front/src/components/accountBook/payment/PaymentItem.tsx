@@ -10,7 +10,7 @@ interface PaymentItemProps {
 }
 
 const PaymentItem = ({ payment, onPress }: PaymentItemProps) => {
-  const { payments_id, merchantName, categoryName, categoryNumber, balance, cardName } = payment;
+  const { paymentsId, paymentName, merchantName, categoryName, categoryId, balance } = payment;
 
   const handlePress = (payments_id: number) => {
     if (onPress) {
@@ -21,15 +21,15 @@ const PaymentItem = ({ payment, onPress }: PaymentItemProps) => {
   return (
     <TouchableOpacity 
       style={styles.itemContainer} 
-      onPress={() => handlePress(Number(payments_id))}
+      onPress={() => handlePress(Number(paymentsId))}
     >
-      <CategoryIcon categoryNumber={categoryNumber ? Number(categoryNumber) : 0} size={40} />
+      <CategoryIcon categoryNumber={categoryId ? categoryId : 0} size={40} />
       <View style={styles.itemContent}>
         <View style={styles.itemHeader}>
           <View style={styles.merchantInfo}>
             <Text style={styles.merchantName}>{merchantName}</Text>
             <Text style={styles.details}>
-              {categoryName} | {cardName}
+              {categoryName} | {paymentName}
             </Text>
           </View>
           <View style={styles.balanceContainer}>

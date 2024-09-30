@@ -1,39 +1,48 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
 import {FilterButton, LeftArrowIcon, RightArrowIcon} from '@/assets/icons';
-import {accountBookHeaderNavigations, accountBookNavigations, colors} from '@/constants';
-import {MonthYear} from '@/utils/date';
+import {
+  accountBookHeaderNavigations,
+  accountBookNavigations,
+  colors,
+} from '@/constants';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import useDateStore from '@/store/useDateStore';
+import {getMonthYearDetails, getNewMonthYear} from '@/utils';
 
-interface CustomCalendarHeaderProps {
-  monthYear: MonthYear;
-  onChangeMonth: (increment: number) => void;
-}
+interface CustomCalendarHeaderProps {}
 
-const AccountBookHeader = ({
-  monthYear,
-  onChangeMonth,
-}: CustomCalendarHeaderProps) => {
-  const {month, year} = monthYear;
+const AccountBookHeader = ({}: CustomCalendarHeaderProps) => {
+  const date = useDateStore(state => state.date);
+  const updateMonth = useDateStore(state => state.updateMonth);
+
   const navigation =
     useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
 
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftContainer}>
         <Pressable
-          onPress={() => onChangeMonth(-1)}
+          onPress={() => updateMonth(-1)}
           style={({pressed}) => [
             styles.arrowButton,
             pressed && styles.buttonPressed,
           ]}>
           <LeftArrowIcon />
         </Pressable>
-        <Text style={styles.monthText}>{month}월</Text>
+        {year === getMonthYearDetails(new Date()).year ? (
+          <Text style={styles.monthText}>{month}월</Text>
+        ) : (
+          <Text style={styles.monthText}>{year}년 {month}월</Text>
+        )}
+
         <Pressable
-          onPress={() => onChangeMonth(1)}
+          onPress={() => updateMonth(1)}
           style={({pressed}) => [
             styles.arrowButton,
             pressed && styles.buttonPressed,
@@ -47,7 +56,11 @@ const AccountBookHeader = ({
             styles.filterButton,
             pressed && styles.buttonPressed,
           ]}
-          onPress={() => navigation.navigate(accountBookNavigations.HEADER, {screen: accountBookHeaderNavigations.FILTER})}>
+          onPress={() =>
+            navigation.navigate(accountBookNavigations.HEADER, {
+              screen: accountBookHeaderNavigations.FILTER,
+            })
+          }>
           <FilterButton width={35} height={35} />
         </Pressable>
         <Pressable
@@ -55,7 +68,11 @@ const AccountBookHeader = ({
             styles.iconButton,
             pressed && [styles.iconButtonPressed, styles.buttonPressed],
           ]}
-          onPress={() => navigation.navigate(accountBookNavigations.HEADER, {screen: accountBookHeaderNavigations.REPORT})}>
+          onPress={() =>
+            navigation.navigate(accountBookNavigations.HEADER, {
+              screen: accountBookHeaderNavigations.REPORT,
+            })
+          }>
           <Text style={styles.iconText}>분석</Text>
         </Pressable>
       </View>
@@ -85,7 +102,8 @@ const styles = StyleSheet.create({
   },
   monthText: {
     fontSize: 28,
-    width: 70,
+    width: 'auto',
+    marginHorizontal: 10,
     textAlign: 'center',
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,

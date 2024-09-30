@@ -4,6 +4,8 @@ import LineChartByDay from '@/components/report/LineChartByDay';
 import MonthlyComparison from '@/components/report/MonthlyComparison';
 import PieChartByCategory from '@/components/report/PieChartByCategory';
 import {colors} from '@/constants';
+import useDateStore from '@/store/useDateStore';
+import { getMonthYearDetails } from '@/utils';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 const generateDummyData = () => {
   // 라벨 생성: 1부터 31까지
@@ -53,11 +55,13 @@ const categoryChartData = [
   {category: '기타', color: colors.CATEGORY_18, spending: 60000},
 ];
 const SpendingReportScreen = () => {
+  const date = useDateStore(state => state.date);
+  const {year, month} = getMonthYearDetails(date);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.contentContainer}>
-          <Text style={styles.dateText}>24년 8월 지출</Text>
+          <Text style={styles.dateText}>{year}년 {month}월 분석</Text>
           <Text style={styles.spendingMoney}>
             {(1205680).toLocaleString()}원
           </Text>
