@@ -2,13 +2,16 @@ import React, {useState} from 'react';
 import {StyleSheet, SafeAreaView} from 'react-native';
 import {colors} from '@/constants';
 import CustomCalendar from '@/components/accountBook/calendar/CustomCalendar';
-import {getMonthYearDetails, getNewMonthYear} from '@/utils/date';
+import {getMonthYearDetails} from '@/utils/date';
+import useDateStore from '@/store/useDateStore';
+import {Payment} from '@/types/domain';
 
-interface CalendarScreenProps {}
+interface CalendarScreenProps {
+  paymentList: Payment[];
+}
 
-function CalendarScreen({}: CalendarScreenProps) {
-  const currentMonthYear = getMonthYearDetails(new Date());
-  const [monthYear, setMonthYear] = useState(currentMonthYear);
+function CalendarScreen({paymentList}: CalendarScreenProps) {
+  const date = useDateStore(state => state.date);
   const [selectedDate, setSelectedDate] = useState(0);
   const [expenses, setExpenses] = useState([]);
 
@@ -16,15 +19,10 @@ function CalendarScreen({}: CalendarScreenProps) {
     setSelectedDate(date);
   };
 
-  const handleUpdateMonth = (increment: number) => {
-    setMonthYear(prev => getNewMonthYear(prev, increment));
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <CustomCalendar
-        monthYear={monthYear}
-        onChangeMonth={handleUpdateMonth}
+        monthYear={getMonthYearDetails(date)}
         selectedDate={selectedDate}
         onPressDate={handlePressDate}
         expenses={expenses}

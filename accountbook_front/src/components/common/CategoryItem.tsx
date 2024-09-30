@@ -2,26 +2,14 @@ import {CategoryCheckEmptyIcon, CategoryCheckFillIcon} from '@/assets/icons';
 import {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-const CategoryItem = ({
-  name,
-  categoryId,
-  setHideList,
-}: {
+interface CategoryItemProps {
   name: string;
   categoryId: number;
-  setHideList: (hideList: number[]) => void;
-}) => {
-  const [isChecked, setIsChecked] = useState(true);
-  const onPress = () => {
-    // console.log('onPress', isChecked);
-    setIsChecked(prev => !prev);
-  };
+  isChecked: boolean;
+  onPress: () => void;
+}
 
-  useEffect(() => {
-    // console.log('useEffect', isChecked);
-    if (isChecked) setHideList(prev => [...prev, categoryId]);
-    else setHideList(prev => prev.filter(id => id !== categoryId));
-  }, [isChecked]);
+const CategoryItem: React.FC<CategoryItemProps> = ({ name, categoryId, isChecked, onPress }) => {
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={onPress}>
@@ -31,6 +19,7 @@ const CategoryItem = ({
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',

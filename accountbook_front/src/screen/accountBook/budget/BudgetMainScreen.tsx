@@ -2,22 +2,15 @@ import React, { useState } from 'react';
 import {StyleSheet, View, Text, Image, TextInput} from 'react-native';
 import { colors } from '@/constants';
 import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
-import { getMonthYearDetails, getNewMonthYear } from '@/utils/date';
 import NoBudgetContent from '@/components/accountBook/budget/NoBudgetContent';
 import BudgetContent from '@/components/accountBook/budget/BudgetContent';
+import useDateStore from '@/store/useDateStore';
 
 const BudgetMainScreen = () => {
 
-  // 나중에 redux로 month, year 저장해야할듯. 일단은 이렇게
-  const currentMonthYear = getMonthYearDetails(new Date());
-  const [monthYear, setMonthYear] = useState(currentMonthYear);
-  
-  const handleUpdateMonth = (increment: number) => {
-    setMonthYear(prev => getNewMonthYear(prev, increment));
-  };
-
+  const date = useDateStore(state => state.date);
   // 총 예산. 나중에 요청을 통해 값을 가져옴
-  const [totalBudget, setTotalBudget] = useState(0);
+  const [totalBudget, setTotalBudget] = useState(300000);
 
   // 카테고리 목록. 임시로 일단 만들어둠.
   const categories_temp = [
@@ -28,7 +21,7 @@ const BudgetMainScreen = () => {
 
   return (
     <View style={styles.container}>
-      <AccountBookHeader monthYear={monthYear} onChangeMonth={handleUpdateMonth}/>
+      <AccountBookHeader />
       {totalBudget === 0 ? <NoBudgetContent /> : <BudgetContent categories={categories_temp} totalBudget={totalBudget}/>}
     </View>
   )

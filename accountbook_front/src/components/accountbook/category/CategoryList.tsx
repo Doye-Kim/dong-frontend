@@ -1,14 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
-import CategoryItem from './CategoryItem';
+import {FlatList, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {ResponseCategory} from '@/api/category';
 import useCategoryStore from '@/store/useCategoryStore';
 
-const CategoryList = () => {
+type CategoryListProps = {
+  onCategorySelect?: (categoryId: number, categoryName: string) => void;
+};
+
+const CategoryList: React.FC<CategoryListProps> = ({onCategorySelect}) => {
   const categories = useCategoryStore(state => state.categories);
+  const fetchCategories = useCategoryStore(state => state.fetchCategories);
   const [data, setData] = useState<ResponseCategory[]>([]);
 
   useEffect(() => {
+    if(categories.length === 0) {
+      fetchCategories();
+    }
     setData([
       ...categories,
       {
@@ -18,10 +25,21 @@ const CategoryList = () => {
         imageNumber: -1,
       },
     ]);
-  }, [categories]); // categories가 변경될 때마다 data 업데이트
+  }, [categories]);
+
+  const handleCategoryPress = (item: ResponseCategory) => {
+    if (item.categoryId !== -1 && onCategorySelect !== undefined) {
+      onCategorySelect(item.categoryId, item.name);
+    }
+  };
 
   const renderItem = ({item}: {item: ResponseCategory}) => (
-    <CategoryItem item={item} />
+    <TouchableOpacity
+      onPress={() => handleCategoryPress(item)}
+      style={styles.categoryItem}
+    >
+      <Text>{item.name}</Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -34,5 +52,15 @@ const CategoryList = () => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  categoryItem: {
+    padding: 10,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+  },
+});
 
 export default CategoryList;

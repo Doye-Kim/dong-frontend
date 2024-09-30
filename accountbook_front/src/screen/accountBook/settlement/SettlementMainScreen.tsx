@@ -2,9 +2,15 @@ import {AddSquareSettlement} from '@/assets/icons';
 import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import SettlementList from '@/components/accountBook/settlement/SettlementList';
 import {colors} from '@/constants';
-import {getMonthYearDetails, getNewMonthYear} from '@/utils';
-import {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import useDateStore from '@/store/useDateStore';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const data = [
   {
@@ -221,13 +227,7 @@ const data = [
   },
 ];
 const SettlementMainScreen = () => {
-  const currentMonthYear = getMonthYearDetails(new Date());
-  const [monthYear, setMonthYear] = useState(currentMonthYear);
-
-  const handleUpdateMonth = (increment: number) => {
-    setMonthYear(prev => getNewMonthYear(prev, increment));
-  };
-
+  const date = useDateStore(state => state.date);
   const ongoingData = data.filter(
     settlement => settlement.settlementState === 'YET',
   );
@@ -237,10 +237,7 @@ const SettlementMainScreen = () => {
   );
   return (
     <SafeAreaView style={styles.container}>
-      <AccountBookHeader
-        monthYear={monthYear}
-        onChangeMonth={handleUpdateMonth}
-      />
+      <AccountBookHeader />
       <ScrollView style={styles.listContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.labelText}>진행 중인 정산</Text>

@@ -1,20 +1,22 @@
 type Payment = {
-  payments_id: string;
+  paymentsId: number;
   merchantName: string;
+  categoryId: number;
   categoryName: string;
-  categoryNumber: string;
   balance: number;
-  cardName: string;
+  paymentName: string;
   memo: string;
-  createdDate: string;
+  paymentTime: string;
+  paymentState: string;
+  paymentType: string;
 };
 
 type Account = {
-  accountId: string;
-  bankName: string;
+  accountId: number;
+  nickname: string;
+  name: string;
   accountNumber: string;
-  accountName: string;
-  accountNickname: string;
+  bank: string;
   hideStatus: string;
   depositStatus: string;
   accountBalance: string;

@@ -30,6 +30,7 @@ import SeedList from '@/components/asset/asset/SeedList';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import axiosInstance from '@/api/axios';
 import {getSeeds} from '@/api/seed';
 import Toast from 'react-native-toast-message';
 
@@ -53,6 +54,21 @@ const AssetMainScreen = () => {
   const [seedData, setSeedData] = useState<SeedData | null>(null);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
 
+  const handleGetAssets = async () => {
+    try {
+      const response = await axiosInstance.get('/assets');
+      const {accountList, cardList} = response.data;
+      console.log(response.data);
+      setAssetData({
+        accounts: accountList,
+        cards: cardList,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const getSeedData = async () => {
     try {
       const data = await getSeeds();
@@ -66,8 +82,9 @@ const AssetMainScreen = () => {
       });
     }
   };
+
   useEffect(() => {
-    setAssetData(AssetAccountData);
+    handleGetAssets();
     setGameData(GameListData);
     // setSeedData(SeedsDataList.data);
     getSeedData();
@@ -77,9 +94,9 @@ const AssetMainScreen = () => {
   const sortedAccounts = useMemo(() => {
     if (!assetData) return [];
     return [...assetData.accounts].sort((a, b) => {
-      if (a.hideStatus === 'hide_asset' && b.hideStatus !== 'hide_asset')
+      if (a.hideStatus === 'HIDE_ASSET' && b.hideStatus !== 'HIDE_ASSET')
         return 1;
-      if (a.hideStatus !== 'hide_asset' && b.hideStatus === 'hide_asset')
+      if (a.hideStatus !== 'HIDE_ASSET' && b.hideStatus === 'HIDE_ASSET')
         return -1;
       return 0;
     });
@@ -88,9 +105,9 @@ const AssetMainScreen = () => {
   const sortedCards = useMemo(() => {
     if (!assetData) return [];
     return [...assetData.cards].sort((a, b) => {
-      if (a.hideStatus === 'hide_asset' && b.hideStatus !== 'hide_asset')
+      if (a.hideStatus === 'HIDE_ASSET' && b.hideStatus !== 'HIDE_ASSET')
         return 1;
-      if (a.hideStatus !== 'hide_asset' && b.hideStatus === 'hide_asset')
+      if (a.hideStatus !== 'HIDE_ASSET' && b.hideStatus === 'HIDE_ASSET')
         return -1;
       return 0;
     });
@@ -100,7 +117,7 @@ const AssetMainScreen = () => {
     () =>
       showHiddenAssets
         ? sortedAccounts
-        : sortedAccounts.filter(account => account.hideStatus !== 'hide_asset'),
+        : sortedAccounts.filter(account => account.hideStatus !== 'HIDE_ASSET'),
     [sortedAccounts, showHiddenAssets],
   );
 
@@ -108,7 +125,7 @@ const AssetMainScreen = () => {
     () =>
       showHiddenAssets
         ? sortedCards
-        : sortedCards.filter(card => card.hideStatus !== 'hide_asset'),
+        : sortedCards.filter(card => card.hideStatus !== 'HIDE_ASSET'),
     [sortedCards, showHiddenAssets],
   );
 

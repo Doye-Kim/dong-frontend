@@ -59,7 +59,8 @@ const Navbar = () => {
                 getFocusedRouteNameFromRoute(route) ?? 'AccountBookMain';
               if (
                 routeName === accountBookNavigations.PAYMENTDETAIL ||
-                routeName === accountBookNavigations.HEADER
+                routeName === accountBookNavigations.HEADER ||
+                routeName === accountBookNavigations.PAYMENTADD
               ) {
                 return {display: 'none'};
               }

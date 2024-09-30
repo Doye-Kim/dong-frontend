@@ -20,12 +20,12 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
       <View style={styles.container}>
         {accountData.map(account => (
           <AssetItem
-            id={Number(account.accountId)}
+            id={account.accountId}
             key={account.accountId}
-            title={account.accountNickname}
+            title={account.nickname}
             balance={account.accountBalance}
             isAccount={true}
-            hide={account.hideStatus === 'hide_asset' ? true : false}
+            hide={account.hideStatus === 'HIDE_ASSET' ? true : false}
             handleNavigate={() =>
               navigation.navigate(assetNavigations.DETAIL, {
                 screen: assetDetailNavigations.ACCOUNTDETAIL,
@@ -56,7 +56,8 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
               })
             }
           />
-        ))}
+        ))
+    };
       </View>
     );
   }
@@ -72,6 +73,13 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontSize: 18,
     paddingVertical: 10,
+  },
+  noAssetText: {
+    fontSize: 20,
+    fontFamily: 'Pretendard-Bold',
+    color: colors.BLACK,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
 
