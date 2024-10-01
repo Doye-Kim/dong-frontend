@@ -1,30 +1,41 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 import axiosInstance from '@/api/axios';
-import { getDateWithSeparator } from '@/utils';
-import { Payment } from '@/types/domain';
+import {Payment} from '@/types/domain';
 
-type PaymentListData = Payment[];
+type PaymentData = Record<string, Payment[]>;
 
 interface PaymentStore {
-  paymentListData: PaymentListData;
-  setPaymentListData: (payments: PaymentListData) => void;
-  handleGetPayments: (date: Date) => Promise<void>;
+  paymentData: PaymentData;
+  setPaymentData: (yearMonth: string, payments: Payment[]) => void;
+  fetchPaymentData: (date: string) => Promise<void>;
 }
 
-const usePaymentDataStore = create<PaymentStore>((set) => ({
-  paymentListData: [],
-  setPaymentListData: (payments) => set({ paymentListData: payments }),
-  handleGetPayments: async (date) => {
-    const dateWithSeparator = getDateWithSeparator(date, "-");
+const usePaymentDataStore = create<PaymentStore>(set => ({
+  paymentData: {},
+  setPaymentData: (yearMonth, payments) => {
+    set(state => ({
+      paymentData: {
+        ...state.paymentData,
+        [yearMonth]: payments,
+      },
+    }));
+  },
+  fetchPaymentData: async (date) => {
+    const yearMonth = date.slice(0, 7);
     try {
-      const paymentsResponse = await axiosInstance.get("/payments", {
+      const paymentsResponse = await axiosInstance.get('/payments', {
         params: {
-          date: dateWithSeparator,
+          date,
         },
       });
-      set({ paymentListData: paymentsResponse.data });
+      set(state => ({
+        paymentData: {
+          ...state.paymentData,
+          [yearMonth]: paymentsResponse.data,
+        },
+      }));
     } catch (error) {
-      console.error(error);
+      console.error('Failed to fetch payment data:', error);
     }
   },
 }));

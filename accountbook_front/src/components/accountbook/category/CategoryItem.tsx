@@ -8,7 +8,12 @@ import ActionModal from './ActionModal';
 import {ResponseCategory} from '@/api/category';
 import Toast from 'react-native-toast-message';
 
-const CategoryItem = ({item}: {item: ResponseCategory}) => {
+type CategoryItemProps = {
+  item: ResponseCategory;
+  onCategorySelect?: (categoryId: number, categoryName: string) => void; // 추가
+};
+
+const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isActionModalVisible, setIsActionModalVisible] = useState(false);
   const [modalData, setModalData] = useState<ResponseCategory | null>(null);
@@ -19,6 +24,8 @@ const CategoryItem = ({item}: {item: ResponseCategory}) => {
       setModalData(null);
       setIsEditModalVisible(true);
       setIsActionModalVisible(false);
+    } else if (onCategorySelect) {
+      onCategorySelect(item.categoryId, item.name);
     }
   };
 

@@ -9,6 +9,9 @@ type Payment = {
   paymentTime: string;
   paymentState: string;
   paymentType: string;
+  cardIssuerName?: string;
+  asset?: string;
+  assetId?: number;
 };
 
 type Account = {

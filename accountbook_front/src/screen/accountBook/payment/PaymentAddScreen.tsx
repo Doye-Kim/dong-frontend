@@ -20,8 +20,10 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import CategoryList from '@/components/accountBook/category/CategoryList';
+import { useNavigation } from '@react-navigation/native';
 
 const PaymentAddScreen = () => {
+  const navigation = useNavigation();
   const [balanceEditStatus, setBalanceEditStatus] = useState<boolean>(false);
   const [isOpenCalendar, setIsOpneCalendar] = useState<boolean>(false);
   const [isOpenTimePicker, setIsOpenTimePicker] = useState<Boolean>(false);
@@ -53,16 +55,21 @@ const PaymentAddScreen = () => {
         paymentTime: payment.paymentTime,
         type: payment.paymentType,
 
-        cardIssuerName: '임시-수정필요', // 이거도 비워서 낼 수 있어야함
+        cardIssuerName: '카드', // 이거도 비워서 낼 수 있어야함
         // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
         asset: 'ACCOUNT', // 수정 필요
-        assetId: 10, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
+        assetId: 1, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
       });
-      console.log(response);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const pressSaveButton = async (payment: Payment) => {
+    handlePostPayment(payment);
+    navigation.goBack();
+  }
 
   const toggleBalanceEditStatus = () => {
     setBalanceEditStatus(prevStatus => !prevStatus);
@@ -87,14 +94,6 @@ const PaymentAddScreen = () => {
     setPaymentData(prevPayment => ({
       ...prevPayment,
       paymentType: type,
-    }));
-  };
-
-  const toggleIncludeExclude = () => {
-    setPaymentData(prevPayment => ({
-      ...prevPayment,
-      paymentState:
-        prevPayment.paymentState === 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
     }));
   };
 
@@ -254,13 +253,6 @@ const PaymentAddScreen = () => {
                   value={paymentData.memo}
                 />
               </View>
-              <View style={styles.switchContainer}>
-                <Text style={styles.detailLabel}>지출에서 제외</Text>
-                <Switch
-                  value={paymentData.paymentState === 'INCLUDE' ? true : false}
-                  onValueChange={toggleIncludeExclude}
-                />
-              </View>
               {isOpenCalendar && (
                 <DatePickCalendar
                   isVisible={isOpenCalendar}
@@ -288,7 +280,7 @@ const PaymentAddScreen = () => {
                 <View style={styles.bottomModalContainer}>
                   <View style={styles.bottomModalContent}>
                     <Text style={styles.modalTitle}>카테고리 선택</Text>
-                    <CategoryList onCategorySelect={handleCategorySelect} />
+                    <CategoryList onCategorySelect={handleCategorySelect} renderAddButton={false} />
                     <TouchableOpacity
                       onPress={toggleCategoryModal}
                       style={styles.closeButton}>
@@ -303,7 +295,7 @@ const PaymentAddScreen = () => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => handlePostPayment(paymentData)}>
+              onPress={() => pressSaveButton(paymentData)}>
               <Text style={styles.saveButtonText}>저장</Text>
             </TouchableOpacity>
           </View>

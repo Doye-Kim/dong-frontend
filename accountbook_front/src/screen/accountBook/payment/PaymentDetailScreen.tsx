@@ -8,13 +8,17 @@ import {
   Switch,
   TextInput,
   ScrollView,
+  Modal,
 } from 'react-native';
-import {useRoute, RouteProp} from '@react-navigation/native';
+import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {EditIcon, MeatballMenuIcon} from '@/assets/icons';
-import {getDateTimeLocaleFormat} from '@/utils';
+import {getDateTimeLocaleFormat, getDateWithSeparator} from '@/utils';
 import {colors} from '@/constants';
 import axiosInstance from '@/api/axios';
 import {Payment} from '@/types/domain';
+import CategoryList from '@/components/accountBook/category/CategoryList';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import useDateStore from '@/store/useDateStore';
 
 type RouteParams = {
   PaymentDetail?: {paymentId: number};
@@ -22,74 +26,132 @@ type RouteParams = {
 
 const PaymentDetailScreen = () => {
   const route = useRoute<RouteProp<RouteParams, 'PaymentDetail'>>();
+  const navigation = useNavigation();
   const paymentId = route.params?.paymentId;
-  // const [paymentData, setPaymentData] = useState<Payment>();
+  const [paymentData, setPaymentData] = useState<Payment>();
+  const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  const date = useDateStore(state => state.date);
+  const yearMonth = getDateWithSeparator(date, "-");
+  const {fetchPaymentData} = usePaymentDataStore();
 
-  const handlePostPayment = async (payment: Payment) => {
+  // 수정사항 저장하는 함수
+  const handleChangePayment = async (payment: Payment) => {
+    patchPaymentType(payment);
+    patchPaymentCategory(payment).then(() => fetchPaymentData(yearMonth));
+    navigation.goBack();
+  };
+
+  // 전체 수정
+  const putPayment = async (payment: Payment) => {
     try {
-      const response = await axiosInstance.post('/payments', {
-        merchantName: payment.merchantName,
-        categoryId: payment.categoryId,
-        balance: payment.balance,
-        paymentName: payment.paymentName,
-        memo: payment.memo,
-        paymentTime: payment.paymentTime,
-        type: payment.paymentType,
+      const paymentRequest = [
+        {
+          merchantName: payment.merchantName,
+          categoryId: payment.categoryId,
+          balance: payment.balance,
+          paymentName: payment.paymentName,
+          memo: payment.memo,
+          paymentTime: new Date(payment.paymentTime).toISOString(),
+          type: payment.paymentType,
 
-        cardIssuerName: '임시-수정필요', // 이거도 비워서 낼 수 있어야함
-        // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
-        asset: 'ACCOUNT', // 수정 필요
-        assetId: 10, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
-      });
-      console.log(response);
+          cardIssuerName: '신한카드',
+          asset: 'ACCOUNT',
+          assetId: 1,
+
+          // cardIssuerName: payment.cardIssuerName,
+          // asset: payment.asset,
+          // assetId: payment.assetId,
+        },
+      ];
+      const response = await axiosInstance.put(
+        `/payments/${paymentId}`,
+        paymentRequest,
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 카테고리, 지출포함여부 수정
+  const patchPaymentType = async (payment: Payment) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/payments/${paymentId}/type`,
+        {
+          categoryId: payment.categoryId,
+          paymentState: payment.paymentState,
+        },
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  // 값 불러오는 함수. 아직 작동안함
-  const fetchPaymentData = async (paymentId: number) => {
+  const patchPaymentCategory = async (payment: Payment) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/payments/${paymentId}/categories`,
+        {
+          categoryId: payment.categoryId,
+          paymentState: payment.paymentState,
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 값 불러오는 함수
+  const fetchPayment = async (paymentId: number) => {
     try {
       const response = await axiosInstance.get(`/payments/${paymentId}`);
       setPaymentData(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    // if (paymentId !== undefined) {
-    //   fetchPaymentData(paymentId);
-    // }
+    if (paymentId !== undefined) {
+      fetchPayment(paymentId);
+    }
   }, [paymentId]);
 
-  const [paymentData, setPaymentData] = useState<Payment>({
-    paymentsId: 1,
-    merchantName: '올리브영',
-    categoryId: 0,
-    categoryName: '쇼핑',
-    balance: 20000,
-    paymentName: '쇼핑',
-    memo: '메모',
-    paymentTime: '2024-08-26T08:30:00.000Z',
-    paymentState: 'INCLUDE',
-    paymentType: 'EXPENSE',
-  });
-
   const togglePaymentType = (type: 'INCOME' | 'EXPENSE') => {
-    setPaymentData(prevPayment => ({
-      ...prevPayment,
-      paymentType: type,
-    }));
+    setPaymentData(prevPayment => {
+      if (!prevPayment) return prevPayment;
+      return {
+        ...prevPayment,
+        paymentType: type,
+      };
+    });
   };
 
   const toggleIncludeExclude = () => {
-    setPaymentData(prevPayment => ({
-      ...prevPayment,
-      paymentState:
-        prevPayment.paymentState === 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
-    }));
+    setPaymentData(prevPayment => {
+      if (!prevPayment) return prevPayment;
+      return {
+        ...prevPayment,
+        paymentState:
+          prevPayment.paymentState === 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
+      };
+    });
+  };
+
+  const toggleCategoryModal = () => {
+    setIsCategoryModalVisible(prev => !prev);
+  };
+
+  const handleCategorySelect = (categoryId: number, categoryName: string) => {
+    setPaymentData(prevPayment => {
+      if (!prevPayment) return prevPayment;
+      return {
+        ...prevPayment,
+        categoryId,
+        categoryName,
+      };
+    });
+    toggleCategoryModal();
   };
 
   return (
@@ -152,9 +214,11 @@ const PaymentDetailScreen = () => {
               </View>
               <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>카테고리</Text>
-                <Text style={styles.detailValue}>
-                  {paymentData.categoryName}
-                </Text>
+                <TouchableOpacity onPress={toggleCategoryModal}>
+                  <Text style={styles.detailValue}>
+                    {paymentData.categoryName}
+                  </Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>메모</Text>
@@ -171,7 +235,7 @@ const PaymentDetailScreen = () => {
               <View style={styles.switchContainer}>
                 <Text style={styles.detailLabel}>지출에서 제외</Text>
                 <Switch
-                  value={paymentData.paymentState === 'INCLUDE' ? true : false}
+                  value={paymentData.paymentState === 'INCLUDE' ? false : true}
                   onValueChange={toggleIncludeExclude}
                 />
               </View>
@@ -180,10 +244,30 @@ const PaymentDetailScreen = () => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => handlePostPayment(paymentData)}>
+              onPress={() => handleChangePayment(paymentData)}>
               <Text style={styles.saveButtonText}>저장</Text>
             </TouchableOpacity>
           </View>
+          <Modal
+            visible={isCategoryModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={toggleCategoryModal}>
+            <View style={styles.bottomModalContainer}>
+              <View style={styles.bottomModalContent}>
+                <Text style={styles.modalTitle}>카테고리 선택</Text>
+                <CategoryList
+                  onCategorySelect={handleCategorySelect}
+                  renderAddButton={false}
+                />
+                <TouchableOpacity
+                  onPress={toggleCategoryModal}
+                  style={styles.closeButton}>
+                  <Text style={styles.closeButtonText}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </>
       ) : (
         <Text style={styles.loadingText}>데이터를 불러오는 중입니다.</Text>
@@ -301,6 +385,37 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 30,
     color: colors.BLACK,
+  },
+  bottomModalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  bottomModalContent: {
+    width: '100%',
+    backgroundColor: colors.WHITE,
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
+    maxHeight: '50%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: 'Pretendard-Bold',
+    marginBottom: 20,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: colors.PRIMARY,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    color: colors.WHITE,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Bold',
   },
 });
 

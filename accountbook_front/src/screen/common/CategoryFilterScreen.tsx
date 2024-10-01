@@ -5,21 +5,22 @@ import useCategoryStore from '@/store/useCategoryStore';
 import { useEffect, useState } from 'react';
 import { SafeAreaView, SectionList, StyleSheet, Text, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import useHideStatusStore from '@/store/useHideStatusStore';
 
 const CategoryFilterScreen: React.FC = () => {
-  const [isHide, setIsHide] = useState<boolean>(true);
-  const toggleSwitch = () => setIsHide((previousState) => !previousState);
-
   // 카테고리 상태와 함수 가져오기
   const categories = useCategoryStore((state) => state.categories);
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
   const selectedCategories = useCategoryStore((state) => state.selectedCategories);
   const setSelectedCategories = useCategoryStore((state) => state.setSelectedCategories);
 
-  // 임시로 선택된 카테고리 상태를 관리합니다.
-  const [tempSelectedCategories, setTempSelectedCategories] = useState<number[]>(selectedCategories);
+  // 숨김내역 보기 관련 상태
+  const {isHideVisible, toggleIsHideVisible} = useHideStatusStore();
 
   const navigation = useNavigation();
+
+  // 임시로 선택된 카테고리 상태를 관리합니다.
+  const [tempSelectedCategories, setTempSelectedCategories] = useState<number[]>(selectedCategories);
 
   // 모든 카테고리가 선택되었는지 여부 확인
   const isAllSelected = categories.length > 0 && tempSelectedCategories.length === categories.length;
@@ -76,7 +77,7 @@ const CategoryFilterScreen: React.FC = () => {
       <View style={styles.hideListContainer}>
         <Text style={styles.text}>숨겨진 내역 표시</Text>
         <View style={styles.toggleContainer}>
-          <Toggle isEnabled={isHide} toggleSwitch={toggleSwitch} />
+          <Toggle isEnabled={isHideVisible} toggleSwitch={toggleIsHideVisible} />
         </View>
       </View>
       <View style={styles.actionsContainer}>
