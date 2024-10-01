@@ -1,16 +1,24 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import CategoryIcon from '@/components/common/CategoryIcon';
-import { colors } from '@/constants';
-import { Payment } from '@/types/domain';
+import {colors} from '@/constants';
+import {Payment} from '@/types/domain';
 
 interface PaymentItemProps {
   payment: Payment;
   onPress?: (paymentId: number) => void;
 }
 
-const PaymentItem = ({ payment, onPress }: PaymentItemProps) => {
-  const { paymentsId, paymentName, merchantName, categoryName, categoryId, balance } = payment;
+const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
+  const {
+    paymentsId,
+    paymentName,
+    merchantName,
+    categoryName,
+    categoryId,
+    balance,
+    paymentState,
+  } = payment;
 
   const handlePress = (payments_id: number) => {
     if (onPress) {
@@ -19,21 +27,31 @@ const PaymentItem = ({ payment, onPress }: PaymentItemProps) => {
   };
 
   return (
-    <TouchableOpacity 
-      style={styles.itemContainer} 
-      onPress={() => handlePress(Number(paymentsId))}
-    >
-      <CategoryIcon categoryNumber={categoryId ? categoryId : 0} size={40} />
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => handlePress(paymentsId)}>
+      <CategoryIcon categoryNumber={categoryId ? 0 : 0} size={40} />
       <View style={styles.itemContent}>
         <View style={styles.itemHeader}>
           <View style={styles.merchantInfo}>
-            <Text style={styles.merchantName}>{merchantName}</Text>
+            <Text
+              style={[
+                styles.merchantName,
+                paymentState === 'EXCLUDE' && styles.excludeItem,
+              ]}>
+              {merchantName}
+            </Text>
             <Text style={styles.details}>
               {categoryName} | {paymentName}
             </Text>
           </View>
           <View style={styles.balanceContainer}>
-            <Text style={styles.balance}>
+            <Text
+              style={[
+                styles.balance,
+                paymentState === 'EXCLUDE' && styles.excludeItem,
+              ]}>
+              {payment.paymentType === 'INCOME' ? '+ ' : '- '}
               {balance.toLocaleString()}원
             </Text>
           </View>
@@ -82,6 +100,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.GRAY_500,
     marginTop: 2,
+  },
+  excludeItem: {
+    color: colors.GRAY_500,
   },
 });
 

@@ -1,5 +1,4 @@
 import {ResponseCategory, getCategories} from '@/api/category';
-import { category } from '@/utils/categories';
 import Toast from 'react-native-toast-message';
 import {create} from 'zustand';
 

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -18,12 +18,13 @@ import {
 } from '@/constants';
 import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import PaymentMainScreen from '@/screen/accountBook/payment/PaymentMainScreen';
-import axiosInstance from '@/api/axios';
 import useDateStore from '@/store/useDateStore';
 import {getDateWithSeparator} from '@/utils';
 import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
-import {Payment} from '@/types/domain';
 import useUserStore from '@/store/useUserStore';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import useCategoryStore from '@/store/useCategoryStore';
+import useHideStatusStore from '@/store/useHideStatusStore';
 
 const {width} = Dimensions.get('window');
 const TAB_WIDTH = (width * 0.8) / 4;
@@ -41,47 +42,46 @@ const AccountBookTabNavigator: React.FC = () => {
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
-  const date = useDateStore(state => state.date);
-  const [paymentData, setPaymentData] = useState<Record<string, Payment[]>>({});
-
   const isLogin = useUserStore((state) => state.isLogin);
+  const date = useDateStore(state => state.date);
+  const {paymentData, fetchPaymentData} = usePaymentDataStore();
+  const {categories, selectedCategories, setSelectedCategories, fetchCategories} = useCategoryStore();
+  const {isHideVisible} = useHideStatusStore();
 
-  const fetchPaymentList = async (date: string) => {
-    const formattedDate = getDateWithSeparator(
-      useDateStore.getState().date,
-      '-',
-    );
-    console.log(formattedDate);
-    try {
-      const response = await axiosInstance.get('./payments', {
-        params: {
-          date,
-        },
-      });
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('내역 받아오기', error);
-      return [];
+  // 카테고리 초기 설정
+  useEffect(() => {
+    if(isLogin) {
+      setTimeout(() => {
+        fetchCategories();
+        setSelectedCategories(categories.map(category => category.categoryId));
+      }, 50)
     }
-  };
+  },[])
 
+  // 내역 데이터 불러오기
   useEffect(() => {
     if (isLogin) {
-      const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
-
-      if (!paymentData[yearMonth]) {
+      const dateString = getDateWithSeparator(date, "-").slice(0, 10);
+      if (!paymentData[dateString]) {
         setTimeout(() => {
-          fetchPaymentList(yearMonth).then(data => {
-            setPaymentData(prev => ({
-              ...prev,
-              [yearMonth]: data,
-            }));
-          });
+          fetchPaymentData(dateString);
         }, 50);
       }
     }
-  }, [date, paymentData, isLogin]);
+    console.log(paymentData);
+  }, [date, isLogin]);
+
+  // 카테고리, 숨김보임 여부에 따른 필터링 함수
+  const filteredPaymentList = useMemo(() => {
+    const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
+    const paymentList = paymentData[yearMonth] || PaymentDummyData.paymentResponse;
+    console.log('내역 필터링 함수 동작 확인용')
+    return paymentList.filter(payment => {
+      const isCategorySelected = selectedCategories.includes(payment.categoryId);
+      const isVisiblePayment = isHideVisible || payment.paymentState !== 'EXCLUDE';
+      return isCategorySelected && isVisiblePayment;
+    });
+  }, [paymentData, date, selectedCategories, isHideVisible]);
 
   const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -102,9 +102,9 @@ const AccountBookTabNavigator: React.FC = () => {
 
     switch (route.key) {
       case accountBookTabNavigations.CALENDAR:
-        return <CalendarScreen paymentList={paymentList} />;
+        return <CalendarScreen paymentList={filteredPaymentList} />;
       case accountBookTabNavigations.PAYMENT:
-        return <PaymentMainScreen paymentList={paymentList} />;
+        return <PaymentMainScreen paymentList={filteredPaymentList} />;
       case accountBookTabNavigations.SETTLEMENT:
         return <SettlementMainScreen />;
       case accountBookTabNavigations.BUDGET:

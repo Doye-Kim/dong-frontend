@@ -4,20 +4,19 @@ import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader
 import {MonthYear} from '@/utils/date';
 import DateBox from './DateBox';
 import {colors} from '@/constants';
-import useDateStore from '@/store/useDateStore';
 
 interface CustomCalendarProps {
   monthYear: MonthYear;
-  selectedDate: number;
   onPressDate: (date: number) => void;
-  expenses: {[key: number]: number}; // 날짜별 금액 정보
+  expenses: {[key: number]: number}; // 날짜별 사용 금액 정보
+  incomes: {[key: number]: number}; // 날짜별 수익 금액 정보
 }
 
 const CustomCalendar = ({
   monthYear,
-  selectedDate,
   onPressDate,
   expenses,
+  incomes,
 }: CustomCalendarProps) => {
   const {month, year, lastDate, firstDOW} = monthYear;
   const totalDays = lastDate + firstDOW;
@@ -46,9 +45,9 @@ const CustomCalendar = ({
             <View style={[styles.rowSeparator]}>
               <DateBox
                 date={item.date}
-                selectedDate={selectedDate}
                 onPressDate={onPressDate}
                 expense={item.date ? expenses[item.date] : undefined}
+                income={item.date ? incomes[item.date] : undefined}
               />
             </View>
           )}
@@ -70,9 +69,10 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 30,
+    marginBottom: 60,
   },
   rowSeparator: {
-    borderTopWidth: 10,
+    borderTopWidth: 6,
     borderTopColor: colors.GRAY_200,
   },
 });

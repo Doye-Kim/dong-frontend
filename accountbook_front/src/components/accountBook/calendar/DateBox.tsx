@@ -4,41 +4,42 @@ import {colors} from '@/constants';
 
 interface DateBoxProps {
   date: number | null;
-  selectedDate: number;
   onPressDate: (date: number) => void;
   expense?: number;
+  income?: number;
 }
 
 const deviceWidth = Dimensions.get('window').width;
+const BOX_WIDTH = deviceWidth / 7;
+const BOX_HEIGHT = BOX_WIDTH + 35;
 
-const DateBox = ({date, selectedDate, onPressDate, expense}: DateBoxProps) => {
+const DateBox = ({date, onPressDate, expense, income}: DateBoxProps) => {
   if (date === null) {
-    return <View style={styles.emptyBox}></View>;
+    return <View style={styles.emptyBox} />;
   }
+
+  const hasTransaction = expense !== undefined || income !== undefined;
 
   return (
     <Pressable style={styles.container} onPress={() => onPressDate(date)}>
-      {date > 0 && (
-        <>
-          <View
-            style={[
-              styles.dateContainer,
-              selectedDate === date && styles.selectedContainer,
-            ]}>
-            <Text
-              style={[
-                styles.dateText,
-                selectedDate === date && styles.selectedDateText,
-              ]}>
-              {date}
+      <View style={styles.dateContainer}>
+        <Text style={styles.dateText}>
+          {date < 1 ? "" : date}
+        </Text>
+      </View>
+      {hasTransaction && (
+        <View style={styles.transactionContainer}>
+          {expense !== undefined && (
+            <Text style={styles.expenseText}>
+              -{expense.toLocaleString()}
             </Text>
-            {expense && (
-              <Text style={styles.expenseText}>
-                {expense.toLocaleString()}원
-              </Text>
-            )}
-          </View>
-        </>
+          )}
+          {income !== undefined && (
+            <Text style={styles.incomeText}>
+              {income.toLocaleString()}
+            </Text>
+          )}
+        </View>
       )}
     </Pressable>
   );
@@ -46,41 +47,45 @@ const DateBox = ({date, selectedDate, onPressDate, expense}: DateBoxProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: deviceWidth / 7,
-    height: deviceWidth / 7 + 20,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.GRAY_200,
+    width: BOX_WIDTH,
+    height: BOX_HEIGHT,
+    backgroundColor: colors.WHITE,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.GRAY_200,
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 5,
   },
   dateContainer: {
-    marginTop: 5,
     alignItems: 'center',
     justifyContent: 'center',
     width: 28,
     height: 28,
-    borderRadius: 28,
+    borderRadius: 14,
+    marginBottom: 4,
   },
   dateText: {
-    fontSize: 18,
+    fontSize: 14,
     color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-Medium',
   },
-  selectedContainer: {
-    backgroundColor: colors.BLACK,
-    borderRadius: 30,
-  },
-  selectedDateText: {
-    color: colors.WHITE,
-    fontWeight: 'bold',
+  transactionContainer: {
+    alignItems: 'center',
   },
   expenseText: {
-    fontSize: 12,
-    color: colors.BLACK,
-    marginTop: 4,
+    fontSize: 10,
+    color: colors.GRAY_600,
+    fontFamily: 'Pretendard-Regular',
+  },
+  incomeText: {
+    fontSize: 10,
+    color: colors.PRIMARY,
+    fontFamily: 'Pretendard-Regular',
   },
   emptyBox: {
-    width: deviceWidth / 7,
-    height: deviceWidth / 7 + 20,
+    width: BOX_WIDTH,
+    height: BOX_HEIGHT,
   },
 });
 
