@@ -8,6 +8,7 @@ const authNavigations = {
 const mainNavigations = {
   ACCOUNTBOOK: 'AccountBook',
   ASSET: 'Asset',
+  GAME: 'Game',
   EXTRA: 'Extra',
 } as const;
 
@@ -32,7 +33,18 @@ const accountBookHeaderNavigations = {
   FILTER: 'CategoryFilter',
   REPORT: 'Report',
 } as const;
-// #todo 내기 목록 추가
+
+const gameNavigations = {
+  MAIN: 'GameMain',
+  CREATE: 'GameCreate',
+  DETAIL: 'GameDetail',
+  FRIENDS: 'GameFriends',
+  PREPARE: 'GamePrepare',
+  ACCOUNT: 'SelectAccount',
+  CATEGORY: 'SelectCategory',
+  RESULT: 'GameResult',
+} as const;
+
 const extraNavigations = {
   MAIN: 'ExtraMain',
   MARKET: 'PointMarket',
@@ -54,13 +66,6 @@ const assetDetailNavigations = {
   CARDDETAIL: 'CardDetail',
   CARDMANAGE: 'CardManage',
   PAYMENTDETAIL: 'PaymentDetail',
-} as const;
-
-const gameNavigations = {
-  DETAIL: 'GameDetail',
-  CREATE: 'GameCreate',
-  FRIENDS: 'GameFriends',
-  PREPARE: 'GamePrepare',
 } as const;
 
 const seedNavigations = {

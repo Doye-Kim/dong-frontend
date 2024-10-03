@@ -9,7 +9,7 @@ const UserIcon = ({name, disabled}: {name: string; disabled?: boolean}) => {
         justifyContent: 'center',
         alignItems: 'center',
         width: 50,
-        height: 80,
+        height: 70,
       }}>
       {disabled ? (
         <DisabledUser width={50} height={50} />

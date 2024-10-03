@@ -7,6 +7,8 @@ import {
   MeatballMenuFillIcon,
   WalletIcon,
   WalletFillIcon,
+  GameFillIcon,
+  GameIcon,
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
 
@@ -16,10 +18,12 @@ import {
   accountBookNavigations,
   assetNavigations,
   colors,
+  gameNavigations,
   mainNavigations,
 } from '@/constants';
 import ExtraStackNavigator from '../stack/ExtraStackNavigator';
 import AssetStackNavigatior from '../stack/asset/AssetStackNavigatior';
+import GameStackNavigator from '../stack/GameStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +40,9 @@ const Navbar = () => {
                 break;
               case mainNavigations.ASSET:
                 Icon = focused ? WalletFillIcon : WalletIcon;
+                break;
+              case mainNavigations.GAME:
+                Icon = focused ? GameFillIcon : GameIcon;
                 break;
               case mainNavigations.EXTRA:
                 Icon = focused ? MeatballMenuFillIcon : MeatballMenuIcon;
@@ -79,8 +86,29 @@ const Navbar = () => {
               tabBarLabel: '자산',
               tabBarStyle:
                 routeName === assetNavigations.DETAIL ||
-                routeName === assetNavigations.GAME  ||
+                routeName === assetNavigations.GAME ||
                 routeName === assetNavigations.SEED
+                  ? {display: 'none'}
+                  : styles.tabBarStyle,
+            };
+          }}
+        />
+        <Tab.Screen
+          name={mainNavigations.GAME}
+          component={GameStackNavigator}
+          options={({route}) => {
+            const routeName =
+              getFocusedRouteNameFromRoute(route) ?? gameNavigations.MAIN;
+            return {
+              tabBarLabel: '내기',
+              tabBarStyle:
+                routeName === gameNavigations.CREATE ||
+                routeName === gameNavigations.CATEGORY ||
+                routeName === gameNavigations.FRIENDS ||
+                routeName === gameNavigations.ACCOUNT ||
+                routeName === gameNavigations.DETAIL ||
+                routeName === gameNavigations.PREPARE ||
+                routeName === gameNavigations.RESULT
                   ? {display: 'none'}
                   : styles.tabBarStyle,
             };
@@ -101,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBarStyle: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.WHITE,
     height: 70,
     justifyContent: 'center',
     paddingBottom: 10,

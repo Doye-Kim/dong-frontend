@@ -46,7 +46,7 @@ const DropdownCategory: React.FC<DropdownCategoryProps> = ({
 const styles = StyleSheet.create({
   dropdownMenu: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 80,
     height: 200,
     left: 10,
     width: Dimensions.get('window').width - 60,

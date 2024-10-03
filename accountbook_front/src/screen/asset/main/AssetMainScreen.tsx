@@ -6,13 +6,8 @@ import {
 import AssetItemList from '@/components/asset/asset/AssetItemList';
 import AssetListHeader from '@/components/asset/asset/AssetListHeader';
 import NotificationHeader from '@/components/common/NotificationHeader';
-import {
-  assetNavigations,
-  colors,
-  gameNavigations,
-  seedNavigations,
-} from '@/constants';
-import {Account, Card, Game, Seed} from '@/types/domain';
+import {assetNavigations, colors, seedNavigations} from '@/constants';
+import {Account, Card, Seed} from '@/types/domain';
 import React, {useEffect, useState, useMemo} from 'react';
 import {
   SafeAreaView,
@@ -20,13 +15,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
-import GameList from '@/components/asset/asset/GameList';
 import AssetAccountData from '@/assets/tempData/Asset/AssetAccountData.json';
-import GameListData from '@/assets/tempData/Asset/GameListData.json';
-import SeedsDataList from '@/assets/tempData/Asset/SeedsDataList.json';
-import SeedList from '@/components/asset/asset/SeedList';
+import SeedList from '@/components/asset/seed/SeedList';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
@@ -39,10 +30,6 @@ type AssetData = {
   cards: Card[];
 };
 
-type GameData = {
-  games: Game[];
-};
-
 type SeedData = Seed[];
 
 const AssetMainScreen = () => {
@@ -50,7 +37,6 @@ const AssetMainScreen = () => {
   const [assetAmount, setAssetAmount] = useState('20000000');
   const [assetData, setAssetData] = useState<AssetData | null>(null);
   const [showHiddenAssets, setShowHiddenAssets] = useState(false);
-  const [gameData, setGameData] = useState<GameData | null>(null);
   const [seedData, setSeedData] = useState<SeedData | null>(null);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
 
@@ -86,7 +72,6 @@ const AssetMainScreen = () => {
   useEffect(() => {
     handleGetAssets();
     setGameData(GameListData);
-    // setSeedData(SeedsDataList.data);
     getSeedData();
   }, []);
 
@@ -129,10 +114,6 @@ const AssetMainScreen = () => {
     [sortedCards, showHiddenAssets],
   );
 
-  const filteredGames = useMemo(() => {
-    return gameData?.games.filter(game => game.status === 'ongoing') || [];
-  }, [gameData]);
-
   const filteredSeeds = useMemo(() => {
     return (
       seedData?.filter(
@@ -162,23 +143,6 @@ const AssetMainScreen = () => {
             {showHiddenAssets ? '자산 숨기기' : '숨긴 자산 보기'}
           </Text>
           {showHiddenAssets ? <ArrowDropUpButton /> : <ArrowDropDownButton />}
-        </TouchableOpacity>
-
-        {/* 내기 */}
-
-        <Text style={styles.headerText}>진행중인 내기</Text>
-        <GameList gameData={filteredGames} />
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(assetNavigations.GAME, {
-              screen: gameNavigations.CREATE,
-              params: {gameId: undefined},
-            })
-          }>
-          <View style={styles.buttonContainer}>
-            <AddRoundButton />
-            <Text style={styles.buttonText}>생성</Text>
-          </View>
         </TouchableOpacity>
 
         {/* 종잣돈 */}

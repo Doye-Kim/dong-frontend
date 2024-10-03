@@ -1,35 +1,33 @@
+import {ResponseFriend} from '@/api/friends';
 import {User, FriendCheckFill, FriendCheck} from '@/assets/icons';
 import {colors} from '@/constants';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 import {Contact} from 'react-native-contacts/type';
 
 const UserListItem = ({
-  item: contact,
+  item,
   setSelectedFriends,
   selectedFriends,
 }: {
-  item: Contact;
+  item: ResponseFriend;
   setSelectedFriends(selectedFriends: []): void;
   selectedFriends: [];
 }) => {
   const isSelected = selectedFriends.some(
-    friend => friend.name === contact.displayName,
+    friend => friend.nickname === item.nickname,
   );
 
-  const handlePressFriend = (contact: Contact) => {
+  const handlePressFriend = (item: ResponseFriend) => {
     const isSelected = selectedFriends.some(
-      friend => friend.name === contact.displayName,
+      friend => friend.nickname === item.nickname,
     );
 
     if (isSelected) {
       setSelectedFriends(prev =>
-        prev.filter(friend => friend.name !== contact.displayName),
+        prev.filter(friend => friend.nickname !== item.nickname),
       );
     } else {
-      setSelectedFriends(prev => [
-        {id: contact.recordID, name: contact.displayName},
-        ...prev,
-      ]);
+      setSelectedFriends(prev => [item, ...prev]);
     }
   };
 
@@ -44,16 +42,14 @@ const UserListItem = ({
   return (
     <TouchableOpacity
       style={styles.friendContainer}
-      onPress={() => handlePressFriend(contact)}>
+      onPress={() => handlePressFriend(item)}>
       <User width={40} height={40} />
       <View style={styles.contactDetails}>
-        <Text key={contact.recordID} style={styles.nameText}>
-          {contact.displayName}
+        <Text key={item.id} style={styles.nameText}>
+          {item.nickname}
         </Text>
-        {contact.phoneNumbers[0] && (
-          <Text style={styles.numberText}>
-            {formatPhoneNumber(contact.phoneNumbers[0].number)}
-          </Text>
+        {item.phone && (
+          <Text style={styles.numberText}>{formatPhoneNumber(item.phone)}</Text>
         )}
       </View>
       {isSelected ? (

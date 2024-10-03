@@ -4,13 +4,15 @@ import CustomButton from '@/components/common/CustomButton';
 import DropdownCategory from '@/components/game/DropdownCategory';
 import ImageIcon from '@/components/game/ImageIcon';
 import {colors, gameNavigations} from '@/constants';
-import { GameStackParamList } from '@/navigations/stack/asset/GameStackNavigation';
+import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
+import useGameCreateStore from '@/store/useGameCreateStore';
 import {getDateLocaleFormatDiff} from '@/utils';
 import {category} from '@/utils/categories';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {useState} from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -20,17 +22,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const GameCreateScreen = () => {
   const [isOpenCalendar, setIsOpneCalendar] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
   const [isOpenCategoryDropdown, setIsOpenCategotyDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
-  const [amount, setAmount] = useState('0원');
+  const [amount, setAmount] = useState('0');
   const curDate = new Date();
   const navigtaion = useNavigation<StackNavigationProp<GameStackParamList>>();
 
+  const {setStartDate, setEndDate, setGameCategoryId, setFee} =
+    useGameCreateStore();
   const onPressDate = () => {
     setIsOpneCalendar(prev => !prev);
   };
@@ -44,11 +49,44 @@ const GameCreateScreen = () => {
     setIsOpenCategotyDropdown(false);
   };
 
-  const getFormattedEntryFee = (text: string) => {
+  const handleChangeText = (text: string) => {
     const filteredText = text.replace(/[^0-9]/g, '');
-    setAmount(filteredText ? `${Number(filteredText).toLocaleString()}원` : '');
+    setAmount(filteredText ? `${Number(filteredText).toLocaleString()}` : '0');
   };
 
+  const onPressNext = () => {
+    if (!start || !end) {
+      Toast.show({
+        type: 'error',
+        text1: '날짜를 선택해 주세요',
+      });
+    } else if (selectedCategory === 0) {
+      Toast.show({
+        type: 'error',
+        text1: '카테고리를 선택해 주세요',
+      });
+    } else if (amount === '0') {
+      Alert.alert('헉!', '참가비가 0원입니다. 그대로 진행하시겠습니까?', [
+        {
+          text: '취소',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: '진행',
+          onPress: () => {
+            navigtaion.navigate(gameNavigations.FRIENDS);
+          },
+        },
+      ]);
+    } else {
+      setStartDate(start);
+      setEndDate(end);
+      setGameCategoryId(selectedCategory);
+      setFee(Number(amount.replace(/[^0-9]/g, '')));
+      navigtaion.navigate(gameNavigations.FRIENDS);
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -64,12 +102,12 @@ const GameCreateScreen = () => {
             <TouchableOpacity style={styles.dateInfo} onPress={onPressDate}>
               <View style={styles.startendDate}>
                 <Text style={styles.dateText}>
-                  {startDate
-                    ? getDateLocaleFormatDiff(startDate)
+                  {start
+                    ? getDateLocaleFormatDiff(start)
                     : getDateLocaleFormatDiff(curDate)}{' '}
                   ~{' '}
-                  {endDate
-                    ? getDateLocaleFormatDiff(endDate)
+                  {end
+                    ? getDateLocaleFormatDiff(end)
                     : getDateLocaleFormatDiff(curDate)}
                 </Text>
               </View>
@@ -77,9 +115,6 @@ const GameCreateScreen = () => {
             <View style={styles.contentsContainer}>
               <View>
                 <Text style={styles.infoTitleText}>카테고리</Text>
-                <Text style={styles.infoDescText}>
-                  생성 후 내기에 포함할 커스텀 카테고리도 추가할 수 있어요!
-                </Text>
               </View>
               <TouchableOpacity
                 style={styles.infoContainer}
@@ -99,21 +134,22 @@ const GameCreateScreen = () => {
               </View>
               <View style={styles.infoContainer}>
                 <TextInput
-                  style={styles.infoText}
+                  style={[styles.infoText, {margin: 0}]}
                   value={amount}
-                  onChangeText={getFormattedEntryFee}
+                  onChangeText={handleChangeText}
                   keyboardType="numeric"
                 />
+                <Text style={[styles.infoText, {margin: 0}]}>원</Text>
               </View>
             </View>
             {isOpenCalendar && (
               <CalendarModal
                 isVisible={isOpenCalendar}
                 curDate={curDate}
-                startDate={startDate}
-                setStartDate={setStartDate}
-                endDate={endDate}
-                setEndDate={setEndDate}
+                startDate={start}
+                setStartDate={setStart}
+                endDate={end}
+                setEndDate={setEnd}
                 onClose={() => setIsOpneCalendar(false)}
                 marginTop={360}
                 seedOrGame={false}
@@ -129,7 +165,7 @@ const GameCreateScreen = () => {
           />
         )}
         <View style={styles.buttonContainer}>
-          <CustomButton text="다음" onPress={() => navigtaion.navigate(gameNavigations.FRIENDS)}/>
+          <CustomButton text="다음" onPress={onPressNext} />
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -140,7 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginVertical: 50,
+    marginBottom: 20,
   },
   titleText: {
     fontFamily: 'Pretendard-Bold',

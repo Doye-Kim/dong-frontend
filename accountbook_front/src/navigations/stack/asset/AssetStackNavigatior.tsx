@@ -1,10 +1,9 @@
-import {assetNavigations, colors, gameNavigations} from '@/constants';
+import {assetNavigations, colors} from '@/constants';
 import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import GameStackNavigation from './GameStackNavigation';
 import AssetDetailStackNavigator, {
   AssetDetailStackParamList,
 } from './AssetDetailStackNavigator';
@@ -16,7 +15,6 @@ export type AssetStackParamList = {
     screen: string;
     params: {accountId?: number; cardId?: number; paymentId?: number};
   };
-  [assetNavigations.GAME]: {screen: string; params: {gameId?: number}};
   [assetNavigations.SEED]: {screen: string; params: {seedId?: number}};
 };
 
@@ -34,11 +32,6 @@ const AssetStackNavigatior = () => {
       <Stack.Screen
         name={assetNavigations.DETAIL}
         component={AssetDetailStackNavigator}
-        options={{headerTitle: '', headerShown: false}}
-      />
-      <Stack.Screen
-        name={assetNavigations.GAME}
-        component={GameStackNavigation}
         options={{headerTitle: '', headerShown: false}}
       />
       <Stack.Screen

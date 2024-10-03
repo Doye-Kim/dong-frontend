@@ -9,6 +9,8 @@ export {default as RightArrowIcon} from './rightArrow.svg';
 export {default as FilterButton} from './filterButton.svg';
 export {default as EditIcon} from './editIcon.svg';
 export {default as BackArrow} from './backArrow.svg';
+export {default as GameIcon} from './game.svg';
+export {default as GameFillIcon} from './gameFill.svg';
 
 export {default as AccountIcon} from './account.svg';
 export {default as CardIcon} from './card.svg';
@@ -27,7 +29,6 @@ export {default as AddSquareSettlement} from './add-square-settlement.svg';
 export {default as AddCircle} from './add-circle.svg';
 export {default as StoreIcon} from './store.svg';
 
-
 export {default as User} from './user.svg';
 export {default as UserProfileImage} from './userProfileImage.svg';
 export {default as DisabledUser} from './user-disabled.svg';
@@ -38,6 +39,7 @@ export {default as AddRoundButton} from './addRoundButton.svg';
 export {default as ArrowDropDownButton} from './arrowDropDown.svg';
 export {default as ArrowDropUpButton} from './arrowDropUp.svg';
 export {default as RightArrowButton} from './rightArrowButton.svg';
+export {default as RefreshButton} from './refresh.svg';
 
 export {default as BellIcon} from './bell.svg';
 export {default as bellNotifyIcon} from './bellNotify.svg';
