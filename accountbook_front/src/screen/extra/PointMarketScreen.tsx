@@ -1,6 +1,6 @@
 import {BackArrow} from '@/assets/icons';
 import NotificationHeader from '@/components/common/NotificationHeader';
-import {colors} from '@/constants';
+import {colors, extraNavigations} from '@/constants';
 import {Gift} from '@/types/domain';
 import React, {useEffect, useState} from 'react';
 import {
@@ -13,12 +13,20 @@ import {
 import axiosInstance from '@/api/axios';
 import BuyConfirmModal from '@/components/extra/BuyConfirmModal';
 import BarcodeModal from '@/components/extra/BarcodeModal';
-
-interface PointMarketScreenProps {}
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { ExtraStackParamList } from '@/navigations/stack/ExtraStackNavigator';
 
 type GiftData = Gift[];
 
-const PointMarketScreen = ({}: PointMarketScreenProps) => {
+type PointMarketRouteProp = RouteProp<
+  ExtraStackParamList,
+  'PointMarket'
+>;
+
+const PointMarketScreen = () => {
+  
+  const route = useRoute<PointMarketRouteProp>();
+  const [point, setPoint] = useState(route.params.point);
   const [giftList, setGiftList] = useState<GiftData | null>(null);
   const [selectedGiftId, setSelectedGiftId] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,6 +35,7 @@ const PointMarketScreen = ({}: PointMarketScreenProps) => {
 
   useEffect(() => {
     handleGift();
+    setPoint(point);
   }, []);
 
   // 기프티콘 목록 가져오기
@@ -85,7 +94,7 @@ const PointMarketScreen = ({}: PointMarketScreenProps) => {
       <View style={styles.pointSectionContainer}>
         <Text style={styles.pointTitleText}>내 포인트</Text>
         <View style={styles.pointContainer}>
-          <Text style={styles.pointText}>{(12450).toLocaleString()} p</Text>
+          <Text style={styles.pointText}>{point.toLocaleString()} p</Text>
         </View>
       </View>
       <ScrollView style={styles.giftListContainer}>
