@@ -4,10 +4,12 @@ import AccountBookHeaderNavigator, {
   AccountBookHeaderParamList,
 } from './AccountBookHeaderNavigator';
 import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScreen';
-import {accountBookNavigations} from '@/constants';
+import {accountBookNavigations, colors} from '@/constants';
 import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
 import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
 import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
+import PaymentDivideScreen from '@/screen/accountBook/payment/PaymentDivideScreen';
+import { Payment } from '@/types/domain';
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]: undefined;
@@ -16,13 +18,18 @@ export type AccountBookStackParamList = {
   [accountBookNavigations.PAYMENTADD]: undefined;
   [accountBookNavigations.BUDGETCREATE]: undefined;
   [accountBookNavigations.BUDGET]: undefined;
+  [accountBookNavigations.PAYMENTDIVIDE]: {payment: Payment};
 };
 
 const Stack = createStackNavigator();
 
 const AccountBookStackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={
+        {headerStyle: {backgroundColor: colors.WHITE}}
+      }
+    >
       <Stack.Screen
         name={accountBookNavigations.TABBAR}
         component={AccountBookTabNavigator}
@@ -51,6 +58,11 @@ const AccountBookStackNavigator = () => {
       <Stack.Screen
         name={accountBookNavigations.BUDGET}
         component={BudgetMainScreen}
+        options={{headerTitle: ''}}
+      />
+      <Stack.Screen 
+        name={accountBookNavigations.PAYMENTDIVIDE}
+        component={PaymentDivideScreen}
         options={{headerTitle: ''}}
       />
     </Stack.Navigator>

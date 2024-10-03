@@ -12,13 +12,14 @@ import {
 } from 'react-native';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {EditIcon, MeatballMenuIcon} from '@/assets/icons';
-import {getDateTimeLocaleFormat, getDateWithSeparator} from '@/utils';
+import {getDateLocaleFormat, getDateTimeLocaleFormat, getDateWithSeparator, getTimeLocalFormat} from '@/utils';
 import {colors} from '@/constants';
 import axiosInstance from '@/api/axios';
 import {Payment} from '@/types/domain';
 import CategoryList from '@/components/accountBook/category/CategoryList';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
 import useDateStore from '@/store/useDateStore';
+import PaymentOption from '@/components/accountBook/payment/PaymentOption';
 
 type RouteParams = {
   PaymentDetail?: {paymentId: number};
@@ -29,9 +30,12 @@ const PaymentDetailScreen = () => {
   const navigation = useNavigation();
   const paymentId = route.params?.paymentId;
   const [paymentData, setPaymentData] = useState<Payment>();
-  const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  const [isCategoryModalVisible, setIsCategoryModalVisible] =
+    useState<boolean>(false);
+  const [isOptionModalVisible, setIsOptionModalVisible] =
+    useState<boolean>(false);
   const date = useDateStore(state => state.date);
-  const yearMonth = getDateWithSeparator(date, "-");
+  const yearMonth = getDateWithSeparator(date, '-');
   const {fetchPaymentData} = usePaymentDataStore();
 
   // 수정사항 저장하는 함수
@@ -154,13 +158,17 @@ const PaymentDetailScreen = () => {
     toggleCategoryModal();
   };
 
+  const toggleOptionModal = () => {
+    setIsOptionModalVisible(prev => !prev);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {paymentData !== undefined ? (
         <>
           <ScrollView style={styles.scrollContainer}>
             <View style={styles.header}>
-              <TextInput
+              {/* <TextInput
                 style={styles.headerTitle}
                 placeholder="상품 이름을 입력하세요"
                 placeholderTextColor={colors.GRAY_500}
@@ -168,13 +176,14 @@ const PaymentDetailScreen = () => {
                   setPaymentData({...paymentData, paymentName: text})
                 }
                 value={paymentData.merchantName}
-              />
+              /> */}
+              <Text style={styles.headerTitle}>{paymentData.merchantName}</Text>
               <View style={styles.headerBelow}>
                 <Text style={styles.amountText}>
                   {paymentData.balance.toLocaleString()}원
                 </Text>
                 <TouchableOpacity>
-                  <MeatballMenuIcon />
+                  <MeatballMenuIcon onPress={toggleOptionModal} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -209,7 +218,7 @@ const PaymentDetailScreen = () => {
               <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>일시</Text>
                 <Text style={styles.detailValue}>
-                  {getDateTimeLocaleFormat(paymentData.paymentTime)}
+                  {getDateLocaleFormat(paymentData.paymentTime)}  {getTimeLocalFormat(paymentData.paymentTime)}
                 </Text>
               </View>
               <View style={styles.detailItem}>
@@ -265,6 +274,20 @@ const PaymentDetailScreen = () => {
                   style={styles.closeButton}>
                   <Text style={styles.closeButtonText}>닫기</Text>
                 </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <Modal
+            visible={isOptionModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setIsOptionModalVisible(false)}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.bottomModalContainer}>
+                <PaymentOption
+                  onClose={() => setIsOptionModalVisible(false)}
+                  payment={paymentData}
+                />
               </View>
             </View>
           </Modal>
@@ -416,6 +439,23 @@ const styles = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 16,
     fontFamily: 'Pretendard-Bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  optionModalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  optionModalContent: {
+    width: '100%',
+    backgroundColor: colors.WHITE,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
+    maxHeight: '50%',
   },
 });
 

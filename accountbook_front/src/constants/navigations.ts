@@ -18,6 +18,7 @@ const accountBookNavigations = {
   PAYMENTADD: 'PaymentAdd',
   BUDGETCREATE: 'BudgetCreate',
   BUDGET: 'Budget',
+  PAYMENTDIVIDE: 'PaymentDivide',
 } as const;
 
 const accountBookTabNavigations = {

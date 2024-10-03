@@ -60,7 +60,8 @@ const Navbar = () => {
               if (
                 routeName === accountBookNavigations.PAYMENTDETAIL ||
                 routeName === accountBookNavigations.HEADER ||
-                routeName === accountBookNavigations.PAYMENTADD
+                routeName === accountBookNavigations.PAYMENTADD ||
+                routeName === accountBookNavigations.PAYMENTDIVIDE
               ) {
                 return {display: 'none'};
               }
