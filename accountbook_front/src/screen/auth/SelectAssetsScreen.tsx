@@ -37,7 +37,7 @@ const SelectAssetsScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: '계좌를 불러오는 데 문제가 생겼어요 다시 시도해 주세요',
+        text1: '자산을 불러오는 데 문제가 생겼어요 다시 시도해 주세요',
       });
     }
   };

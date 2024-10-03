@@ -1,103 +1,220 @@
+import {
+  Category,
+  ResponseGameState,
+  deleteGame,
+  getCategory,
+  getPrepareGame,
+} from '@/api/game';
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
 import {assetNavigations, colors, gameNavigations} from '@/constants';
-import { AssetStackParamList } from '@/navigations/stack/asset/AssetStackNavigatior';
-import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
 import {category} from '@/utils/categories';
+import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {useFocusEffect} from '@react-navigation/native';
+import {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<AssetStackParamList, keyof AssetStackParamList>,
-  StackNavigationProp<GameStackParamList, keyof GameStackParamList>
->;
+const GamePrepareScreen = ({route, navigation}) => {
+  const [gameData, setGameData] = useState<ResponseGameState>();
+  const [userData, setUserData] = useState();
+  const [categoryData, setCategoryData] = useState<Category[]>();
+  const participantId = route?.params?.participantId;
 
-const myInfo = {
-  userId: 1111,
-  number: '01011112222',
-  name: '김철수',
-};
-interface GameInfo {
-  categoryId: number;
-  managerId: number;
-  fee: number;
-  startDate: string;
-  endDate: string;
-  participants: {userId: number; join: boolean; name: string}[];
-}
-const data: GameInfo = {
-  categoryId: 1,
-  managerId: 1111,
-  fee: 30000,
-  startDate: '2024.09.01',
-  endDate: '2024.09.30',
-  participants: [
-    {userId: 1111, join: true, name: '김철수'},
-    {userId: 2222, join: true, name: '신짱구'},
-    {userId: 3333, join: true, name: '이훈이'},
-    {userId: 4444, join: true, name: '맹구'},
-  ],
-};
-const GamePrepareScreen = () => {
-  const sortedParticipants = [...data.participants].sort((a, b) => {
-    if (a.join === b.join) return 0;
-    return a.join ? -1 : 1;
-  });
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const getCategoryData = async () => {
+    console.log('getCategoryData');
+    try {
+      const data = await getCategory(participantId);
+      setCategoryData(data);
+      console.log('category', data);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: '카테고리를 불러오는 데 문제가 생겼어요',
+      });
+    }
+  };
+  const getData = async () => {
+    console.log('getdata');
+    setUserData(await getEncryptStorage('user'));
+
+    try {
+      const data = await getPrepareGame(participantId);
+      console.log('Data ', data);
+      setGameData(data);
+    } catch (err) {
+      console.log('errerrr', err);
+      console.log(err.reponse.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message,
+      });
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getCategoryData();
+    }, []),
+  );
+  useEffect(() => {
+    getData();
+  }, []);
 
   const pressButtonStart = () => {
     // 게임 생성 로직도 여기다가 작성
-    navigation.navigate(gameNavigations.DETAIL, {gameId: 1}); // 여기도 게임아이디가 지금 게임아이디로 가야할듯
+    // navigation.navigate(gameNavigations.DETAIL, {gameId: 1}); // 여기도 게임아이디가 지금 게임아이디로 가야할듯
   };
 
+  const handlePressCategory = () => {
+    navigation.navigate(gameNavigations.CATEGORY, {
+      category: categoryData,
+      participantId: participantId,
+    });
+  };
+
+  const onDelete = async () => {
+    try {
+      const data = await deleteGame(participantId);
+      console.log(data);
+      navigation.navigate(gameNavigations.MAIN);
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '삭제하는 과정에서 문제가 생겼어요',
+      });
+    }
+  };
+  const handlePressCancel = () => {
+    Alert.alert(
+      'Warning!',
+      '내기 취소 시 모든 내기 관련 정보가 삭제됩니다. 정말 취소하시겠습니까?',
+      [
+        {
+          text: '취소',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: () => {
+            onDelete();
+          },
+        },
+      ],
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Image
-          source={getGameImage(data.categoryId)}
-          style={{width: 50, height: 50, marginRight: 10}}
-        />
-        <Text style={styles.titleText}>{category[data.categoryId]} 내기</Text>
-      </View>
-      <View style={{margin: 10}}>
-        <Text style={styles.infoTitletext}>인원</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {sortedParticipants.map(item => (
-            <View key={item.userId} style={styles.user}>
-              <UserIcon name={item.name} disabled={!item.join} />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitletext}>기간</Text>
-        <Text style={styles.infoTitletext}>
-          {data.startDate} ~ {data.endDate}
-        </Text>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitletext}>참가비</Text>
-        <Text style={styles.infoTitletext}>{data.fee.toLocaleString()}원</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        {myInfo.userId === data.managerId ? (
-          <CustomButton text="시작" onPress={pressButtonStart} />
-        ) : (
-          <CustomButton
-            text="나가기"
-            onPress={() => navigation.navigate(assetNavigations.MAIN)}
-          />
-        )}
-      </View>
+      {gameData && (
+        <>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 20,
+            }}>
+            <Image
+              source={getGameImage(gameData?.category.imageNumber)}
+              style={{width: 50, height: 50, marginRight: 10}}
+            />
+            <Text style={styles.titleText}>
+              {category[gameData?.category.imageNumber]} 내기
+            </Text>
+          </View>
+          <View style={{margin: 10}}>
+            <Text style={styles.infoTitletext}>인원</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{marginTop: 10}}>
+              {gameData?.afterParticipant &&
+                gameData?.afterParticipant.map(item => (
+                  <View
+                    key={item.userName + item.gameCount}
+                    style={styles.user}>
+                    <UserIcon name={item.userName} disabled={false} />
+                  </View>
+                ))}
+              {gameData?.beforeParticipant &&
+                gameData?.beforeParticipant
+                  .sort((a, b) => {
+                    const statusOrder = {
+                      OWNER: 0,
+                      JOINER: 0,
+                      DECLINER: 1,
+                      WAITING: 1,
+                    };
+                    return statusOrder[a.status] - statusOrder[b.status];
+                  })
+                  .map(item => {
+                    const disabled =
+                      item.status !== 'OWNER' && item.status !== 'JOINER';
+                    return (
+                      <View key={item.participantId} style={styles.user}>
+                        <UserIcon name={item.userName} disabled={disabled} />
+                      </View>
+                    );
+                  })}
+            </ScrollView>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitletext}>기간</Text>
+            <Text style={styles.infoTitletext}>
+              {gameData.startDate} ~ {gameData.endDate}
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitletext}>참가비</Text>
+            <Text style={styles.infoTitletext}>
+              {gameData.fee.toLocaleString()}원
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitletext}>카테고리</Text>
+            <TouchableOpacity
+              onPress={handlePressCategory}
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              {categoryData &&
+                categoryData.map(item => (
+                  <>
+                    <Text style={styles.categoryText}>{item.name}</Text>
+                  </>
+                ))}
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.infoText}>
+            *내기 시작 전까지는 카테고리를 수정할 수 있습니다.
+          </Text>
+          <View style={styles.buttonContainer}>
+            {userData && JSON.parse(userData).name === gameData.ownerName ? (
+              <>
+                <CustomButton text="시작" onPress={pressButtonStart} />
+                <TouchableOpacity onPress={handlePressCancel}>
+                  <Text style={styles.cancelText}>취소하기</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <CustomButton
+                text="나가기"
+                onPress={() => navigation.navigate(assetNavigations.MAIN)}
+              />
+            )}
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -105,7 +222,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
     marginBottom: 20,
   },
   titleText: {
@@ -121,14 +237,39 @@ const styles = StyleSheet.create({
   user: {
     margin: 10,
   },
+  infoText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+    marginLeft: 10,
+    color: colors.PRIMARY,
+  },
   infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     margin: 10,
   },
   buttonContainer: {
     flex: 1,
     justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  cancelText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 14,
+    marginTop: 10,
+    color: colors.GRAY_600,
+    textDecorationLine: 'underline',
+  },
+  categoryText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    color: '#402c1b',
+    borderRadius: 10,
+    backgroundColor: '#F9E4BC',
+    marginLeft: 5,
   },
 });
 export default GamePrepareScreen;

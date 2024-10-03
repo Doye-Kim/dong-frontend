@@ -1,21 +1,5 @@
+import React, {useState, useEffect} from 'react';
 import {
-  CategoryCheckEmptyIcon,
-  FriendCheck,
-  FriendCheckFill,
-  Search,
-  User,
-} from '@/assets/icons';
-import CustomButton from '@/components/common/CustomButton';
-import UserIcon from '@/components/game/UserIcon';
-import UserListItem from '@/components/game/UserListItem';
-import {colors, gameNavigations} from '@/constants';
-import { GameStackParamList } from '@/navigations/stack/asset/GameStackNavigation';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import {useEffect, useRef, useState} from 'react';
-import {
-  FlatList,
-  PermissionsAndroid,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -23,88 +7,64 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
-import Contacts from 'react-native-contacts';
-import {Contact} from 'react-native-contacts/type';
-
-const requestContactsPermission = async (): Promise<Contact[]> => {
-  try {
-    const granted = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-    );
-
-    if (granted) {
-      const contacts = await Contacts.getAll();
-      return contacts; // Contact 배열 반환
-    } else {
-      const result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      );
-      if (result === PermissionsAndroid.RESULTS.GRANTED) {
-        const contacts = await Contacts.getAll();
-        return contacts; // Contact 배열 반환
-      } else {
-        return []; // 권한이 거부된 경우 빈 배열 반환
-      }
-    }
-  } catch (err) {
-    console.warn(err);
-    return [];
-  }
-};
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {colors, gameNavigations} from '@/constants';
+import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
+import useFriendsStore from '@/store/useFriendsStore';
+import CustomButton from '@/components/common/CustomButton';
+import UserIcon from '@/components/game/UserIcon';
+import UserListItem from '@/components/game/UserListItem';
+import {RefreshButton, Search} from '@/assets/icons';
+import useContacts from '@/hooks/useContacts'; // 새로 만든 hook import
+import {ResponseFriend} from '@/api/friends';
+import {getEncryptStorage} from '@/utils/encryptedStorage';
+import useGameCreateStore from '@/store/useGameCreateStore';
+import Toast from 'react-native-toast-message';
 
 const GameFriendsScreen = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [selectedFriends, setSelectedFriends] = useState<
-    {id: number; name: string}[]
-  >([{id: 0, name: '나'}]);
+  const friends = useFriendsStore(state => state.friends);
+  const [selectedFriends, setSelectedFriends] = useState<ResponseFriend[]>([]);
+  const [userData, setUserData] = useState();
+  const getUser = async () => {
+    const user = JSON.parse(await getEncryptStorage('user'));
+    setSelectedFriends([
+      {
+        id: user.id,
+        name: user.name,
+        nickname: '나',
+        phone: user.phone,
+      },
+    ]);
+    setUserData(user);
+  };
+  const {refreshFriends} = useContacts(); // Custom hook 사용
 
-  const [searchContacts, setSearchContacts] = useState<Contact[]>([]);
-  const [searchWord, setSearchWord] = useState('');
-  const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   useEffect(() => {
-    const fetchContacts = async () => {
-      const contactsData = await requestContactsPermission();
-      setContacts(contactsData);
-    };
-
-    fetchContacts();
+    getUser();
   }, []);
 
+  const [searchContacts, setSearchContacts] = useState<ResponseFriend[]>([]);
+  const [searchWord, setSearchWord] = useState('');
+  const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
+
   const handlePressSelectedFriend = data => {
-    if (data.name !== '나') {
-      // console.log('sk', data);
+    if (data.nickname !== '나') {
       setSelectedFriends(prev =>
         prev.filter(friend => friend.name !== data.name),
       );
     }
   };
 
-  const handlePressFriend = (contact: Contact) => {
-    const isSelected = selectedFriends.some(
-      friend => friend.name === contact.displayName,
-    );
-
-    if (isSelected) {
-      setSelectedFriends(prev =>
-        prev.filter(friend => friend.name !== contact.displayName),
-      );
-    } else {
-      setSelectedFriends(prev => [
-        {id: contact.recordID, name: contact.displayName},
-        ...prev,
-      ]);
-    }
-  };
-
   const handleSearch = (text: string) => {
     setSearchWord(text);
     if (text) {
-      const filteredContacts = contacts.filter(
-        contact =>
-          contact.displayName.toLowerCase().includes(text.toLowerCase()) ||
-          (contact.phoneNumbers[0] &&
-            contact.phoneNumbers[0].number.includes(text)),
+      const filteredContacts = friends.filter(
+        friend =>
+          friend.nickname.toLowerCase().includes(text.toLowerCase()) ||
+          (friend.phone && friend.phone.includes(text)),
       );
       setSearchContacts(filteredContacts);
     } else {
@@ -112,16 +72,23 @@ const GameFriendsScreen = () => {
     }
   };
 
-  const formatPhoneNumber = (phone: string): string => {
-    if (phone.length === 11) {
-      return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-    } else if (phone.length === 10) {
-      return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  const {setParticipantIds} = useGameCreateStore();
+  const onPressNext = () => {
+    const filteredIds = selectedFriends
+      .filter(friend => friend.nickname !== '나')
+      .map(friend => friend.id);
+    if (filteredIds.length === 0) {
+      Toast.show({
+        type: 'error',
+        text1: '내기는 혼자 진행할 수 없어요',
+        text2: '친구를 선택해 주세요',
+      });
+    } else {
+      setParticipantIds(filteredIds);
+      navigation.navigate(gameNavigations.CATEGORY);
     }
-    return phone; // 길이가 10자리나 11자리가 아니면 원래 문자열 반환
   };
-
-  const renderItem = ({item}: {item: Contact}) => {
+  const renderItem = ({item}: {item: ResponseFriend}) => {
     return (
       <UserListItem
         item={item}
@@ -136,17 +103,18 @@ const GameFriendsScreen = () => {
       <Text style={styles.titleText}>
         내기에 참여할{'\n'}친구들을 선택해주세요
       </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.selectedContainer}>
-          {selectedFriends.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => handlePressSelectedFriend(item)}
-              style={styles.selectedUser}>
-              <UserIcon name={item.name} />
-            </TouchableOpacity>
-          ))}
-        </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.selectedContainer}>
+        {selectedFriends.map(item => (
+          <TouchableOpacity
+            key={item.id + item.phone}
+            onPress={() => handlePressSelectedFriend(item)}
+            style={styles.selectedUser}>
+            <UserIcon name={item.nickname} />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
       <View style={styles.searchContainer}>
         <Search width={30} height={30} />
@@ -156,20 +124,30 @@ const GameFriendsScreen = () => {
           onChangeText={handleSearch}
         />
       </View>
+      <View style={{alignItems: 'flex-end'}}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', alignItems: 'center'}}
+          onPress={refreshFriends}>
+          <Text style={styles.updateText}>연락처 업데이트</Text>
+          <RefreshButton width={20} height={20} />
+        </TouchableOpacity>
+      </View>
       <View>
         {searchWord && searchContacts.length === 0 ? (
-          <Text>결과가 없습니다.</Text>
+          <View style={styles.listContainer}>
+            <Text>결과가 없습니다.</Text>
+          </View>
         ) : (
           <FlatList
-            data={searchWord ? searchContacts : contacts}
+            data={searchWord ? searchContacts : friends}
             renderItem={renderItem}
-            keyExtractor={item => item.recordID.toString()}
+            keyExtractor={item => item.id.toString()}
             style={styles.listContainer}
           />
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton text="내기 신청하기" onPress={() => navigation.navigate(gameNavigations.PREPARE)}/>
+        <CustomButton text="다음" onPress={onPressNext} />
       </View>
     </SafeAreaView>
   );
@@ -178,7 +156,6 @@ const GameFriendsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
-    marginTop: 50,
     marginBottom: 20,
     flex: 1,
   },
@@ -190,10 +167,12 @@ const styles = StyleSheet.create({
   selectedContainer: {
     flexDirection: 'row',
     marginHorizontal: 5,
-    marginVertical: 10,
+    marginTop: 10,
+    height: 20,
   },
   selectedUser: {
-    margin: 5,
+    marginHorizontal: 5,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -214,6 +193,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  updateText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+    margin: 5,
+    color: colors.GRAY_600,
   },
 });
 

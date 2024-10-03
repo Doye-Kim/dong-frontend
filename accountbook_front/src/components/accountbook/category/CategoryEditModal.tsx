@@ -95,7 +95,7 @@ const CategoryEditModal = ({
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={onClose}
-              style={[styles.button, styles.cancle]}>
+              style={[styles.button, styles.cancel]}>
               <Text style={[styles.buttonText, {color: colors.GRAY_500}]}>
                 취소
               </Text>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 10,
   },
-  cancle: {
+  cancel: {
     borderColor: colors.GRAY_500,
   },
   complete: {

@@ -7,42 +7,101 @@ import {
   View,
 } from 'react-native';
 import AssetList from '@/components/common/AssetList';
-import {colors} from '@/constants';
+import {colors, gameNavigations} from '@/constants';
 import CustomButton from '@/components/common/CustomButton';
 import {useEffect, useState} from 'react';
-const data = [
-  {
-    bank: 'HG은행',
-    accountNumber: '11111111111',
-    accountName: '입출금이 자유로운 통장',
-    accountTypeCode: '1',
-    accountBalance: '254500',
-  },
-  {
-    bank: 'HK은행',
-    accountNumber: '22222222222',
-    accountName: '또르르 지유예금',
-    accountTypeCode: '1',
-    accountBalance: '100',
-  },
-  {
-    bank: 'DY은행',
-    accountNumber: '333333333333',
-    accountName: '프짱 자립예탁금 통장',
-    accountTypeCode: '1',
-    accountBalance: '27800',
-  },
-  {
-    bank: 'WY은행',
-    accountNumber: '444444444444',
-    accountName: '만기에 두배로 럭키비키 적금통장',
-    accountTypeCode: '3',
-    accountBalance: '1500000',
-  },
-];
-const SelectAccountScreen = () => {
-  const [selectedList, setSelectedList] = useState([]);
-  const [account, setAccount] = useState();
+import {AccountInfo, getRegisterAssets} from '@/api/asset';
+import Toast from 'react-native-toast-message';
+import useGameCreateStore from '@/store/useGameCreateStore';
+import {postGame} from '@/api/game';
+
+const SelectAccountScreen = ({route, navigation}) => {
+  const pageNumber = route?.params?.pageNumber;
+  const [title, setTitle] = useState('');
+  useEffect(() => {
+    switch (pageNumber) {
+      case 1:
+        setTitle('정산 받을');
+        break;
+      case 2:
+        setTitle('출금할');
+        break;
+      case 3:
+        setTitle('참가비를 낼');
+        break;
+    }
+  }, []);
+
+  console.log(pageNumber);
+  const {setAccountNumber} = useGameCreateStore();
+  const [accounts, setAccounts] = useState<AccountInfo[]>();
+  const [account, setAccount] = useState<AccountInfo>();
+  const [selectedList, setSelectedList] = useState<Array<AccountInfo>>([]);
+
+  const getAssetList = async () => {
+    try {
+      const data = await getRegisterAssets();
+      console.log(data);
+      setAccounts(data.accounts);
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '계좌를 불러오는 데 문제가 생겼어요 다시 시도해 주세요',
+      });
+    }
+  };
+  useEffect(() => {
+    getAssetList();
+  }, []);
+
+  const {
+    participantIds,
+    gameCategoryId,
+    customCategoryIds,
+    startDate,
+    endDate,
+    fee,
+  } = useGameCreateStore();
+
+  const enterGame = async (accountNumber: string) => {
+    try {
+      const data = await postGame({
+        participantIds,
+        gameCategoryId,
+        customCategoryIds,
+        startDate,
+        endDate,
+        fee,
+        accountNumber,
+      });
+      console.log(data);
+      navigation.navigate(gameNavigations.MAIN);
+      Toast.show({
+        type: 'success',
+        text1: '내기 신청에 성공했습니다.',
+      });
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message,
+      });
+    }
+  };
+  const handleOnPress = () => {
+    if (pageNumber === 3) {
+      console.log('account ', account.accountNo);
+      if (!account) {
+        Toast.show({
+          type: 'error',
+          text1: '계좌를 선택해 주세요',
+        });
+      } else {
+        setAccountNumber(account.accountNo);
+        enterGame(account.accountNo);
+      }
+    }
+  };
   useEffect(() => {
     if (selectedList.length > 1) {
       setSelectedList(prev => {
@@ -53,22 +112,25 @@ const SelectAccountScreen = () => {
       });
     } else if (selectedList.length === 1) {
       setAccount(selectedList[0]);
+    } else if (selectedList.length === 0) {
+      setAccount();
     }
   }, [selectedList]);
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.text}>{title}</Text>
       <Text style={styles.text}>계좌를 선택하세요</Text>
       <ScrollView style={styles.listContainer}>
         <AssetList
-          accountData={data}
+          accountData={accounts}
           title=""
           selectedList={selectedList}
           setSelectedList={setSelectedList}
         />
       </ScrollView>
       <View>
-        <CustomButton text="확인" />
+        <CustomButton text="내기 요청하기" onPress={handleOnPress} />
       </View>
     </SafeAreaView>
   );
@@ -78,7 +140,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
     marginBottom: 20,
   },
   listContainer: {

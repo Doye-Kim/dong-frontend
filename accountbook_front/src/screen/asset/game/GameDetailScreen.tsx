@@ -1,69 +1,69 @@
+import {ResponseGameState, getProgressGame} from '@/api/game';
 import {colors} from '@/constants';
 import {category} from '@/utils/categories';
 import getGameImage from '@/utils/getGameImage';
+import {useEffect, useState} from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-const myInfo = {
-  userId: 1111,
-  number: '01011112222',
-  name: '김철수',
-};
-interface GameInfo {
-  categoryId: number;
-  managerId: number;
-  fee: number;
-  startDate: string;
-  endDate: string;
-  participants: {userId: number; join: boolean; count: number; name: string}[];
-}
-const data: GameInfo = {
-  categoryId: 1,
-  managerId: 1111,
-  fee: 30000,
-  startDate: '2024.09.01',
-  endDate: '2024.09.30',
-  participants: [
-    {userId: 1111, join: true, name: '김철수', count: 5},
-    {userId: 2222, join: false, name: '신짱구', count: 2},
-    {userId: 3333, join: true, name: '이훈이', count: 0},
-    {userId: 4444, join: false, name: '맹구', count: 10},
-  ],
-};
-const GameDetailScreen = () => {
+import Toast from 'react-native-toast-message';
+
+const GameDetailScreen = ({route, navigation}) => {
+  const [gameData, setGameData] = useState<ResponseGameState>();
+  const participantId = route?.params?.participantId;
+  const getDetail = async () => {
+    try {
+      const data = await getProgressGame({participantId});
+      console.log(data);
+      setGameData(data);
+    } catch (err) {
+      console.log(err.reponse.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getDetail();
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>{category[data.categoryId]} 내기</Text>
+      <Text style={styles.titleText}>
+        {category[data?.category.categoryId]} 내기
+      </Text>
       <Text style={styles.periodText}>
-        {data.startDate} ~ {data.endDate}
+        {gameData.startDate} ~ {gameData.endDate}
       </Text>
       <Image
-        source={getGameImage(data.categoryId)}
+        source={getGameImage(gameData?.category.categoryId)}
         style={{width: 100, height: 100, margin: 20}}
       />
       <Text style={styles.prizeMoneyText}>
-        상금: {(data.fee * data.participants.length).toLocaleString()}원
+        상금:{' '}
+        {(gameData.fee * gameData.afterParticipant.length).toLocaleString()}원
       </Text>
       <View style={styles.userListContainer}>
-        {data.participants
-          .sort((a, b) => a.count - b.count)
+        {gameData.afterParticipant
+          .sort((a, b) => a.gameCount - b.gameCount)
           .map(item => (
             <View
               style={[
                 styles.userInfoContainer,
-                item.userId === myInfo.userId && styles.highlightContainer,
+                item.userName === myInfo.name && styles.highlightContainer,
               ]}>
               <Text
                 style={[
                   styles.userInfoText,
-                  item.userId === myInfo.userId && styles.highlightText,
+                  item.userName === myInfo.name && styles.highlightText,
                 ]}>
-                {item.name}
+                {item.userName}
               </Text>
               <Text
                 style={[
                   styles.userInfoText,
-                  item.userId === myInfo.userId && styles.highlightText,
+                  item.userName === myInfo.name && styles.highlightText,
                 ]}>
-                {item.count}회
+                {item.gameCount}회
               </Text>
             </View>
           ))}
