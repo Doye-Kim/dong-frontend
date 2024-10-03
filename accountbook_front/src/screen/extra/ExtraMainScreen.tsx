@@ -1,15 +1,30 @@
+import axiosInstance from '@/api/axios';
 import {ExpandRight, StoreIcon, UserProfileImage} from '@/assets/icons';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import {colors, extraNavigations} from '@/constants';
 import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 interface ExtraMainScreenProps {}
 
 const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
+  const [point, setPoint] = useState<Number>(0);
   const navigation = useNavigation<NavigationProp<ExtraStackParamList>>();
+
+  const fetchPoint = async () => {
+    try {
+      const response  = await axiosInstance.get("/users/point");
+      setPoint(response.data);
+    } catch (error) {
+      console.error("포인트불러오기 에러 : ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchPoint;
+  },[])
 
   const DATALIST = [
     {id: '1', title: '카테고리 편집', navigationKey: extraNavigations.CATEGORY},
@@ -35,10 +50,10 @@ const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
       </View>
       <Text style={styles.sectionHeaderText}>포인트</Text>
       <View style={styles.pointContainer}>
-        <Text style={styles.pointText}>5,000p</Text>
+        <Text style={styles.pointText}>{point.toLocaleString()}p</Text>
         <TouchableOpacity
           style={styles.storeButton}
-          onPress={() => navigation.navigate(extraNavigations.MARKET)}>
+          onPress={() => navigation.navigate(extraNavigations.MARKET, {point: point})}>
           <StoreIcon />
           <Text style={styles.storeText}>포인트 상점</Text>
         </TouchableOpacity>

@@ -10,7 +10,7 @@ import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
 
 export type ExtraStackParamList = {
   [extraNavigations.MAIN]: undefined;
-  [extraNavigations.MARKET]: undefined;
+  [extraNavigations.MARKET]: {point: Number};
   [extraNavigations.BUDGET]: undefined;
   [extraNavigations.CATEGORY]: undefined;
   [extraNavigations.REPORT]: undefined;
