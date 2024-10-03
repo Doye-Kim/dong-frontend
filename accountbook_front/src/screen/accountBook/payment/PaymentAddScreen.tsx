@@ -10,6 +10,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import {format} from 'date-fns-tz';
 import {EditIcon} from '@/assets/icons';
 import {getDateLocaleFormat, getTimeLocalFormat} from '@/utils';
 import {colors} from '@/constants';
@@ -24,7 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const PaymentAddScreen = () => {
   const navigation = useNavigation();
-  const [balanceEditStatus, setBalanceEditStatus] = useState<boolean>(false);
+  const [balanceEditStatus, setBalanceEditStatus] = useState<boolean>(true);
   const [isOpenCalendar, setIsOpneCalendar] = useState<boolean>(false);
   const [isOpenTimePicker, setIsOpenTimePicker] = useState<Boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -35,7 +36,8 @@ const PaymentAddScreen = () => {
     merchantName: '',
     categoryId: 0,
     categoryName: '',
-    balance: 20000,
+    categoryImageNumber: 0,
+    balance: 0,
     paymentName: '수기 입력',
     memo: '',
     paymentTime: new Date().toISOString(),
@@ -45,6 +47,7 @@ const PaymentAddScreen = () => {
   const [inputBalanceValue, setInputBalanceValue] = useState<string>('');
 
   const handlePostPayment = async (payment: Payment) => {
+    console.log(payment.paymentTime);
     try {
       const response = await axiosInstance.post('/payments', {
         merchantName: payment.merchantName,
@@ -121,8 +124,8 @@ const PaymentAddScreen = () => {
       if (selectedDate) {
         const selectedDateObj = new Date(selectedDate);
         selectedDateObj.setHours(date.getHours(), date.getMinutes());
-
-        const newPaymentTime = selectedDateObj.toISOString();
+        const newPaymentTime = format(selectedDateObj, "yyyy-MM-dd'T'HH:mm:ss", { timeZone: 'Asia/Seoul' });
+  
         setPaymentData(prevPayment => ({
           ...prevPayment,
           paymentTime: newPaymentTime,
@@ -266,6 +269,7 @@ const PaymentAddScreen = () => {
                   value={selectedTime}
                   mode="time"
                   display="default"
+                  timeZoneName='Asia/Seoul'
                   onChange={(event, data) => {
                     setIsOpenTimePicker(false);
                     handleTimeChange(event, data);

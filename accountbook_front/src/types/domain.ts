@@ -3,6 +3,7 @@ type Payment = {
   merchantName: string;
   categoryId: number;
   categoryName: string;
+  categoryImageNumber: number;
   balance: number;
   paymentName: string;
   memo: string;

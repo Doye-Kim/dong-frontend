@@ -16,6 +16,7 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
     merchantName,
     categoryName,
     categoryId,
+    categoryImageNumber,
     balance,
     paymentState,
   } = payment;
@@ -30,7 +31,7 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => handlePress(paymentsId)}>
-      <CategoryIcon categoryNumber={categoryId ? 0 : 0} size={40} />
+      <CategoryIcon categoryNumber={categoryImageNumber ? categoryImageNumber : 0} size={40} />
       <View style={styles.itemContent}>
         <View style={styles.itemHeader}>
           <View style={styles.merchantInfo}>

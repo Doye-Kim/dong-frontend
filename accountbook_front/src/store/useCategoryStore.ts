@@ -10,7 +10,7 @@ interface CategoryState {
   fetchCategories: () => Promise<void>;
 }
 
-const useCategoryStore = create<CategoryState>(set => ({
+const useCategoryStore = create<CategoryState>((set, get) => ({
   categories: [],
   selectedCategories: [],
   setCategories: (categories: ResponseCategory[]) => {
@@ -24,7 +24,13 @@ const useCategoryStore = create<CategoryState>(set => ({
   fetchCategories: async () => {
     try {
       const data = await getCategories();
-      set({categories: data});
+      set((state) => {
+        const newSelectedCategories = data.map(category => category.categoryId);
+        return {
+          categories: data,
+          selectedCategories: newSelectedCategories
+        };
+      });
     } catch (err) {
       Toast.show({
         type: 'error',

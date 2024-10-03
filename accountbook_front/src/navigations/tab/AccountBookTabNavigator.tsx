@@ -42,26 +42,30 @@ const AccountBookTabNavigator: React.FC = () => {
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
-  const isLogin = useUserStore((state) => state.isLogin);
+  const isLogin = useUserStore(state => state.isLogin);
   const date = useDateStore(state => state.date);
   const {paymentData, fetchPaymentData} = usePaymentDataStore();
-  const {categories, selectedCategories, setSelectedCategories, fetchCategories} = useCategoryStore();
+  const {
+    categories,
+    selectedCategories,
+    setSelectedCategories,
+    fetchCategories,
+  } = useCategoryStore();
   const {isHideVisible} = useHideStatusStore();
 
   // 카테고리 초기 설정
   useEffect(() => {
-    if(isLogin) {
+    if (isLogin) {
       setTimeout(() => {
         fetchCategories();
-        setSelectedCategories(categories.map(category => category.categoryId));
-      }, 50)
+      }, 50);
     }
-  },[])
+  }, []);
 
   // 내역 데이터 불러오기
   useEffect(() => {
     if (isLogin) {
-      const dateString = getDateWithSeparator(date, "-").slice(0, 10);
+      const dateString = getDateWithSeparator(date, '-').slice(0, 10);
       if (!paymentData[dateString]) {
         setTimeout(() => {
           fetchPaymentData(dateString);
@@ -74,11 +78,15 @@ const AccountBookTabNavigator: React.FC = () => {
   // 카테고리, 숨김보임 여부에 따른 필터링 함수
   const filteredPaymentList = useMemo(() => {
     const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
-    const paymentList = paymentData[yearMonth] || PaymentDummyData.paymentResponse;
-    console.log('내역 필터링 함수 동작 확인용')
+    const paymentList =
+      paymentData[yearMonth] || PaymentDummyData.paymentResponse;
+    console.log('내역 필터링 함수 동작 확인용');
     return paymentList.filter(payment => {
-      const isCategorySelected = selectedCategories.includes(payment.categoryId);
-      const isVisiblePayment = isHideVisible || payment.paymentState !== 'EXCLUDE';
+      const isCategorySelected = selectedCategories.includes(
+        payment.categoryId,
+      );
+      const isVisiblePayment =
+        isHideVisible || payment.paymentState !== 'EXCLUDE';
       return isCategorySelected && isVisiblePayment;
     });
   }, [paymentData, date, selectedCategories, isHideVisible]);

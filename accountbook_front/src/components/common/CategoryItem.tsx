@@ -1,4 +1,5 @@
 import {CategoryCheckEmptyIcon, CategoryCheckFillIcon} from '@/assets/icons';
+import { colors } from '@/constants';
 import {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
+    color: colors.BLACK,
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     marginHorizontal: 10,
