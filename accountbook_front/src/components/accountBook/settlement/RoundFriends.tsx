@@ -1,11 +1,13 @@
-import {AddCircle, Search} from '@/assets/icons';
+import {ResponseFriend} from '@/api/friends';
+import {AddCircle, RefreshButton, Search} from '@/assets/icons';
 import UserIcon from '@/components/game/UserIcon';
 import UserListItem from '@/components/game/UserListItem';
 import {colors} from '@/constants';
+import useFriendsStore from '@/store/useFriendsStore';
 import {useEffect, useState} from 'react';
+import useContacts from '@/hooks/useContacts'; // 새로 만든 hook import
 import {
   Dimensions,
-  PermissionsAndroid,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,90 +16,83 @@ import {
   View,
 } from 'react-native';
 
-import Contacts from 'react-native-contacts';
-import {Contact} from 'react-native-contacts/type';
+import {ResponsePayment} from '@/screen/accountBook/settlement/SettlementPaymentsScreen';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
+import {getEncryptStorage} from '@/utils/encryptedStorage';
+import Toast from 'react-native-toast-message';
 
-const requestContactsPermission = async (): Promise<Contact[]> => {
-  try {
-    const granted = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-    );
-
-    if (granted) {
-      const contacts = await Contacts.getAll();
-      return contacts; // Contact 배열 반환
-    } else {
-      const result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      );
-      if (result === PermissionsAndroid.RESULTS.GRANTED) {
-        const contacts = await Contacts.getAll();
-        return contacts; // Contact 배열 반환
-      } else {
-        return []; // 권한이 거부된 경우 빈 배열 반환
-      }
-    }
-  } catch (err) {
-    console.warn(err);
-    return [];
-  }
-};
-
-interface RoundProps {
-  settlementPaymentId: number;
-  paymentId: number;
-  balance: number;
-  merchantName: string;
-  paymentName: string;
-  categoryName: string;
-  imageNumber: number;
-}
-const RoundFriends = ({data}: RoundProps) => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+const RoundFriends = ({data}: ResponsePayment) => {
+  const {friends} = useFriendsStore();
+  const {refreshFriends} = useContacts();
+  const {setSettlementUser} = useSettlementCreateStore();
   const [selectedFriends, setSelectedFriends] = useState<
-    {id: number; name: string}[]
-  >([{id: 0, name: '나'}]);
-  const [ghostFriends, setGhostFriends] = useState<
-    {id: number; name: string}[]
+    {userId: number; nickname: string}[]
   >([]);
-  const [searchContacts, setSearchContacts] = useState<Contact[]>([]);
+  const [ghostFriends, setGhostFriends] = useState<
+    {userId: number; nickname: string}[]
+  >([]);
+  const [searchContacts, setSearchContacts] = useState<ResponseFriend[]>([]);
   const [searchWord, setSearchWord] = useState('');
 
+  const getInit = async () => {
+    const userData = JSON.parse(await getEncryptStorage('user'));
+    console.log(userData);
+    setSelectedFriends([{userId: userData.id, nickname: '나'}]);
+  };
   useEffect(() => {
-    const fetchContacts = async () => {
-      const contactsData = await requestContactsPermission();
-      setContacts(contactsData);
-    };
-
-    fetchContacts();
+    getInit();
   }, []);
 
+  useEffect(() => {
+    const newUser = selectedFriends.map(friend => ({
+      userId: friend.userId,
+      nickname: friend.nickname,
+      amount: 0,
+    }));
+    console.log(newUser);
+    setSettlementUser(data.paymentsId, newUser);
+  }, [data.paymentsId, selectedFriends, setSettlementUser]);
+
   const handlePressSelectedFriend = data => {
-    if (data.name !== '나' && data.id > -1) {
-      setSelectedFriends(prev => prev.filter(friend => friend.id !== data.id));
-    } else if (data.name !== '나' && data.id < 0) {
+    if (data.nickname !== '나' && data.userId > -1) {
+      setSelectedFriends(prev =>
+        prev.filter(friend => friend.userId !== data.userId),
+      );
+    } else if (data.nickname !== '나' && data.userId < 0) {
       setGhostFriends(prev =>
-        prev.filter(ghost => ghost.name !== `친구${ghostFriends.length}`),
+        prev.filter(ghost => ghost.nickname !== `친구${ghostFriends.length}`),
       );
       setSelectedFriends(prev =>
-        prev.filter(ghost => ghost.name !== `친구${ghostFriends.length}`),
+        prev.filter(ghost => ghost.nickname !== `친구${ghostFriends.length}`),
       );
     }
   };
   const handlePressGhost = () => {
-    const uniqueId = -(ghostFriends.length + 1); // 고유 ID 생성
-    const name = `친구${ghostFriends.length + 1}`;
-    setSelectedFriends(prev => [{id: uniqueId, name: name}, ...prev]);
-    setGhostFriends(prev => [{id: uniqueId, name: name}, ...prev]);
+    if (ghostFriends.length > 30) {
+      Toast.show({
+        type: 'error',
+        text1: '번호 없는 친구는 최대 30명까지 생성할 수 있습니다.',
+      });
+    } else {
+      const uniqueId = -(ghostFriends.length + 1); // 고유 ID 생성
+      const nickname = `친구${ghostFriends.length + 1}`;
+      setSelectedFriends(prev => [
+        {userId: uniqueId, nickname: nickname},
+        ...prev,
+      ]);
+      setGhostFriends(prev => [
+        {userId: uniqueId, nickname: nickname},
+        ...prev,
+      ]);
+    }
   };
   const handleSearch = (text: string) => {
     setSearchWord(text);
     if (text) {
-      const filteredContacts = contacts.filter(
-        contact =>
-          contact.displayName.toLowerCase().includes(text.toLowerCase()) ||
-          (contact.phoneNumbers[0] &&
-            contact.phoneNumbers[0].number.includes(text)),
+      const filteredContacts = friends.filter(
+        friend =>
+          friend.name.toLowerCase().includes(text.toLowerCase()) ||
+          (friend.phone && friend.phone.includes(text)),
       );
       setSearchContacts(filteredContacts);
     } else {
@@ -128,10 +123,10 @@ const RoundFriends = ({data}: RoundProps) => {
         <View style={styles.selectedContainer}>
           {selectedFriends.map(item => (
             <TouchableOpacity
-              key={item.id}
+              key={item.friendId}
               onPress={() => handlePressSelectedFriend(item)}
               style={styles.selectedUser}>
-              <UserIcon name={item.name} />
+              <UserIcon name={item.nickname} />
             </TouchableOpacity>
           ))}
         </View>
@@ -140,24 +135,32 @@ const RoundFriends = ({data}: RoundProps) => {
         <AddCircle width={35} height={35} />
         <Text style={styles.addGhostText}>번호 없는 친구 추가</Text>
       </TouchableOpacity>
+      <View style={{alignItems: 'flex-end'}}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', alignItems: 'center'}}
+          onPress={refreshFriends}>
+          <Text style={styles.updateText}>연락처 업데이트</Text>
+          <RefreshButton width={20} height={20} />
+        </TouchableOpacity>
+      </View>
       <View>
         {searchWord && searchContacts.length === 0 ? (
-          <Text>결과가 없습니다.</Text>
+          <Text style={{height: 230}}>결과가 없습니다.</Text>
         ) : (
-          <ScrollView style={{height: 250}}>
+          <ScrollView style={{height: 230}}>
             {searchWord
               ? searchContacts.map(item => (
                   <UserListItem
-                    key={item.recordID}
+                    key={item.friendId}
                     item={item}
                     selectedFriends={selectedFriends}
                     setSelectedFriends={setSelectedFriends}
                     style={styles.listContainer}
                   />
                 ))
-              : contacts.map(item => (
+              : friends.map(item => (
                   <UserListItem
-                    key={item.recordID}
+                    key={item.friendId}
                     item={item}
                     selectedFriends={selectedFriends}
                     setSelectedFriends={setSelectedFriends}
@@ -193,7 +196,7 @@ const styles = StyleSheet.create({
   selectedContainer: {
     flexDirection: 'row',
     marginHorizontal: 5,
-    marginVertical: 10,
+    marginTop: 10,
     height: 80,
   },
   selectedUser: {
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     marginTop: 10,
-    height: 320,
+    height: 300,
   },
   searchContainer: {
     borderRadius: 20,
@@ -221,12 +224,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.GRAY_600,
     paddingBottom: 5,
+    height: 35,
   },
   addGhostText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 18,
     color: colors.BLACK,
     marginLeft: 5,
+  },
+  updateText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+    margin: 5,
+    color: colors.GRAY_600,
   },
 });
 

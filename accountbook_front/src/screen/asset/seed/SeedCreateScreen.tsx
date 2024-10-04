@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import {colors} from '@/constants';
+import {assetNavigations, colors} from '@/constants';
 import {useState} from 'react';
 import CalendarModal from '@/components/common/CalendarModal';
 import CustomButton from '@/components/common/CustomButton';
@@ -17,6 +17,9 @@ import {getDateLocaleFormatDiff} from '@/utils';
 import SelectAccountModal from '@/components/seed/SelectAccountModal';
 import {PeriodOptions, postSeed} from '@/api/seed';
 import Toast from 'react-native-toast-message';
+import {useNavigation} from '@react-navigation/native';
+import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const period: Record<PeriodOptions, string> = {
   DAILY: '매일',
@@ -25,6 +28,7 @@ const period: Record<PeriodOptions, string> = {
 };
 
 const SeedCreateScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
   const [isOpenCalendar, setIsOpneCalendar] = useState(false);
   const [isOpenPeriodDropdown, setIsOpenPeriodDropdown] = useState(false);
   const [isOpenSendAccountDropdown, setIsOpenSendAccountDropdown] =
@@ -110,6 +114,7 @@ const SeedCreateScreen = () => {
           type: 'success',
           text1: '종잣돈 생성 완료',
         });
+        navigation.navigate(assetNavigations.MAIN);
       } catch (err) {
         console.log(err.response.data);
         Toast.show({

@@ -72,6 +72,16 @@ const AssetMainScreen = () => {
     getSeedData();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      getSeedData();
+      console.log('focus');
+      return () => {
+        console.log('다른 화면으로 넘어갔어요.');
+      };
+    }, []),
+  );
+
   // 숨긴 계좌 보이기를 했을 때, 가장 밑에 보이게끔
   const sortedAccounts = useMemo(() => {
     if (!assetData) return [];

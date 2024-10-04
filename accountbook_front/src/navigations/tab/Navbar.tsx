@@ -67,6 +67,11 @@ const Navbar = () => {
               if (
                 routeName === accountBookNavigations.PAYMENTDETAIL ||
                 routeName === accountBookNavigations.HEADER ||
+                routeName === accountBookNavigations.SETTLEMENTPAYMENTS ||
+                routeName === accountBookNavigations.SETTLEMENTCOST ||
+                routeName === accountBookNavigations.SETTLEMENTFRIENDS ||
+                routeName === accountBookNavigations.SETTLEMENTREQUEST ||
+                routeName === accountBookNavigations.ACCOUNT ||
                 routeName === accountBookNavigations.PAYMENTADD ||
                 routeName === accountBookNavigations.PAYMENTDIVIDE
               ) {

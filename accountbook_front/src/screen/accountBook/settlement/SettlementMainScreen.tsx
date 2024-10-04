@@ -1,8 +1,17 @@
+import {ResponseSettlements, getSettlements} from '@/api/settlement';
 import {AddSquareSettlement} from '@/assets/icons';
 import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader';
 import SettlementList from '@/components/accountBook/settlement/SettlementList';
-import {colors} from '@/constants';
+
+import {accountBookNavigations, colors} from '@/constants';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import {getMonthYearDetails, getNewMonthYear} from '@/utils';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useCallback, useEffect, useState} from 'react';
+
 import useDateStore from '@/store/useDateStore';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -11,250 +20,90 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-const data = [
-  {
-    settlementId: 2,
-    settlementState: 'YET',
-    representiveMerchandise: '우버택시',
-    settlementPaymentCnt: 2,
-    settlementPaymentList: [
-      {
-        settlementPaymentId: 12,
-        paymentId: 157,
-        balance: 15000,
-        merchantName: '우버택시',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '택시',
-        imageNumber: 8,
-      },
-      {
-        settlementPaymentId: 13,
-        paymentId: 152,
-        balance: 9000,
-        merchantName: 'CU강서신호점',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '편의점',
-        imageNumber: 3,
-      },
-    ],
-    settlementUserCnt: 4,
-    settlementUserList: [
-      {
-        userId: 15,
-        userName: '공원영',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 30,
-        userName: '장효승',
-        cost: 40000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 42,
-        userName: '송도언',
-        cost: 24000,
-        transferState: 'YET',
-      },
-      {
-        userId: 51,
-        userName: '이현규',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-    ],
-  },
-  {
-    settlementId: 4,
-    settlementState: 'FINISH',
-    settlementPaymentCnt: 4,
-    representiveMerchandise: '미진축산',
-    settlementPaymentList: [
-      {
-        settlementPaymentId: 12,
-        paymentId: 157,
-        balance: 15000,
-        merchantName: '우버택시',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '택시',
-        imageNumber: 3,
-      },
-      {
-        settlementPaymentId: 13,
-        paymentId: 152,
-        balance: 9000,
-        merchantName: 'CU강서신호점',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '편의점',
-        imageNumber: 5,
-      },
-    ],
-    settlementUserCnt: 4,
-    settlementUserList: [
-      {
-        userId: 15,
-        userName: '공원영',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 30,
-        userName: '장효승',
-        cost: 40000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 42,
-        userName: '송도언',
-        cost: 24000,
-        transferState: 'YET',
-      },
-      {
-        userId: 51,
-        userName: '이현규',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-    ],
-  },
-  {
-    settlementId: 5,
-    settlementState: 'FINISH',
-    settlementPaymentCnt: 2,
-    representiveMerchandise: '락휴노래연습장',
-    settlementPaymentList: [
-      {
-        settlementPaymentId: 12,
-        paymentId: 157,
-        balance: 15000,
-        merchantName: '우버택시',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '택시',
-        imageNumber: 3,
-      },
-      {
-        settlementPaymentId: 13,
-        paymentId: 152,
-        balance: 9000,
-        merchantName: 'CU강서신호점',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '편의점',
-        imageNumber: 5,
-      },
-    ],
-    settlementUserCnt: 4,
-    settlementUserList: [
-      {
-        userId: 15,
-        userName: '공원영',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 30,
-        userName: '장효승',
-        cost: 40000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 42,
-        userName: '송도언',
-        cost: 24000,
-        transferState: 'YET',
-      },
-      {
-        userId: 51,
-        userName: '이현규',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-    ],
-  },
-  {
-    settlementId: 7,
-    settlementState: 'FINISH',
-    settlementPaymentCnt: 6,
-    representiveMerchandise: '내린천휴게소',
-    settlementPaymentList: [
-      {
-        settlementPaymentId: 12,
-        paymentId: 157,
-        balance: 15000,
-        merchantName: '우버택시',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '택시',
-        imageNumber: 3,
-      },
-      {
-        settlementPaymentId: 13,
-        paymentId: 152,
-        balance: 9000,
-        merchantName: 'CU강서신호점',
-        paymentName: '프렌즈 체크카드',
-        categoryName: '편의점',
-        imageNumber: 5,
-      },
-    ],
-    settlementUserCnt: 4,
-    settlementUserList: [
-      {
-        userId: 15,
-        userName: '공원영',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 30,
-        userName: '장효승',
-        cost: 40000,
-        transferState: 'FINISH',
-      },
-      {
-        userId: 42,
-        userName: '송도언',
-        cost: 24000,
-        transferState: 'YET',
-      },
-      {
-        userId: 51,
-        userName: '이현규',
-        cost: 32000,
-        transferState: 'FINISH',
-      },
-    ],
-  },
-];
 const SettlementMainScreen = () => {
-  const date = useDateStore(state => state.date);
-  const ongoingData = data.filter(
-    settlement => settlement.settlementState === 'YET',
-  );
 
-  const completeData = data.filter(
-    settlement => settlement.settlementState === 'FINISH',
+  const [settlementData, setSettlementData] = useState<ResponseSettlements[]>();
+  const [ongoingData, setOnGoingData] = useState<ResponseSettlements[]>();
+  const [completeData, setCompleteData] = useState<ResponseSettlements[]>();
+  const getData = async () => {
+    console.log('getdata');
+    try {
+      // #todo 헤더에 있는 날짜값으로 변경해야 함
+      const data = await getSettlements('2024-08');
+      console.log(data);
+      setSettlementData(data);
+      const ongoing = data.filter(
+        settlement => settlement.settlementState === 'YET',
+      );
+      const complete = data.filter(
+        settlement => settlement.settlementState === 'FINISH',
+      );
+      setOnGoingData(ongoing);
+      setCompleteData(complete);
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: '정산 데이터를 불러오는 데 문제가 생겼어요',
+      });
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      getData();
+    }, []),
   );
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+  const currentMonthYear = getMonthYearDetails(new Date());
+  const [monthYear, setMonthYear] = useState(currentMonthYear);
+
+  const handleUpdateMonth = (increment: number) => {
+    setMonthYear(prev => getNewMonthYear(prev, increment));
+  };
+
+  const handleOnPressAdd = () => {
+    navigation.navigate(accountBookNavigations.SETTLEMENTPAYMENTS);
+  };
   return (
-    <SafeAreaView style={styles.container}>
-      <AccountBookHeader />
-      <ScrollView style={styles.listContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.labelText}>진행 중인 정산</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <AddSquareSettlement width={40} height={40} />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <SettlementList data={ongoingData} isFinished={false} />
-        </View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.labelText}>완료된 정산</Text>
-        </View>
-        <View>
-          <SettlementList data={completeData} isFinished={true} />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={{flex: 1}}>
+      <AccountBookHeader
+        monthYear={monthYear}
+        onChangeMonth={handleUpdateMonth}
+      />
+      <View style={styles.container}>
+        <ScrollView style={styles.listContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.labelText}>진행 중인 정산</Text>
+            <TouchableOpacity onPress={handleOnPressAdd}>
+              <AddSquareSettlement width={40} height={40} />
+            </TouchableOpacity>
+          </View>
+          {ongoingData && ongoingData.length > 0 ? (
+            <View>
+              <SettlementList
+                data={ongoingData}
+                isFinished={false}
+                refresh={getData}
+              />
+            </View>
+          ) : (
+            <Text style={styles.infoText}>진행 중인 정산이 없습니다.</Text>
+          )}
+          {completeData && completeData.length > 0 && (
+            <>
+              <View style={styles.titleContainer}>
+                <Text style={styles.labelText}>완료된 정산</Text>
+              </View>
+              <View style={{marginBottom: 80}}>
+                <SettlementList data={completeData} isFinished={true} />
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -262,9 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
-    marginBottom: 150,
-    backgroundColor: colors.WHITE,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -279,8 +125,15 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_800,
+    color: colors.BLACK,
     fontSize: 14,
+  },
+  infoText: {
+    fontFamily: 'Pretendard-Medium',
+    color: colors.BLACK,
+    textAlign: 'center',
+    margin: 20,
+    fontSize: 16,
   },
 });
 export default SettlementMainScreen;

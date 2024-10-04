@@ -7,9 +7,16 @@ import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScree
 import {accountBookNavigations, colors} from '@/constants';
 import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
 import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
+import SettlementCostScreen from '@/screen/accountBook/settlement/SettlementCostScreen';
+import SettlementFriendsScreen from '@/screen/accountBook/settlement/SettlementFriendsScreen';
+import SettlementPaymentsScreen from '@/screen/accountBook/settlement/SettlementPaymentsScreen';
+import SettlementRequestScreen from '@/screen/accountBook/settlement/SettlementRequestScreen';
+import SelectAccountScreen from '@/screen/SelectAccountScreen';
+import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
 import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
 import PaymentDivideScreen from '@/screen/accountBook/payment/PaymentDivideScreen';
 import { Payment } from '@/types/domain';
+
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]: undefined;
@@ -18,7 +25,15 @@ export type AccountBookStackParamList = {
   [accountBookNavigations.PAYMENTADD]: undefined;
   [accountBookNavigations.BUDGETCREATE]: undefined;
   [accountBookNavigations.BUDGET]: undefined;
+
+  [accountBookNavigations.ACCOUNT]: {pageNumber: number};
+  [accountBookNavigations.SETTLEMENTMAIN]: undefined;
+  [accountBookNavigations.SETTLEMENTCOST]: undefined;
+  [accountBookNavigations.SETTLEMENTFRIENDS]: undefined;
+  [accountBookNavigations.SETTLEMENTPAYMENTS]: undefined;
+  [accountBookNavigations.SETTLEMENTREQUEST]: undefined;
   [accountBookNavigations.PAYMENTDIVIDE]: {payment: Payment};
+
 };
 
 const Stack = createStackNavigator();
@@ -60,6 +75,39 @@ const AccountBookStackNavigator = () => {
         component={BudgetMainScreen}
         options={{headerTitle: ''}}
       />
+      <Stack.Screen
+        name={accountBookNavigations.SETTLEMENTMAIN}
+        component={SettlementMainScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.SETTLEMENTCOST}
+        component={SettlementCostScreen}
+        options={{headerTitle: ''}}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.SETTLEMENTFRIENDS}
+        component={SettlementFriendsScreen}
+        options={{headerTitle: ''}}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.SETTLEMENTPAYMENTS}
+        component={SettlementPaymentsScreen}
+        options={{
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.ACCOUNT}
+        component={SelectAccountScreen}
+        initialParams={{pageNumber: 1}}
+        options={{
+          headerTitle: ' ',
+        }}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.SETTLEMENTREQUEST}
+        component={SettlementRequestScreen}
       <Stack.Screen 
         name={accountBookNavigations.PAYMENTDIVIDE}
         component={PaymentDivideScreen}

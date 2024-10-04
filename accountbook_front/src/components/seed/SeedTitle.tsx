@@ -34,11 +34,17 @@ const SeedTitle = ({
           <Text style={[styles.text_bd, {fontSize: 32}]}>
             {totalTransferredAmount.toLocaleString()}원
           </Text>
-          <Text style={[styles.text_md]}>
+          <Text
+            style={[styles.text_md, {fontSize: 20, color: colors.GRAY_600}]}>
             목표 {targetAmount.toLocaleString()}원
           </Text>
         </View>
-        <Text style={[styles.text_md, {color: colors.PRIMARY}]}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: colors.PRIMARY,
+            fontFamily: 'Pretendard-SemiBold',
+          }}>
           {status[dataStatus]}
         </Text>
       </View>

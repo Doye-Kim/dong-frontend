@@ -35,7 +35,9 @@ const SeedInfo = ({
       </View>
       <View style={styles.lineContainer}>
         <Text style={styles.title}>회당 저금액</Text>
-        <Text style={styles.content}>{perPaymentDeposit}원</Text>
+        <Text style={styles.content}>
+          {perPaymentDeposit.toLocaleString()}원
+        </Text>
       </View>
     </View>
   );

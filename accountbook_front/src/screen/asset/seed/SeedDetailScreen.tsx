@@ -1,7 +1,7 @@
 import {ResponseSeed, deleteSeed, getSeed} from '@/api/seed';
 import SeedInfo from '@/components/seed/SeedInfo';
 import SeedTitle from '@/components/seed/SeedTitle';
-import {assetNavigations, colors} from '@/constants';
+import {alerts, assetNavigations, colors} from '@/constants';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -12,9 +12,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-
 const SeedDetailScreen = ({route}: {route: any}) => {
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
   const {seedId} = route.params;
@@ -51,7 +51,7 @@ const SeedDetailScreen = ({route}: {route: any}) => {
     }
   };
   const onPressDelete = () => {
-    Alert.alert('Confirm', '정말 해지하시겠습니까?', [
+    Alert.alert(alerts.DELETE_SEED.TITLE, alerts.DELETE_SEED.DESCRIPTION, [
       {
         text: 'Cancel',
         onPress: () => console.log('Cancel Pressed'),
@@ -80,16 +80,18 @@ const SeedDetailScreen = ({route}: {route: any}) => {
           />
           <SeedInfo
             depositAccount={seed.depositAccount}
-            withdrawAccount={seed.withdrawalAccount}
+            withdrawAccount={seed.withdrawAccount}
             endDate={seed.endDate}
             dueDate={seed.dueDate}
             perPaymentDeposit={Math.round(seed.targetAmount / seed.entireRound)}
           />
         </>
       )}
-      <TouchableOpacity style={styles.buttonContainer} onPress={onPressDelete}>
-        <Text style={styles.buttonText}>해지하기</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={onPressDelete}>
+          <Text style={styles.buttonText}>해지하기</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -98,16 +100,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
+    marginVertical: 20,
   },
   buttonContainer: {
     flex: 1,
     marginTop: 50,
-    backgroundColor: colors.ORANGE_500,
-    height: 50,
-    width: 200,
-    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  button: {
+    height: 50,
+    width: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.ORANGE_500,
+    borderRadius: 30,
   },
   buttonText: {
     fontFamily: 'Pretendard-Bold',

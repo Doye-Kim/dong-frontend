@@ -49,7 +49,7 @@ export type RoundInfo = {
 export type ResponseSeed = {
   id: number;
   depositAccount: string;
-  withdrawalAccount: string;
+  withdrawAccount: string;
   title: string;
   period: PeriodOptions;
   targetAmount: number;
