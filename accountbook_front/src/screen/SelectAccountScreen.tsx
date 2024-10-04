@@ -7,18 +7,13 @@ import {
   View,
 } from 'react-native';
 import AssetList from '@/components/common/AssetList';
-import {accountBookNavigations, colors} from '@/constants';
 import CustomButton from '@/components/common/CustomButton';
 import {useEffect, useState} from 'react';
 import {AccountInfo, getAssets} from '@/api/asset';
 import Toast from 'react-native-toast-message';
 import {postSettlement} from '@/api/settlement';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
-import {colors, gameNavigations} from '@/constants';
-import CustomButton from '@/components/common/CustomButton';
-import {useEffect, useState} from 'react';
-import {AccountInfo, getRegisterAssets} from '@/api/asset';
-import Toast from 'react-native-toast-message';
+import {colors, gameNavigations, accountBookNavigations} from '@/constants';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import {postGame} from '@/api/game';
 
@@ -42,7 +37,7 @@ const SelectAccountScreen = ({route, navigation}) => {
         setNextText('내기 신청하기');
         break;
     }
-  }, []);
+  }, [pageNumber]);
 
   console.log(pageNumber);
   const {setAccountNumber} = useGameCreateStore();
@@ -90,6 +85,14 @@ const SelectAccountScreen = ({route, navigation}) => {
         screen: accountBookNavigations.SETTLEMENTMAIN,
       });
       console.log(data);
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message,
+      });
+    }
+  };
 
   const {
     participantIds,
@@ -125,6 +128,7 @@ const SelectAccountScreen = ({route, navigation}) => {
       });
     }
   };
+
   const handleOnPress = () => {
     if (!account) {
       Toast.show({
@@ -132,15 +136,14 @@ const SelectAccountScreen = ({route, navigation}) => {
         text1: '계좌를 선택해 주세요',
       });
     } else if (pageNumber === 1) {
-        enterSettlement(account.id);
+      enterSettlement(account.id);
+    } else if (pageNumber === 3) {
+      console.log('account ', account.accountNo);
+      setAccountNumber(account.accountNo);
+      enterGame(account.accountNo);
     }
-      else if (pageNumber === 3) {
-        console.log('account ', account.accountNo);
-        setAccountNumber(account.accountNo);
-        enterGame(account.accountNo);
-      }
-    }
-  
+  };
+
   useEffect(() => {
     if (selectedList.length > 1) {
       setSelectedList(prev => {
@@ -152,7 +155,7 @@ const SelectAccountScreen = ({route, navigation}) => {
     } else if (selectedList.length === 1) {
       setAccount(selectedList[0]);
     } else if (selectedList.length === 0) {
-      setAccount();
+      setAccount(undefined);
     }
   }, [selectedList]);
 
@@ -169,11 +172,7 @@ const SelectAccountScreen = ({route, navigation}) => {
         />
       </ScrollView>
       <View>
-<<<<<<< accountbook_front/src/screen/SelectAccountScreen.tsx
         <CustomButton text={nextText} onPress={handleOnPress} />
-=======
-        <CustomButton text="내기 요청하기" onPress={handleOnPress} />
->>>>>>> accountbook_front/src/screen/SelectAccountScreen.tsx
       </View>
     </SafeAreaView>
   );
@@ -195,4 +194,5 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
 });
+
 export default SelectAccountScreen;

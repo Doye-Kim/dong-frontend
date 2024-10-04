@@ -15,8 +15,7 @@ import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
 import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
 import PaymentDivideScreen from '@/screen/accountBook/payment/PaymentDivideScreen';
-import { Payment } from '@/types/domain';
-
+import {Payment} from '@/types/domain';
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]: undefined;
@@ -33,7 +32,6 @@ export type AccountBookStackParamList = {
   [accountBookNavigations.SETTLEMENTPAYMENTS]: undefined;
   [accountBookNavigations.SETTLEMENTREQUEST]: undefined;
   [accountBookNavigations.PAYMENTDIVIDE]: {payment: Payment};
-
 };
 
 const Stack = createStackNavigator();
@@ -41,10 +39,7 @@ const Stack = createStackNavigator();
 const AccountBookStackNavigator = () => {
   return (
     <Stack.Navigator
-      screenOptions={
-        {headerStyle: {backgroundColor: colors.WHITE}}
-      }
-    >
+      screenOptions={{headerStyle: {backgroundColor: colors.WHITE}}}>
       <Stack.Screen
         name={accountBookNavigations.TABBAR}
         component={AccountBookTabNavigator}
@@ -108,7 +103,8 @@ const AccountBookStackNavigator = () => {
       <Stack.Screen
         name={accountBookNavigations.SETTLEMENTREQUEST}
         component={SettlementRequestScreen}
-      <Stack.Screen 
+      />
+      <Stack.Screen
         name={accountBookNavigations.PAYMENTDIVIDE}
         component={PaymentDivideScreen}
         options={{headerTitle: ''}}
