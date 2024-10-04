@@ -2,7 +2,6 @@ import {ResponseFriend} from '@/api/friends';
 import {User, FriendCheckFill, FriendCheck} from '@/assets/icons';
 import {colors} from '@/constants';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
-import {Contact} from 'react-native-contacts/type';
 
 const UserListItem = ({
   item,

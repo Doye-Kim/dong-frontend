@@ -23,7 +23,7 @@ const GameItem = ({item}: {item: ResponseGame}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={handleOnPress}>
       <CategoryIcon
-        categoryNumber={Number(item.gameCategory.categoryId)}
+        categoryNumber={Number(item.gameCategory.imageNumber)}
         size={40}
       />
       <Text style={styles.titleText}>
