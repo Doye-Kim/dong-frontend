@@ -1,13 +1,15 @@
 import {
   Category,
   ResponseGameState,
-  deleteGame,
+  cancelGame,
   getCategory,
   getPrepareGame,
+  leaveGame,
+  startGame,
 } from '@/api/game';
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
-import {assetNavigations, colors, gameNavigations} from '@/constants';
+import {colors, gameNavigations} from '@/constants';
 import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
@@ -73,9 +75,60 @@ const GamePrepareScreen = ({route, navigation}) => {
     getData();
   }, []);
 
-  const pressButtonStart = () => {
-    // 게임 생성 로직도 여기다가 작성
-    // navigation.navigate(gameNavigations.DETAIL, {gameId: 1}); // 여기도 게임아이디가 지금 게임아이디로 가야할듯
+  const handlePressStart = async () => {
+    try {
+      const data = await startGame({participantId});
+      console.log(data);
+      Toast.show({
+        type: 'success',
+        text1: '내기가 시작되었습니다.',
+      });
+      navigation.navigate(gameNavigations.MAIN);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message
+          ? err.response.data.message
+          : '내기를 시작하는 데 문제가 생겼어요',
+      });
+    }
+  };
+  const leave = async () => {
+    try {
+      const data = await leaveGame({participantId});
+      console.log(data);
+      Toast.show({
+        type: 'info',
+        text1: '내기에서 나왔습니다.',
+      });
+      navigation.navigate(gameNavigations.MAIN);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message
+          ? err.response.data.message
+          : '내기에서 나오는 데 문제가 생겼어요',
+      });
+    }
+  };
+  const handlePressLeave = () => {
+    Alert.alert('Warning!', '정말 나가시겠습니까?', [
+      {
+        text: '취소',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: '삭제',
+        onPress: () => {
+          leave();
+        },
+      },
+    ]);
   };
 
   const handlePressCategory = () => {
@@ -87,10 +140,15 @@ const GamePrepareScreen = ({route, navigation}) => {
 
   const onDelete = async () => {
     try {
-      const data = await deleteGame(participantId);
+      const data = await cancelGame({participantId});
       console.log(data);
+      Toast.show({
+        type: 'success',
+        text1: '삭제 성공했어요',
+      });
       navigation.navigate(gameNavigations.MAIN);
     } catch (err) {
+      console.log(err);
       Toast.show({
         type: 'error',
         text1: '삭제하는 과정에서 문제가 생겼어요',
@@ -201,16 +259,13 @@ const GamePrepareScreen = ({route, navigation}) => {
           <View style={styles.buttonContainer}>
             {userData && JSON.parse(userData).name === gameData.ownerName ? (
               <>
-                <CustomButton text="시작" onPress={pressButtonStart} />
+                <CustomButton text="시작" onPress={handlePressStart} />
                 <TouchableOpacity onPress={handlePressCancel}>
                   <Text style={styles.cancelText}>취소하기</Text>
                 </TouchableOpacity>
               </>
             ) : (
-              <CustomButton
-                text="나가기"
-                onPress={() => navigation.navigate(assetNavigations.MAIN)}
-              />
+              <CustomButton text="나가기" onPress={handlePressLeave} />
             )}
           </View>
         </>
@@ -218,6 +273,7 @@ const GamePrepareScreen = ({route, navigation}) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

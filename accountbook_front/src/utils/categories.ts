@@ -7,4 +7,13 @@ const category: Record<number, string> = {
   8: '택시 탑승 횟수',
 };
 
-export {category};
+const categoryId: Record<number, number> = {
+  0: 0,
+  1: 315121158985728,
+  2: 315121188478976,
+  3: 315145165151232,
+  4: 315145173216256,
+  8: 315145192109056,
+};
+
+export {category, categoryId};

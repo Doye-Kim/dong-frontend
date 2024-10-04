@@ -1,7 +1,7 @@
 import axiosInstance from './axios';
 
 export type ResponseFriend = {
-  id: number;
+  friendId: number;
   nickname: string;
   name: string;
   phone: string;

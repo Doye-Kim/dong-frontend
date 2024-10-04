@@ -74,9 +74,10 @@ const GameFriendsScreen = () => {
 
   const {setParticipantIds} = useGameCreateStore();
   const onPressNext = () => {
+    console.log(selectedFriends);
     const filteredIds = selectedFriends
       .filter(friend => friend.nickname !== '나')
-      .map(friend => friend.id);
+      .map(friend => friend.friendId);
     if (filteredIds.length === 0) {
       Toast.show({
         type: 'error',
@@ -109,7 +110,7 @@ const GameFriendsScreen = () => {
         style={styles.selectedContainer}>
         {selectedFriends.map(item => (
           <TouchableOpacity
-            key={item.id + item.phone}
+            key={item.friendId + item.phone}
             onPress={() => handlePressSelectedFriend(item)}
             style={styles.selectedUser}>
             <UserIcon name={item.nickname} />
@@ -141,7 +142,7 @@ const GameFriendsScreen = () => {
           <FlatList
             data={searchWord ? searchContacts : friends}
             renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.friendId.toString()}
             style={styles.listContainer}
           />
         )}

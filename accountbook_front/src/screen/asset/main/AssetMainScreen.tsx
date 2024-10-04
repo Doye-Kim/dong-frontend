@@ -16,7 +16,6 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import AssetAccountData from '@/assets/tempData/Asset/AssetAccountData.json';
 import SeedList from '@/components/asset/seed/SeedList';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -54,7 +53,6 @@ const AssetMainScreen = () => {
     }
   };
 
-
   const getSeedData = async () => {
     try {
       const data = await getSeeds();
@@ -71,7 +69,6 @@ const AssetMainScreen = () => {
 
   useEffect(() => {
     handleGetAssets();
-    setGameData(GameListData);
     getSeedData();
   }, []);
 

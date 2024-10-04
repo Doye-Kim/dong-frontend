@@ -10,16 +10,18 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 const GameItem = ({item}: {item: ResponseGame}) => {
   const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   const handleOnPress = () => {
-    navigation.navigate(gameNavigations.DETAIL, {gameId: item.gameId});
+    navigation.navigate(gameNavigations.DETAIL, {
+      participantId: item.participantId,
+    });
   };
   return (
     <TouchableOpacity style={styles.container} onPress={handleOnPress}>
       <Image
-        source={getGameImage(item.gameCategory.categoryId)}
+        source={getGameImage(item.gameCategory.imageNumber)}
         style={{width: 100, height: 100, marginBottom: 20}}
       />
       <Text style={styles.titleText}>
-        {category[item.gameCategory.categoryId]}
+        {category[item.gameCategory.imageNumber]}
       </Text>
       <View style={styles.countContainer}>
         <Text style={styles.countText}>현재까지 총 5회</Text>

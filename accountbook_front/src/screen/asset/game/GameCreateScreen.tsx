@@ -7,7 +7,7 @@ import {colors, gameNavigations} from '@/constants';
 import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import {getDateLocaleFormatDiff} from '@/utils';
-import {category} from '@/utils/categories';
+import {category, categoryId} from '@/utils/categories';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useState} from 'react';
@@ -82,7 +82,7 @@ const GameCreateScreen = () => {
     } else {
       setStartDate(start);
       setEndDate(end);
-      setGameCategoryId(selectedCategory);
+      setGameCategoryId(categoryId[selectedCategory]);
       setFee(Number(amount.replace(/[^0-9]/g, '')));
       navigtaion.navigate(gameNavigations.FRIENDS);
     }

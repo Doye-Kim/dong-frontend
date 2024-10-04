@@ -1,6 +1,7 @@
 import {ResponseGameState, getProgressGame} from '@/api/game';
 import {colors} from '@/constants';
 import {category} from '@/utils/categories';
+import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
 import {useEffect, useState} from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
@@ -8,66 +9,80 @@ import Toast from 'react-native-toast-message';
 
 const GameDetailScreen = ({route, navigation}) => {
   const [gameData, setGameData] = useState<ResponseGameState>();
+  const [userData, setUserData] = useState();
   const participantId = route?.params?.participantId;
   const getDetail = async () => {
     try {
-      const data = await getProgressGame({participantId});
-      console.log(data);
+      const data = await getProgressGame(participantId);
       setGameData(data);
     } catch (err) {
-      console.log(err.reponse.data);
+      console.log(err);
       Toast.show({
         type: 'error',
-        text1: err.response.data.message,
+        text1: err.response.data.message
+          ? err.response.data.message
+          : '문제가 발생했습니다.',
       });
     }
   };
 
+  const getMyInfo = async () => {
+    setUserData(JSON.parse(await getEncryptStorage('user')));
+  };
   useEffect(() => {
     getDetail();
+    getMyInfo();
+    console.log(participantId);
   }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>
-        {category[data?.category.categoryId]} 내기
-      </Text>
-      <Text style={styles.periodText}>
-        {gameData.startDate} ~ {gameData.endDate}
-      </Text>
-      <Image
-        source={getGameImage(gameData?.category.categoryId)}
-        style={{width: 100, height: 100, margin: 20}}
-      />
-      <Text style={styles.prizeMoneyText}>
-        상금:{' '}
-        {(gameData.fee * gameData.afterParticipant.length).toLocaleString()}원
-      </Text>
-      <View style={styles.userListContainer}>
-        {gameData.afterParticipant
-          .sort((a, b) => a.gameCount - b.gameCount)
-          .map(item => (
-            <View
-              style={[
-                styles.userInfoContainer,
-                item.userName === myInfo.name && styles.highlightContainer,
-              ]}>
-              <Text
-                style={[
-                  styles.userInfoText,
-                  item.userName === myInfo.name && styles.highlightText,
-                ]}>
-                {item.userName}
-              </Text>
-              <Text
-                style={[
-                  styles.userInfoText,
-                  item.userName === myInfo.name && styles.highlightText,
-                ]}>
-                {item.gameCount}회
-              </Text>
-            </View>
-          ))}
-      </View>
+      {gameData && (
+        <>
+          <Text style={styles.titleText}>
+            {category[gameData?.category.imageNumber]} 내기
+          </Text>
+          <Text style={styles.periodText}>
+            {gameData.startDate} ~ {gameData.endDate}
+          </Text>
+          <Image
+            source={getGameImage(gameData?.category.imageNumber)}
+            style={{width: 100, height: 100, margin: 20}}
+          />
+          <Text style={styles.prizeMoneyText}>
+            상금:
+            {(gameData.fee * gameData.afterParticipant.length).toLocaleString()}
+            원
+          </Text>
+          <View style={styles.userListContainer}>
+            {gameData.afterParticipant
+              .sort((a, b) => a.gameCount - b.gameCount)
+              .map(item => (
+                <View
+                  style={[
+                    styles.userInfoContainer,
+                    item.userName === userData.name &&
+                      styles.highlightContainer,
+                  ]}>
+                  <Text
+                    style={[
+                      styles.userInfoText,
+                      item.userName === userData.name && styles.highlightText,
+                    ]}>
+                    {item.userName}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.userInfoText,
+                      item.userName === userData.name && styles.highlightText,
+                    ]}>
+                    {item.gameCount}회
+                  </Text>
+                </View>
+              ))}
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
