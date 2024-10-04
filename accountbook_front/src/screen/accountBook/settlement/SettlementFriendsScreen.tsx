@@ -1,29 +1,34 @@
 import RoundFriends from '@/components/accountBook/settlement/RoundFriends';
 import CustomButton from '@/components/common/CustomButton';
-import {colors} from '@/constants';
+import {accountBookNavigations, colors} from '@/constants';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import Toast from 'react-native-toast-message';
 
-const data = [
-  {
-    settlementPaymentId: 12,
-    paymentId: 157,
-    balance: 15000,
-    merchantName: '우버택시',
-    paymentName: '프렌즈 체크카드',
-    categoryName: '택시',
-    imageNumber: 8,
-  },
-  {
-    settlementPaymentId: 13,
-    paymentId: 152,
-    balance: 9000,
-    merchantName: 'CU강서신호점',
-    paymentName: '프렌즈 체크카드',
-    categoryName: '편의점',
-    imageNumber: 3,
-  },
-];
 const SettlementFriendsScreen = () => {
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+  const {paymentList, settlementPaymentList} = useSettlementCreateStore();
+
+  const handlePressNext = () => {
+    let flag = true;
+    settlementPaymentList.map(item => {
+      if (item.settlementUserList.length === 1) {
+        flag = false;
+      }
+    });
+    if (flag) {
+      navigation.navigate(accountBookNavigations.SETTLEMENTCOST);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: '친구를 최소 한 명 이상 선택해 주세요',
+      });
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleText}>정산할 친구를 선택해주세요</Text>
@@ -31,12 +36,13 @@ const SettlementFriendsScreen = () => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}>
-        {data.map(item => (
-          <RoundFriends key={item.settlementPaymentId} data={item} />
-        ))}
+        {paymentList &&
+          paymentList.map(item => (
+            <RoundFriends key={item.paymentsId} data={item} />
+          ))}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <CustomButton text="다음" />
+        <CustomButton text="다음" onPress={handlePressNext} />
       </View>
     </SafeAreaView>
   );
@@ -46,7 +52,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
     marginBottom: 20,
   },
   titleText: {
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'flex-end',
   },
 });

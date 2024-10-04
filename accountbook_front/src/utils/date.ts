@@ -4,8 +4,8 @@ function getDateDetails(dateString: Date | string) {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-
-  return {year, month, day};
+  const dayOfWeek = date.toLocaleString('ko-KR', {weekday: 'long'}); // 요일
+  return {year, month, day, dayOfWeek};
 }
 
 function getDateWithSeparator(
@@ -28,9 +28,20 @@ function getDateLocaleFormat(dateString: Date | string) {
   return `${year}년 ${month}월 ${day}일`;
 }
 
-const getDateTimeLocaleFormat = (dateString: Date | string)  => {
+function getDatePaymentFormat(dateString: Date | string) {
+  const {day, dayOfWeek} = getDateDetails(dateString);
+
+  return `${day}일 ${dayOfWeek}`;
+}
+
+const getDateTimeLocaleFormat = (dateString: Date | string) => {
   const date = new Date(dateString);
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+  return `${date.getFullYear()}년 ${
+    date.getMonth() + 1
+  }월 ${date.getDate()}일 ${date.getHours()}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}`;
 };
 
 function getDateLocaleFormatDiff(dateString: Date | string) {
@@ -97,7 +108,7 @@ const formatDateToDayOfWeek = (dateString: string) => {
   /** 날짜를 ~일 ~요일로 변경하는 함수 */
   const date = new Date(dateString);
   const day = date.getDate(); // 날짜의 일 (1~31)
-  const weekDay = date.toLocaleDateString('ko-KR', { weekday: 'long' }); // 요일을 한글로 출력
+  const weekDay = date.toLocaleDateString('ko-KR', {weekday: 'long'}); // 요일을 한글로 출력
 
   return `${day}일 ${weekDay}`;
 };
@@ -112,5 +123,6 @@ export {
   isSameAsCurrentDate,
   formatDateToDayOfWeek,
   getDateLocaleFormatDiff,
+  getDatePaymentFormat,
 };
 export type {MonthYear};

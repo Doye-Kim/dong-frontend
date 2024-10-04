@@ -7,6 +7,13 @@ import {
   View,
 } from 'react-native';
 import AssetList from '@/components/common/AssetList';
+import {accountBookNavigations, colors} from '@/constants';
+import CustomButton from '@/components/common/CustomButton';
+import {useEffect, useState} from 'react';
+import {AccountInfo, getAssets} from '@/api/asset';
+import Toast from 'react-native-toast-message';
+import {postSettlement} from '@/api/settlement';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
 import {colors, gameNavigations} from '@/constants';
 import CustomButton from '@/components/common/CustomButton';
 import {useEffect, useState} from 'react';
@@ -18,16 +25,21 @@ import {postGame} from '@/api/game';
 const SelectAccountScreen = ({route, navigation}) => {
   const pageNumber = route?.params?.pageNumber;
   const [title, setTitle] = useState('');
+  const [nextText, setNextText] = useState('');
+
   useEffect(() => {
     switch (pageNumber) {
       case 1:
         setTitle('정산 받을');
+        setNextText('정산 요청하기');
         break;
       case 2:
         setTitle('출금할');
+        setNextText('송금하기');
         break;
       case 3:
         setTitle('참가비를 낼');
+        setNextText('내기 신청하기');
         break;
     }
   }, []);
@@ -40,9 +52,9 @@ const SelectAccountScreen = ({route, navigation}) => {
 
   const getAssetList = async () => {
     try {
-      const data = await getRegisterAssets();
+      const data = await getAssets();
       console.log(data);
-      setAccounts(data.accounts);
+      setAccounts(data.accountList);
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -53,6 +65,31 @@ const SelectAccountScreen = ({route, navigation}) => {
   useEffect(() => {
     getAssetList();
   }, []);
+
+  const {reset} = useSettlementCreateStore();
+  const enterSettlement = async (accountId: number) => {
+    const state = useSettlementCreateStore.getState();
+
+    // 서버로 보낼 SettlementUser 배열에서 nickname 필드를 제외
+    const newPaymentList = state.settlementPaymentList.map(payment => ({
+      ...payment,
+      settlementUserList: payment.settlementUserList
+        .filter(({userId}) => userId >= 0) // userId가 0보다 작은 값 제외
+        .map(({userId, amount}) => ({
+          userId,
+          amount,
+        })),
+    }));
+    try {
+      const data = await postSettlement({
+        accountId: accountId,
+        settlementPaymentList: newPaymentList,
+      });
+      reset();
+      navigation.navigate(accountBookNavigations.TABBAR, {
+        screen: accountBookNavigations.SETTLEMENTMAIN,
+      });
+      console.log(data);
 
   const {
     participantIds,
@@ -89,19 +126,21 @@ const SelectAccountScreen = ({route, navigation}) => {
     }
   };
   const handleOnPress = () => {
-    if (pageNumber === 3) {
-      console.log('account ', account.accountNo);
-      if (!account) {
-        Toast.show({
-          type: 'error',
-          text1: '계좌를 선택해 주세요',
-        });
-      } else {
+    if (!account) {
+      Toast.show({
+        type: 'error',
+        text1: '계좌를 선택해 주세요',
+      });
+    } else if (pageNumber === 1) {
+        enterSettlement(account.id);
+    }
+      else if (pageNumber === 3) {
+        console.log('account ', account.accountNo);
         setAccountNumber(account.accountNo);
         enterGame(account.accountNo);
       }
     }
-  };
+  
   useEffect(() => {
     if (selectedList.length > 1) {
       setSelectedList(prev => {
@@ -130,7 +169,11 @@ const SelectAccountScreen = ({route, navigation}) => {
         />
       </ScrollView>
       <View>
+<<<<<<< accountbook_front/src/screen/SelectAccountScreen.tsx
+        <CustomButton text={nextText} onPress={handleOnPress} />
+=======
         <CustomButton text="내기 요청하기" onPress={handleOnPress} />
+>>>>>>> accountbook_front/src/screen/SelectAccountScreen.tsx
       </View>
     </SafeAreaView>
   );

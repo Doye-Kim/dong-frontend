@@ -1,10 +1,12 @@
 import {DropdownButton, DropdownButtonWhite} from '@/assets/icons';
 import {colors} from '@/constants';
 import {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import PaymentItemList from '../payment/PaymentItemList';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+
 import CategoryIcon from '@/components/common/CategoryIcon';
 import UserStateItem from './UserStateItem';
+import {postFinishSettlement} from '@/api/settlement';
+import Toast from 'react-native-toast-message';
 interface PaymentItemProps {
   settlementPaymentId: number;
   paymentId: number;
@@ -43,9 +45,11 @@ interface SettlementProps {
 const SettlementItem = ({
   data,
   isFinished,
+  refresh,
 }: {
   data: SettlementProps;
   isFinished: boolean;
+  refresh?: () => void;
 }) => {
   const [isOpenDetail, setIsOpenDetail] = useState(false);
 
@@ -66,6 +70,34 @@ const SettlementItem = ({
     }));
   };
   const transformedPayments = transformPaymentList(data.settlementPaymentList);
+  const finishSettlement = async () => {
+    try {
+      // const data = await postFinishSettlement(data.settlementId);
+      // console.log(data);
+      refresh();
+    } catch (err) {
+      console.log(err.reponse.data);
+      Toast.show({
+        type: 'error',
+        text1: '정산을 완료하는 데에 문제가 생겼습니다.',
+      });
+    }
+  };
+  const onPressComplete = () => {
+    Alert.alert('아직 대기 중인 정산이 있습니다.', '정말 완료하시겠습니까?', [
+      {
+        text: '취소',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          finishSettlement();
+        },
+      },
+    ]);
+  };
   return (
     <View>
       <TouchableOpacity
@@ -84,13 +116,15 @@ const SettlementItem = ({
           {isFinished ? <DropdownButton /> : <DropdownButtonWhite />}
         </View>
         {!isFinished && (
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={onPressComplete}>
             <Text style={styles.buttonText}>완료</Text>
           </TouchableOpacity>
         )}
       </TouchableOpacity>
       {isOpenDetail && (
-        <>
+        <View style={{padding: 5}}>
           <View style={styles.paymentListContainer}>
             {transformedPayments.map(item => (
               <TouchableOpacity
@@ -122,7 +156,7 @@ const SettlementItem = ({
               <UserStateItem data={item} />
             ))}
           </View>
-        </>
+        </View>
       )}
     </View>
   );
