@@ -8,7 +8,7 @@ import AssetListHeader from '@/components/asset/asset/AssetListHeader';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import {assetNavigations, colors, seedNavigations} from '@/constants';
 import {Account, Card, Seed} from '@/types/domain';
-import React, {useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import SeedList from '@/components/asset/seed/SeedList';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
 import axiosInstance from '@/api/axios';
