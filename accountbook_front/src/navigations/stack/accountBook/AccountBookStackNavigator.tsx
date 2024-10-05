@@ -72,7 +72,6 @@ const AccountBookStackNavigator = () => {
         component={BudgetCreateScreen}
         options={{headerTitle: ''}}
       />
-      />
       <Stack.Screen
         name={accountBookNavigations.SETTLEMENTMAIN}
         component={SettlementMainScreen}

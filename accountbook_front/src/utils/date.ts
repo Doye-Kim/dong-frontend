@@ -28,6 +28,12 @@ const getDateLocaleFormat = (dateString: Date | string) => {
   return `${year}년 ${month}월 ${day}일`;
 }
 
+function getDatePaymentFormat(dateString: Date | string) {
+  const {day, dayOfWeek} = getDateDetails(dateString);
+
+  return `${day}일 ${dayOfWeek}`;
+}
+
 const getYearMonthLocalFormat = (dateString: Date | string) => {
   const {year, month, day} = getDateDetails(dateString);
   return `${year}년 ${month}월`
