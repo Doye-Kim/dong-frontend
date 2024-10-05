@@ -10,7 +10,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import {format} from 'date-fns-tz';
+import {format, formatInTimeZone} from 'date-fns-tz';
 import {EditIcon} from '@/assets/icons';
 import {getDateLocaleFormat, getTimeLocalFormat} from '@/utils';
 import {colors} from '@/constants';
@@ -47,7 +47,7 @@ const PaymentAddScreen = () => {
   const [inputBalanceValue, setInputBalanceValue] = useState<string>('');
 
   const handlePostPayment = async (payment: Payment) => {
-    console.log(payment.paymentTime);
+
     try {
       const response = await axiosInstance.post('/payments', {
         merchantName: payment.merchantName,
@@ -61,7 +61,7 @@ const PaymentAddScreen = () => {
         cardIssuerName: '카드', // 이거도 비워서 낼 수 있어야함
         // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
         asset: 'ACCOUNT', // 수정 필요
-        assetId: 1, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
+        assetId: 19, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
       });
       console.log(response.data);
     } catch (error) {
@@ -124,7 +124,7 @@ const PaymentAddScreen = () => {
       if (selectedDate) {
         const selectedDateObj = new Date(selectedDate);
         selectedDateObj.setHours(date.getHours(), date.getMinutes());
-        const newPaymentTime = format(selectedDateObj, "yyyy-MM-dd'T'HH:mm:ss", { timeZone: 'Asia/Seoul' });
+        const newPaymentTime = formatInTimeZone(selectedDateObj, 'Asia/Seoul',"yyyy-MM-dd'T'HH:mm:ss");
   
         setPaymentData(prevPayment => ({
           ...prevPayment,

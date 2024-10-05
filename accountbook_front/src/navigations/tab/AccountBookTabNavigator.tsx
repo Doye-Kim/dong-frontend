@@ -6,17 +6,17 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
+  Platform,
+  Keyboard,
 } from 'react-native';
 import {TabView} from 'react-native-tab-view';
 import CalendarScreen from '@/screen/accountBook/calendar/CalendarScreen';
 import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
 import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
 import {
-  accountBookNavigations,
   accountBookTabNavigations,
   colors,
 } from '@/constants';
-import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import PaymentMainScreen from '@/screen/accountBook/payment/PaymentMainScreen';
 import useDateStore from '@/store/useDateStore';
 import {getDateWithSeparator} from '@/utils';
@@ -29,6 +29,13 @@ import useHideStatusStore from '@/store/useHideStatusStore';
 const {width} = Dimensions.get('window');
 const TAB_WIDTH = (width * 0.8) / 4;
 
+export type AccountBookTabParamList = {
+  [accountBookTabNavigations.CALENDAR]: undefined;
+  [accountBookTabNavigations.PAYMENT]: undefined;
+  [accountBookTabNavigations.SETTLEMENT]: undefined;
+  [accountBookTabNavigations.BUDGET]: undefined;
+};
+
 const AccountBookTabNavigator: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -38,7 +45,6 @@ const AccountBookTabNavigator: React.FC = () => {
     {key: accountBookTabNavigations.BUDGET, title: '예산'},
   ]);
 
-  const route = useRoute();
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
@@ -46,9 +52,7 @@ const AccountBookTabNavigator: React.FC = () => {
   const date = useDateStore(state => state.date);
   const {paymentData, fetchPaymentData} = usePaymentDataStore();
   const {
-    categories,
     selectedCategories,
-    setSelectedCategories,
     fetchCategories,
   } = useCategoryStore();
   const {isHideVisible} = useHideStatusStore();
@@ -72,7 +76,6 @@ const AccountBookTabNavigator: React.FC = () => {
         }, 50);
       }
     }
-    console.log(paymentData);
   }, [date, isLogin]);
 
   // 카테고리, 숨김보임 여부에 따른 필터링 함수
@@ -80,7 +83,6 @@ const AccountBookTabNavigator: React.FC = () => {
     const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
     const paymentList =
       paymentData[yearMonth] || PaymentDummyData.paymentResponse;
-    console.log('내역 필터링 함수 동작 확인용');
     return paymentList.filter(payment => {
       const isCategorySelected = selectedCategories.includes(
         payment.categoryId,
@@ -104,10 +106,6 @@ const AccountBookTabNavigator: React.FC = () => {
   };
 
   const renderScene = ({route}: any) => {
-    const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
-    const paymentList =
-      paymentData[yearMonth] || PaymentDummyData.paymentResponse; // 해당 년월의 데이터 사용
-
     switch (route.key) {
       case accountBookTabNavigations.CALENDAR:
         return <CalendarScreen paymentList={filteredPaymentList} />;
@@ -122,12 +120,32 @@ const AccountBookTabNavigator: React.FC = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+  //   const isDetailScreen = routeName === accountBookNavigations.PAYMENTDETAIL;
+  //   setIsTabBarVisible(!isDetailScreen);
+  //   setIsSwipeEnabled(!isDetailScreen);
+  // }, [route]);
+
   useEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route) ?? '';
-    const isDetailScreen = routeName === accountBookNavigations.PAYMENTDETAIL;
-    setIsTabBarVisible(!isDetailScreen);
-    setIsSwipeEnabled(!isDetailScreen);
-  }, [route]);
+    const keyboardWillShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        setIsTabBarVisible(false);
+      }
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setIsTabBarVisible(true);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, [isTabBarVisible]);
 
   return (
     <>
@@ -174,6 +192,7 @@ const AccountBookTabNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.WHITE,
+    // paddingBottom: 75,
   },
   tabBar: {
     flexDirection: 'row',

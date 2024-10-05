@@ -1,30 +1,37 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import AccountBookTabNavigator from '../../tab/AccountBookTabNavigator';
+import AccountBookTabNavigator, {
+  AccountBookTabParamList,
+} from '../../tab/AccountBookTabNavigator';
 import AccountBookHeaderNavigator, {
   AccountBookHeaderParamList,
 } from './AccountBookHeaderNavigator';
 import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScreen';
 import {accountBookNavigations, colors} from '@/constants';
 import BudgetCreateScreen from '@/screen/accountBook/budget/BudgetCreateScreen';
-import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
+import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
+import PaymentDivideScreen from '@/screen/accountBook/payment/PaymentDivideScreen';
+import {Category, Payment} from '@/types/domain';
+import {NavigatorScreenParams} from '@react-navigation/native';
 import SettlementCostScreen from '@/screen/accountBook/settlement/SettlementCostScreen';
 import SettlementFriendsScreen from '@/screen/accountBook/settlement/SettlementFriendsScreen';
 import SettlementPaymentsScreen from '@/screen/accountBook/settlement/SettlementPaymentsScreen';
 import SettlementRequestScreen from '@/screen/accountBook/settlement/SettlementRequestScreen';
 import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
-import PaymentAddScreen from '@/screen/accountBook/payment/PaymentAddScreen';
-import PaymentDivideScreen from '@/screen/accountBook/payment/PaymentDivideScreen';
-import {Payment} from '@/types/domain';
+
 
 export type AccountBookStackParamList = {
-  [accountBookNavigations.TABBAR]: undefined;
+  [accountBookNavigations.TABBAR]:
+    | NavigatorScreenParams<AccountBookTabParamList>
+    | undefined;
   [accountBookNavigations.HEADER]: {screen: keyof AccountBookHeaderParamList};
   [accountBookNavigations.PAYMENTDETAIL]: {paymentId: number};
   [accountBookNavigations.PAYMENTADD]: undefined;
-  [accountBookNavigations.BUDGETCREATE]: undefined;
-  [accountBookNavigations.BUDGET]: undefined;
-
+  [accountBookNavigations.BUDGETCREATE]: {
+    categories?: Category[];
+    totalBudget: number;
+    budgetId: number;
+  };
   [accountBookNavigations.ACCOUNT]: {pageNumber: number};
   [accountBookNavigations.SETTLEMENTMAIN]: undefined;
   [accountBookNavigations.SETTLEMENTCOST]: undefined;
@@ -65,10 +72,6 @@ const AccountBookStackNavigator = () => {
         component={BudgetCreateScreen}
         options={{headerTitle: ''}}
       />
-      <Stack.Screen
-        name={accountBookNavigations.BUDGET}
-        component={BudgetMainScreen}
-        options={{headerTitle: ''}}
       />
       <Stack.Screen
         name={accountBookNavigations.SETTLEMENTMAIN}

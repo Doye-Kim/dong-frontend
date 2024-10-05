@@ -1,4 +1,4 @@
-function getDateDetails(dateString: Date | string) {
+const getDateDetails = (dateString: Date | string) => {
   /** 주어진 문자열 혹은 Date로 부터 년 월 일을 반환하는 함수 */
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -8,10 +8,10 @@ function getDateDetails(dateString: Date | string) {
   return {year, month, day, dayOfWeek};
 }
 
-function getDateWithSeparator(
+const getDateWithSeparator = (
   dateString: Date | string,
   separator: string = '',
-) {
+) => {
   /** 주어진 날짜를 separator로 분할하여 문자열로 반환 */
   const {year, month, day} = getDateDetails(dateString);
 
@@ -22,16 +22,15 @@ function getDateWithSeparator(
   ].join(separator);
 }
 
-function getDateLocaleFormat(dateString: Date | string) {
+const getDateLocaleFormat = (dateString: Date | string) => {
   const {year, month, day} = getDateDetails(dateString);
 
   return `${year}년 ${month}월 ${day}일`;
 }
 
-function getDatePaymentFormat(dateString: Date | string) {
-  const {day, dayOfWeek} = getDateDetails(dateString);
-
-  return `${day}일 ${dayOfWeek}`;
+const getYearMonthLocalFormat = (dateString: Date | string) => {
+  const {year, month, day} = getDateDetails(dateString);
+  return `${year}년 ${month}월`
 }
 
 const getDateTimeLocaleFormat = (dateString: Date | string) => {
@@ -44,7 +43,7 @@ const getDateTimeLocaleFormat = (dateString: Date | string) => {
     .padStart(2, '0')}`;
 };
 
-function getDateLocaleFormatDiff(dateString: Date | string) {
+const getDateLocaleFormatDiff = (dateString: Date | string) => {
   const {year, month, day} = getDateDetails(dateString);
 
   return `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(
@@ -53,12 +52,12 @@ function getDateLocaleFormatDiff(dateString: Date | string) {
   )}`;
 }
 
-function getTimeLocalFormat(dateString: Date | string): string {
+const getTimeLocalFormat = (dateString: Date | string): string => {
   const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
   return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
-function getMonthYearDetails(initialDate: Date) {
+const getMonthYearDetails = (initialDate: Date) => {
   /** Date를 입력받아 상세정보를 리턴하는 함수 */
   const month = initialDate.getMonth() + 1;
   const year = initialDate.getFullYear();
@@ -85,7 +84,7 @@ type MonthYear = {
   lastDate: number;
 };
 
-function getNewMonthYear(prevData: MonthYear, increment: number) {
+const getNewMonthYear = (prevData: MonthYear, increment: number) => {
   /** month를 이동시키기 위한 함수 */
   const newMonthYear = new Date(
     prevData.startDate.setMonth(prevData.startDate.getMonth() + increment),
@@ -94,7 +93,7 @@ function getNewMonthYear(prevData: MonthYear, increment: number) {
   return getMonthYearDetails(newMonthYear);
 }
 
-function isSameAsCurrentDate(year: number, month: number, date: number) {
+const isSameAsCurrentDate = (year: number, month: number, date: number) => {
   /** 현재 날짜와 입력받은 날짜가 같은지 여부를 검사 */
   const currentDate = getDateWithSeparator(new Date());
   const inputDate = `${year}${String(month).padStart(2, '0')}${String(
@@ -113,9 +112,14 @@ const formatDateToDayOfWeek = (dateString: string) => {
   return `${day}일 ${weekDay}`;
 };
 
+const getYearMonth = (dateString: Date | string) => {
+  return getDateWithSeparator(dateString, "-").slice(0, 7);
+}
+
 export {
   getDateWithSeparator,
   getDateLocaleFormat,
+  getYearMonthLocalFormat,
   getDateTimeLocaleFormat,
   getTimeLocalFormat,
   getMonthYearDetails,
@@ -123,6 +127,7 @@ export {
   isSameAsCurrentDate,
   formatDateToDayOfWeek,
   getDateLocaleFormatDiff,
+  getYearMonth,
   getDatePaymentFormat,
 };
 export type {MonthYear};

@@ -1,40 +1,45 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {FlatList, StyleSheet} from 'react-native';
 import {ResponseCategory} from '@/api/category';
 import useCategoryStore from '@/store/useCategoryStore';
 import CategoryItem from './CategoryItem';
 
 type CategoryListProps = {
-  onCategorySelect?: (categoryId: number, categoryName: string) => void;
+  onCategorySelect?: (categoryId: number, categoryName: string, categoryImageNumber?: number) => void;
   renderAddButton?: boolean;
+  selectedCategoryIds?: number[];
 };
 
 const CategoryList: React.FC<CategoryListProps> = ({
   onCategorySelect,
   renderAddButton = true,
+  selectedCategoryIds = [],
 }) => {
   const categories = useCategoryStore(state => state.categories);
   const fetchCategories = useCategoryStore(state => state.fetchCategories);
-  const [data, setData] = useState<ResponseCategory[]>([]);
 
   useEffect(() => {
     if (categories.length === 0) {
       fetchCategories();
     }
-    setData(
-      renderAddButton
-        ? [
-            ...categories,
-            {
-              categoryId: -1,
-              name: '추가',
-              categoryType: 'ADD',
-              imageNumber: -1,
-            },
-          ]
-        : [...categories],
+  }, [categories.length, fetchCategories]);
+
+  const data = useMemo(() => {
+    const filteredCategories = categories.filter(
+      cat => !selectedCategoryIds.includes(cat.categoryId)
     );
-  }, [categories]);
+    return renderAddButton
+      ? [
+          ...filteredCategories,
+          {
+            categoryId: -1,
+            name: '추가',
+            categoryType: 'ADD',
+            imageNumber: -1,
+          },
+        ]
+      : filteredCategories;
+  }, [categories, selectedCategoryIds, renderAddButton]);
 
   const renderItem = ({item}: {item: ResponseCategory}) => (
     <CategoryItem item={item} onCategorySelect={onCategorySelect} />
