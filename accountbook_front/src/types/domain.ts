@@ -60,4 +60,12 @@ type Gift = {
   stock: number;
 }
 
-export type {Payment, Account, Card, Game, Seed, Gift};
+type Category = {
+  categoryId: number;
+  categoryName: string;
+  categoryImageNumber: number;
+  budget: number;
+  use: number;
+}
+
+export type {Payment, Account, Card, Game, Seed, Gift, Category};

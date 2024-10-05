@@ -1,32 +1,73 @@
-import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {colors} from '@/constants';
-import {EditIcon} from '@/assets/icons';
+import React, {useEffect, useState} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {accountBookNavigations, colors} from '@/constants';
 import {ProgressBar} from 'react-native-paper';
 import BudgetItemList from './BudgetItemList';
-
-type Category = {
-  categoryId: number;
-  name: string;
-  budget: number;
-  use: number;
-  categoryImage?: number;
-};
+import {getDateWithSeparator, getYearMonth} from '@/utils';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import useDateStore from '@/store/useDateStore';
+import {useNavigation} from '@react-navigation/native';
+import {Category} from '@/types/domain';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 
 interface BudgetContentProps {
   categories: Category[];
   totalBudget: number;
+  budgetId: number;
+  isPastMonth: boolean;
 }
 
-const BudgetContent = ({categories, totalBudget}: BudgetContentProps) => {
+const BudgetContent = ({
+  categories: initialCategories,
+  totalBudget,
+  budgetId,
+  isPastMonth,
+}: BudgetContentProps) => {
+  const paymentList = usePaymentDataStore(state => state.paymentData);
+  const date = useDateStore(state => state.date);
+  const yearMonth = getYearMonth(date);
+
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+
   const totalUse = categories.reduce((sum, category) => sum + category.use, 0);
   const usagePercentage = totalUse / totalBudget;
   const remainingAmount = totalBudget - totalUse;
-  const categories_temp = [
-    { categoryId: 1, name: '식비', budget: 200000, use: 184000 },
-    { categoryId: 2, name: '카페', budget: 50000, use: 13000 },
-    { categoryId: 3, name: '배달음식', budget: 50000, use: 53000 }, // 초과 예시
-  ];
+
+  const navigation = useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+
+  useEffect(() => {
+    const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
+    const updatedCategories = initialCategories.map(category => {
+      const paymentsForCategory = paymentList[yearMonth]?.filter(
+        payment => payment.categoryId === category.categoryId,
+      );
+  
+      const totalUse = paymentsForCategory
+        ? paymentsForCategory.reduce((sum, payment) => sum + payment.balance, 0)
+        : 0;
+  
+      return {
+        ...category,
+        use: totalUse,
+      };
+    });
+    setCategories(updatedCategories);
+  }, [paymentList, date, initialCategories]);
+
+  const handleEditPressed = (categories: Category[], totalBudget: number) => {
+    navigation.navigate(accountBookNavigations.BUDGETCREATE, {
+      categories: categories,
+      totalBudget: totalBudget,
+      budgetId: budgetId,
+    });
+  };
 
   return (
     <ScrollView style={styles.detailContainer}>
@@ -36,7 +77,15 @@ const BudgetContent = ({categories, totalBudget}: BudgetContentProps) => {
           <Text style={styles.totalBudgetAmount}>
             {totalBudget.toLocaleString()}원
           </Text>
-          <EditIcon style={styles.editIcon} />
+          {isPastMonth ? (
+            <></>
+          ) : (
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => handleEditPressed(categories, totalBudget)}>
+              <Text style={styles.buttonText}>수정</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.progressBarWrapper}>
           <ProgressBar
@@ -71,7 +120,7 @@ const BudgetContent = ({categories, totalBudget}: BudgetContentProps) => {
           </View>
         </View>
       </View>
-      <BudgetItemList categories={categories_temp}/>
+      <BudgetItemList categories={categories} />
     </ScrollView>
   );
 };
@@ -88,6 +137,7 @@ const styles = StyleSheet.create({
   },
   budgetHeaderContainer: {
     flexDirection: 'row',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
@@ -100,16 +150,13 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
+    backgroundColor: colors.GRAY_300,
   },
   totalBudgetLabel: {
     fontSize: 18,
     fontFamily: 'Pretendard-Bold',
     color: colors.BLACK,
     marginRight: 10,
-  },
-  editIcon: {
-    width: 15,
-    height: 'auto',
   },
   totalBudgetAmount: {
     fontSize: 32,
@@ -140,6 +187,20 @@ const styles = StyleSheet.create({
   legendAmount: {
     fontSize: 14,
     color: colors.BLACK,
+  },
+  buttonContainer: {
+    backgroundColor: colors.GRAY_400,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 10,
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 15,
+    fontFamily: 'Pretendard-Bold',
+    color: colors.GRAY_700,
   },
 });
 

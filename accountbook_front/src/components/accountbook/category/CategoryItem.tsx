@@ -10,7 +10,11 @@ import Toast from 'react-native-toast-message';
 
 type CategoryItemProps = {
   item: ResponseCategory;
-  onCategorySelect?: (categoryId: number, categoryName: string) => void; // 추가
+  onCategorySelect?: (
+    categoryId: number,
+    categoryName: string,
+    categoryImageNumber?: number,
+  ) => void; // 추가
 };
 
 const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
@@ -25,7 +29,7 @@ const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
       setIsEditModalVisible(true);
       setIsActionModalVisible(false);
     } else if (onCategorySelect) {
-      onCategorySelect(item.categoryId, item.name);
+      onCategorySelect(item.categoryId, item.name, item.imageNumber);
     }
   };
 

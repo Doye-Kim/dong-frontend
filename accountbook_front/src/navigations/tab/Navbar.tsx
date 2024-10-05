@@ -53,6 +53,8 @@ const Navbar = () => {
             return <Icon />;
           },
           tabBarStyle: styles.tabBarStyle,
+          tabBarHideOnKeyboard: true,
+          keyboardHidesTabBar: true,
           headerShown: false,
           tabBarLabelStyle: styles.tabBarText,
         })}>
@@ -73,7 +75,8 @@ const Navbar = () => {
                 routeName === accountBookNavigations.SETTLEMENTREQUEST ||
                 routeName === accountBookNavigations.ACCOUNT ||
                 routeName === accountBookNavigations.PAYMENTADD ||
-                routeName === accountBookNavigations.PAYMENTDIVIDE
+                routeName === accountBookNavigations.PAYMENTDIVIDE ||
+                routeName === accountBookNavigations.BUDGETCREATE
               ) {
                 return {display: 'none'};
               }

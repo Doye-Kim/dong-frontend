@@ -1,12 +1,16 @@
 import React from 'react';
-import {StyleSheet, View, Text, FlatList, Image} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import {colors} from '@/constants';
 import CategoryIcon from '@/components/common/CategoryIcon';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import {getYearMonth} from '@/utils';
+import useDateStore from '@/store/useDateStore';
 
 interface Category {
   categoryId: number;
-  name: string;
+  categoryName: string;
+  categoryImageNumber: number;
   budget: number;
   use: number;
 }
@@ -16,49 +20,52 @@ interface BudgetItemListProps {
 }
 
 function BudgetItemList({categories}: BudgetItemListProps) {
-  const renderItem = ({item}: {item: Category}) => {
-    const remainingAmount = item.budget - item.use;
-    const usagePercentage = item.use / item.budget;
-
-    return (
-      <View style={styles.categoryContainer}>
-        <View style={styles.categoryHeader}>
-          <View style={styles.categoryLabel}>
-            <CategoryIcon categoryNumber={Number(item.categoryId)} size={40} />
-            <Text style={styles.categoryName}>{item.name}</Text>
-            <Text>{usagePercentage * 100}%</Text>
-          </View>
-          <Text style={styles.remainingAmount}>
-            {remainingAmount >= 0
-              ? `${remainingAmount.toLocaleString()}원 남음`
-              : `초과 ${Math.abs(remainingAmount).toLocaleString()}원`}
-          </Text>
-        </View>
-
-        <ProgressBar progress={usagePercentage} style={styles.progressBar} />
-
-        <View style={styles.categoryFooter}>
-          <Text style={styles.categoryUsageAmount}>
-            예산 {item.budget.toLocaleString()}원
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
-    <FlatList
-      data={categories}
-      renderItem={renderItem}
-      keyExtractor={item => item.categoryId.toString()}
-      style={styles.listContainer}
-    />
+    <ScrollView style={styles.listContainer}>
+      {categories.map(item => {
+        const remainingAmount = item.budget - item.use;
+        const usagePercentage = item.use / item.budget;
+
+        return (
+          <View key={item.categoryId} style={styles.categoryContainer}>
+            <View style={styles.categoryHeader}>
+              <View style={styles.categoryLabel}>
+                <CategoryIcon
+                  categoryNumber={item.categoryImageNumber}
+                  size={40}
+                />
+                <Text style={styles.categoryName}>{item.categoryName}</Text>
+                <Text>{(usagePercentage * 100).toFixed(2)}%</Text>
+              </View>
+              <Text style={styles.remainingAmount}>
+                {remainingAmount >= 0
+                  ? `${remainingAmount.toLocaleString()}원 남음`
+                  : `초과 ${Math.abs(remainingAmount).toLocaleString()}원`}
+              </Text>
+            </View>
+
+            <ProgressBar
+              progress={usagePercentage}
+              color={colors[`CATEGORY_${item.categoryImageNumber}` as keyof typeof colors]}
+              style={styles.progressBar}
+            />
+
+            <View style={styles.categoryFooter}>
+              <Text style={styles.categoryUsageAmount}>
+                예산 {item.budget.toLocaleString()}원
+              </Text>
+            </View>
+          </View>
+        );
+      })}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   listContainer: {
     marginTop: 20,
+    marginBottom: 100,
   },
   categoryContainer: {
     padding: 15,
