@@ -25,8 +25,8 @@ const chartConfig = {
   },
 };
 
-const formatYLabel = value => {
-  return `${Math.round(value)}`;
+const formatYLabel = (value: number) => {
+  return (Math.ceil(value / 10000) * 10000).toLocaleString();
 };
 
 const LineChartByDay = ({chartData}: {chartData: Object}) => {

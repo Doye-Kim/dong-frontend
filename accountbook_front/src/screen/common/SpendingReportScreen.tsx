@@ -3,77 +3,158 @@ import Divider from '@/components/common/Divider';
 import LineChartByDay from '@/components/report/LineChartByDay';
 import MonthlyComparison from '@/components/report/MonthlyComparison';
 import PieChartByCategory from '@/components/report/PieChartByCategory';
-import {colors} from '@/constants';
+import {accountBookHeaderNavigations, colors} from '@/constants';
+import { AccountBookHeaderParamList } from '@/navigations/stack/accountBook/AccountBookHeaderNavigator';
+import useCategoryStore from '@/store/useCategoryStore';
 import useDateStore from '@/store/useDateStore';
-import { getMonthYearDetails } from '@/utils';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-const generateDummyData = () => {
-  // 라벨 생성: 1부터 31까지
-  const labels = [
-    '',
-    ...Array.from({length: 31}, (_, i) => (i + 1).toString()),
-    '',
-  ];
+import useHideStatusStore from '@/store/useHideStatusStore';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import {getDateWithSeparator, getMonthYearDetails, getYearMonth} from '@/utils';
+import {useNavigation} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {useEffect, useState} from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-  // 데이터 생성: 0원부터 320,000원까지 랜덤 데이터, 만원 단위
-  const data = [
-    ...Array.from({length: 31}, () => Math.floor(Math.random() * 33)),
-  ];
-  // console.log(data);
-  return {
-    labels,
-    datasets: [
-      {
-        data,
-        color: () => `rgba(255, 160, 0, 1)`,
-        strokeWidth: 3, // 선 두께
-      },
-    ],
-  };
-};
-
-// 더미 데이터 생성
-const dayChartData = generateDummyData();
-const categoryChartData = [
-  {category: '식비', color: colors.CATEGORY_1, spending: 320000},
-  {category: '카페', color: colors.CATEGORY_2, spending: 50000},
-  {category: '배달음식', color: colors.CATEGORY_3, spending: 250000},
-  {category: '편의점', color: colors.CATEGORY_4, spending: 20000},
-  {category: '술/유흥', color: colors.CATEGORY_5, spending: 200000},
-  {category: '생활', color: colors.CATEGORY_6, spending: 50000},
-  {category: '패션/미용', color: colors.CATEGORY_7, spending: 180000},
-  {category: '대중교통', color: colors.CATEGORY_8, spending: 60000},
-  {category: '택시', color: colors.CATEGORY_9, spending: 50000},
-  {category: '자동차', color: colors.CATEGORY_10, spending: 0},
-  {category: '주거/통신', color: colors.CATEGORY_11, spending: 550000},
-  {category: '의료/건강', color: colors.CATEGORY_12, spending: 3000},
-  {category: '금융', color: colors.CATEGORY_13, spending: 0},
-  {category: '문화/여가', color: colors.CATEGORY_14, spending: 0},
-  {category: '여행/숙박', color: colors.CATEGORY_15, spending: 0},
-  {category: '교육/학습', color: colors.CATEGORY_16, spending: 0},
-  {category: '경조/선물', color: colors.CATEGORY_17, spending: 20000},
-  {category: '기타', color: colors.CATEGORY_18, spending: 60000},
-];
 const SpendingReportScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<AccountBookHeaderParamList>>();
+  const categories = useCategoryStore(state => state.categories);
+  const selectedCategories = useCategoryStore(state => state.selectedCategories);
+  const isHideVisible = useHideStatusStore(state => state.isHideVisible);
   const date = useDateStore(state => state.date);
   const {year, month} = getMonthYearDetails(date);
+  const paymentList = usePaymentDataStore(state => state.paymentData);
+  const fetchPaymentData = usePaymentDataStore(state => state.fetchPaymentData);
+  const totalBalances: Record<string, number> = {};
+
+  const generateDailyData = () => {
+    const labels = [''];
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const data = Array(daysInMonth).fill(0);
+  
+    const currentMonthKey = getYearMonth(date);
+    const currentMonthPayments = paymentList[currentMonthKey] || [];
+  
+    currentMonthPayments.forEach(payment => {
+      const day = new Date(payment.paymentTime).getDate() - 1; // 날짜는 1부터 시작하므로 -1 처리
+  
+      // 필터 조건: 선택된 카테고리와 숨김 처리 여부에 따른 필터링 적용
+      if (
+        selectedCategories.includes(payment.categoryId) &&
+        (isHideVisible || payment.paymentState === 'INCLUDE')
+      ) {
+        data[day] += payment.balance;
+      }
+    });
+  
+    // 라벨 설정
+    for (let i = 1; i <= daysInMonth; i++) {
+      labels.push(`${i}`);
+    }
+    labels.push('');
+  
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          color: () => `rgba(255, 160, 0, 1)`,
+          strokeWidth: 3, // 선 두께
+        },
+      ],
+    };
+  };
+  const dayChartData = generateDailyData();
+
+  useEffect(() => {
+    for (let i = 0; i < 5; i++) {
+      const targetDate = new Date(year, month - 1 - i);
+      const targetDateString = getDateWithSeparator(targetDate, '-');
+      const targetYearMonth = targetDateString.slice(0, 7);
+      if (!paymentList[targetYearMonth]) {
+        fetchPaymentData(targetDateString);
+      }
+    }
+  }, []);
+
+  Object.entries(paymentList).forEach(([key, payments]) => {
+    totalBalances[key] = payments
+      .filter(payment => {
+        if (isHideVisible) {
+          // isHideVisible이 true인 경우 카테고리 필터링만 적용
+          return selectedCategories.includes(payment.categoryId);
+        } else {
+          // isHideVisible이 false인 경우 paymentState가 'INCLUDE'인 것만
+          return payment.paymentState === 'INCLUDE' && selectedCategories.includes(payment.categoryId);
+        }
+      })
+      .reduce((accumulator, payment) => accumulator + payment.balance, 0);
+  });
+
+  // 카테고리 차트 데이터 생성
+  const generateCategoryChartData = () => {
+    const currentMonthKey = getYearMonth(date);
+    const currentMonthPayments = paymentList[currentMonthKey] || [];
+    
+    const categorySpendings: Record<number, number> = {};
+  
+    // 카테고리별로 소비 금액 합산
+    currentMonthPayments.forEach(payment => {
+      if (
+        selectedCategories.includes(payment.categoryId) &&
+        (isHideVisible || payment.paymentState === 'INCLUDE')
+      ) {
+        if (!categorySpendings[payment.categoryId]) {
+          categorySpendings[payment.categoryId] = 0;
+        }
+        categorySpendings[payment.categoryId] += payment.balance;
+      }
+    });
+  
+    // 카테고리별 차트 데이터 생성
+    return categories
+      .filter(category => categorySpendings[category.categoryId])
+      .map(category => ({
+        category: category.name,
+        color: colors[`CATEGORY_${category.imageNumber}` as keyof typeof colors],
+        spending: categorySpendings[category.categoryId],
+      }));
+  };
+  const categoryChartData = generateCategoryChartData();
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.contentContainer}>
-          <Text style={styles.dateText}>{year}년 {month}월 분석</Text>
+          <Text style={styles.dateText}>
+            {year}년 {month}월 분석
+          </Text>
           <Text style={styles.spendingMoney}>
-            {(1205680).toLocaleString()}원
+            {totalBalances[getYearMonth(date)].toLocaleString()}원
           </Text>
         </View>
         <View style={styles.contentContainer}>
-          <MonthlyComparison />
+          <MonthlyComparison
+            totalBalances={totalBalances}
+            paymentList={paymentList}
+          />
         </View>
         <Divider />
         <View style={styles.contentContainer}>
           <View style={styles.dayHeaderContainer}>
             <Text style={styles.dayTitle}>일일 추이</Text>
-            <FilterButton />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(accountBookHeaderNavigations.FILTER)
+              }>
+              <FilterButton />
+            </TouchableOpacity>
           </View>
           <LineChartByDay chartData={dayChartData} />
         </View>
