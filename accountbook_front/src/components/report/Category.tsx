@@ -13,7 +13,12 @@ const Category = ({
   setSelectedCategoryId: (selectedCategoryId: number) => void;
 }) => {
   const handleCategoryPress = () => {
-    setSelectedCategoryId(categoryId);
+    if (categoryId === selectedCategoryId) {
+      setSelectedCategoryId(1);
+    } else {
+      setSelectedCategoryId(categoryId);
+    }
+    
   };
   const containerStyle = [
     styles.container,

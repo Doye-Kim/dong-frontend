@@ -1,101 +1,136 @@
 import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 import Category from './Category';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import LineChartByCategory from './LineChartByCategory';
 import CategoryComparisonHeader from './CategoryComparisonHeader';
 import MonthlySpendingInfo from './MonthlySpendingInfo';
+import {Payment} from '@/types/domain';
+import useCategoryStore from '@/store/useCategoryStore';
+import useDateStore from '@/store/useDateStore';
+import {getMonthYearDetails, getYearMonth} from '@/utils';
+import useHideStatusStore from '@/store/useHideStatusStore';
 
-const data = {
-  size: '10',
-  categories: [
-    {
-      category_id: 1,
-      category_name: '식사',
-      image_number: 1,
-      default: true,
-    },
-    {
-      category_id: 2,
-      category_name: '교통',
-      image_number: 2,
-      default: true,
-    },
-    {
-      category_id: 3,
-      category_name: '커피',
-      image_number: 3,
-      default: true,
-    },
-    {
-      category_id: 4,
-      category_name: '영화',
-      image_number: 4,
-      default: false,
-    },
-    {
-      category_id: 5,
-      category_name: '편의점',
-      image_number: 5,
-      default: true,
-    },
-    {
-      category_id: 6,
-      category_name: '의류',
-      image_number: 6,
-      default: false,
-    },
-    {
-      category_id: 7,
-      category_name: '헬스',
-      image_number: 7,
-      default: false,
-    },
-    {
-      category_id: 8,
-      category_name: '전자기기',
-      image_number: 8,
-      default: false,
-    },
-    {
-      category_id: 9,
-      category_name: '주거비',
-      image_number: 9,
-      default: true,
-    },
-    {
-      category_id: 10,
-      category_name: '기타',
-      image_number: 10,
-      default: false,
-    },
-  ],
-};
-const chartData = {
-  labels: ['', '7월', '8월'],
-  datasets: [
-    {
-      data: [null, 120450, 325920],
-      color: () => `rgba(255, 160, 0, 1)`,
-      strokeWidth: 4, // 선 두께
-    },
-  ],
-};
+interface MonthlyComparisonProps {
+  totalBalances: Record<string, number>;
+  paymentList: Record<string, Payment[]>;
+}
 
-const MonthlyComparison = () => {
+const MonthlyComparison = ({
+  totalBalances,
+  paymentList,
+}: MonthlyComparisonProps) => {
+  const date = useDateStore(state => state.date);
+  const {year, month} = getMonthYearDetails(date);
+  const categories = useCategoryStore(state => state.categories);
+  const isHideVisible = useHideStatusStore(state => state.isHideVisible);
+  const extendedCategories = [
+    {
+      categoryId: 1,
+      name: '전체',
+      categoryType: 'DEFAULT',
+      imageNumber: 0,
+    },
+    ...categories,
+  ];
   const [selectedCategoryId, setSelectedCategoryId] = useState(1);
+  const [chartData, setChartData] = useState({
+    labels: ['', '', ''],
+    datasets: [
+      {
+        data: [null, 0, 0],
+        color: () => `rgba(255, 160, 0, 1)`,
+        strokeWidth: 4,
+      },
+    ],
+  });
 
+// 선택된 category에 대해 합계 계산
+const calcCategorySum = (categoryId: number) => {
+  const months = [];
+  const labels = ['']; // 첫 번째 라벨은 공백
+
+  for (let i = 1; i >= 0; i--) {
+    const targetDate = new Date(year, month - i - 1); // 지난달과 이번달
+    months.push(getYearMonth(targetDate));
+    labels.push(`${targetDate.getMonth() + 1}월`);
+  }
+
+  // 합계 계산
+  const sums = months.map(monthKey => {
+    const payments = paymentList[monthKey] || [];
+    return payments
+      .filter(payment => {
+        if (isHideVisible) {
+          // isHideVisible이 true인 경우 모든 payment를 포함 (카테고리만 필터링)
+          return categoryId === 1 || payment.categoryId === categoryId;
+        } else {
+          // isHideVisible이 false인 경우 paymentState가 'INCLUDE'인 것만 포함
+          return (
+            payment.paymentState === 'INCLUDE' &&
+            (categoryId === 1 || payment.categoryId === categoryId)
+          );
+        }
+      })
+      .reduce((acc, payment) => acc + payment.balance, 0);
+  });
+
+  return {sums, labels};
+};
+
+  useEffect(() => {
+    const {sums, labels} = calcCategorySum(selectedCategoryId);
+    setChartData(prev => ({
+      ...prev,
+      labels,
+      datasets: [
+        {
+          ...prev.datasets[0],
+          data: [null, ...sums],
+        },
+      ],
+    }));
+  }, [selectedCategoryId, paymentList, date]);
+
+// 이번 달과 지난달의 총 소비량 계산
+const pastTwoMonths = [];
+for (let i = 1; i >= 0; i--) {
+  const targetDate = new Date(year, month - i - 1); // 지난달과 이번달
+  const monthKey = getYearMonth(targetDate);
+  const payments = paymentList[monthKey] || [];
+
+  // 선택한 카테고리에 따른 총 소비량 계산
+  const totalSpending = payments
+    .filter(payment => {
+      if (isHideVisible) {
+        // isHideVisible이 true인 경우 모든 payment를 포함 (카테고리만 필터링)
+        return selectedCategoryId === 1 || payment.categoryId === selectedCategoryId;
+      } else {
+        // isHideVisible이 false인 경우 paymentState가 'INCLUDE'인 것만 포함
+        return (
+          payment.paymentState === 'INCLUDE' &&
+          (selectedCategoryId === 1 || payment.categoryId === selectedCategoryId)
+        );
+      }
+    })
+    .reduce((acc, payment) => acc + payment.balance, 0);
+
+  pastTwoMonths.push({
+    month: targetDate.getMonth() + 1,
+    spending: totalSpending,
+  });
+}
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <CategoryComparisonHeader />
+        <CategoryComparisonHeader totalBalances={totalBalances} />
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.categoryContainer}>
-          {data.categories.map(item => (
+          {extendedCategories.map(item => (
             <Category
-              key={item.category_id}
-              name={item.category_name}
-              categoryId={item.category_id}
+              key={item.categoryId}
+              name={item.name}
+              categoryId={item.categoryId}
               selectedCategoryId={selectedCategoryId}
               setSelectedCategoryId={setSelectedCategoryId}
             />
@@ -104,8 +139,13 @@ const MonthlyComparison = () => {
       </ScrollView>
       <LineChartByCategory chartData={chartData} />
       <View style={styles.spendingInfoContainer}>
-        <MonthlySpendingInfo month={7} spending={120450} />
-        <MonthlySpendingInfo month={8} spending={325920} />
+        {pastTwoMonths.map(monthInfo => (
+          <MonthlySpendingInfo
+            key={monthInfo.month}
+            month={monthInfo.month}
+            spending={monthInfo.spending}
+          />
+        ))}
       </View>
     </View>
   );
@@ -127,4 +167,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
 export default MonthlyComparison;

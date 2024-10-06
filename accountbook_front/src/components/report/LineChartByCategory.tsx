@@ -2,6 +2,7 @@ import {colors} from '@/constants';
 import hexToRgba from '@/utils/hexToRgba';
 import {StyleSheet, View} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
+import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
 
 const chartConfig = {
   backgroundColor: colors.WHITE,
@@ -21,7 +22,7 @@ const chartConfig = {
     stroke: colors.GRAY_400,
   },
 };
-const LineChartByCategory = ({chartData}: {chartData: Object}) => {
+const LineChartByCategory = ({chartData}: {chartData: LineChartData}) => {
   return (
     <View style={styles.chartContainer}>
       <LineChart
