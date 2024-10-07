@@ -62,12 +62,10 @@ const SettlementPaymentsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>정산할 내역을 선택하세요</Text>
-      <ScrollView>
-        <PaymentList
-          selectedPayments={selectedPayments}
-          setSelectedPayments={setSelectedPayments}
-        />
-      </ScrollView>
+      <PaymentList
+        selectedPayments={selectedPayments}
+        setSelectedPayments={setSelectedPayments}
+      />
       <View style={styles.buttonContainer}>
         <CustomButton text="정산하기" onPress={handleOnPress} />
       </View>
