@@ -25,6 +25,7 @@ import {
   Category22Icon,
   Category23Icon,
   Category24Icon,
+  Category25Icon,
 } from './icons';
 import {FC} from 'react';
 
@@ -54,4 +55,5 @@ export const categoryIconMap: {[key: number]: FC<SvgProps>} = {
   22: Category22Icon,
   23: Category23Icon,
   24: Category24Icon,
+  25: Category25Icon,
 };

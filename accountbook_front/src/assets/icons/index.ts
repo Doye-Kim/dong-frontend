@@ -74,3 +74,4 @@ export {default as Category21Icon} from './category-21.svg';
 export {default as Category22Icon} from './category-22.svg';
 export {default as Category23Icon} from './category-23.svg';
 export {default as Category24Icon} from './category-24.svg';
+export {default as Category25Icon} from './category-25.svg';
