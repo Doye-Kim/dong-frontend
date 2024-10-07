@@ -3,7 +3,6 @@ import {
   assetNavigations,
   colors,
   gameNavigations,
-  seedNavigations,
 } from '@/constants';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
