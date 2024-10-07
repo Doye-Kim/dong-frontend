@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,10 +9,16 @@ import {
   TextInput,
   ScrollView,
   Modal,
+  Animated,
 } from 'react-native';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {EditIcon, MeatballMenuIcon} from '@/assets/icons';
-import {getDateLocaleFormat, getDateTimeLocaleFormat, getDateWithSeparator, getTimeLocalFormat} from '@/utils';
+import {
+  getDateLocaleFormat,
+  getDateTimeLocaleFormat,
+  getDateWithSeparator,
+  getTimeLocalFormat,
+} from '@/utils';
 import {colors} from '@/constants';
 import axiosInstance from '@/api/axios';
 import {Payment} from '@/types/domain';
@@ -20,6 +26,7 @@ import CategoryList from '@/components/accountBook/category/CategoryList';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
 import useDateStore from '@/store/useDateStore';
 import PaymentOption from '@/components/accountBook/payment/PaymentOption';
+import CategorySelectModal from '@/components/accountBook/common/CategorySelectModal';
 
 type RouteParams = {
   PaymentDetail?: {paymentId: number};
@@ -32,6 +39,7 @@ const PaymentDetailScreen = () => {
   const [paymentData, setPaymentData] = useState<Payment>();
   const [isCategoryModalVisible, setIsCategoryModalVisible] =
     useState<boolean>(false);
+  const slideAnim = useRef(new Animated.Value(300)).current;
   const [isOptionModalVisible, setIsOptionModalVisible] =
     useState<boolean>(false);
   const date = useDateStore(state => state.date);
@@ -43,37 +51,6 @@ const PaymentDetailScreen = () => {
     patchPaymentType(payment);
     patchPaymentCategory(payment).then(() => fetchPaymentData(yearMonth));
     navigation.goBack();
-  };
-
-  // 전체 수정
-  const putPayment = async (payment: Payment) => {
-    try {
-      const paymentRequest = [
-        {
-          merchantName: payment.merchantName,
-          categoryId: payment.categoryId,
-          balance: payment.balance,
-          paymentName: payment.paymentName,
-          memo: payment.memo,
-          paymentTime: new Date(payment.paymentTime).toISOString(),
-          type: payment.paymentType,
-
-          cardIssuerName: '신한카드',
-          asset: 'ACCOUNT',
-          assetId: 1,
-
-          // cardIssuerName: payment.cardIssuerName,
-          // asset: payment.asset,
-          // assetId: payment.assetId,
-        },
-      ];
-      const response = await axiosInstance.put(
-        `/payments/${paymentId}`,
-        paymentRequest,
-      );
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   // 카테고리, 지출포함여부 수정
@@ -143,7 +120,22 @@ const PaymentDetailScreen = () => {
   };
 
   const toggleCategoryModal = () => {
-    setIsCategoryModalVisible(prev => !prev);
+    if (!isCategoryModalVisible) {
+      setIsCategoryModalVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 600,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsCategoryModalVisible(false);
+      });
+    }
   };
 
   const handleCategorySelect = (categoryId: number, categoryName: string) => {
@@ -168,15 +160,6 @@ const PaymentDetailScreen = () => {
         <>
           <ScrollView style={styles.scrollContainer}>
             <View style={styles.header}>
-              {/* <TextInput
-                style={styles.headerTitle}
-                placeholder="상품 이름을 입력하세요"
-                placeholderTextColor={colors.GRAY_500}
-                onChangeText={text =>
-                  setPaymentData({...paymentData, paymentName: text})
-                }
-                value={paymentData.merchantName}
-              /> */}
               <Text style={styles.headerTitle}>{paymentData.merchantName}</Text>
               <View style={styles.headerBelow}>
                 <Text style={styles.amountText}>
@@ -218,7 +201,8 @@ const PaymentDetailScreen = () => {
               <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>일시</Text>
                 <Text style={styles.detailValue}>
-                  {getDateLocaleFormat(paymentData.paymentTime)}  {getTimeLocalFormat(paymentData.paymentTime)}
+                  {getDateLocaleFormat(paymentData.paymentTime)}{' '}
+                  {getTimeLocalFormat(paymentData.paymentTime)}
                 </Text>
               </View>
               <View style={styles.detailItem}>
@@ -257,31 +241,17 @@ const PaymentDetailScreen = () => {
               <Text style={styles.saveButtonText}>저장</Text>
             </TouchableOpacity>
           </View>
-          <Modal
-            visible={isCategoryModalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={toggleCategoryModal}>
-            <View style={styles.bottomModalContainer}>
-              <View style={styles.bottomModalContent}>
-                <Text style={styles.modalTitle}>카테고리 선택</Text>
-                <CategoryList
-                  onCategorySelect={handleCategorySelect}
-                  renderAddButton={false}
-                />
-                <TouchableOpacity
-                  onPress={toggleCategoryModal}
-                  style={styles.closeButton}>
-                  <Text style={styles.closeButtonText}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
+          <CategorySelectModal
+            isVisible={isCategoryModalVisible}
+            toggleModal={toggleCategoryModal}
+            onCategorySelect={handleCategorySelect}
+            slideAnim={slideAnim}
+          />
           <Modal
             visible={isOptionModalVisible}
             transparent={true}
-            animationType="slide"
-            onRequestClose={() => setIsOptionModalVisible(false)}>
+            animationType="fade"
+            onRequestClose={toggleOptionModal}>
             <View style={styles.modalOverlay}>
               <View style={styles.bottomModalContainer}>
                 <PaymentOption

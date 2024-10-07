@@ -65,11 +65,10 @@ const PaymentDivideScreen = () => {
       paymentName: payment.paymentName,
       memo: payment.memo,
       paymentTime: payment.paymentTime,
-      cardIssuerName: payment.cardIssuerName || 'Unknown',
+      cardIssuerName: payment.cardIssuerName || null,
       type: payment.paymentType,
-      // asset: payment.asset || 'ACCOUNT',
-      asset: 'ACCOUNT',
-      assetId: payment.assetId || 1,
+      asset: payment.asset || null,
+      assetId: payment.assetId || null,
     }));
   };
 

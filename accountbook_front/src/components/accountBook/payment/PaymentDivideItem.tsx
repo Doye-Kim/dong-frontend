@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   View,
   ToastAndroid,
+  Animated,
 } from 'react-native';
 import {colors} from '@/constants';
 import {Payment} from '@/types/domain';
 import {getDateLocaleFormat, getTimeLocalFormat} from '@/utils';
 import CategoryList from '../category/CategoryList';
 import Toast from 'react-native-toast-message';
+import CategorySelectModal from '../common/CategorySelectModal';
 
 interface PaymentDivideItemProps {
   item: Payment;
@@ -27,6 +29,7 @@ const PaymentDivideItem = ({
 }: PaymentDivideItemProps) => {
   const [isCategoryModalVisible, setIsCategoryModalVisible] =
     useState<boolean>(false);
+  const slideAnim = useRef(new Animated.Value(300)).current;
   const [balanceEditStatus, setBalanceEditStatus] = useState<boolean>(false);
   const [memoEditStatus, setMemoEditStatus] = useState<boolean>(false);
   const [inputBalanceValue, setInputBalanceValue] = useState<string>(
@@ -48,7 +51,22 @@ const PaymentDivideItem = ({
 
   // 카테고리 모달 토글
   const toggleCategoryModal = () => {
-    setIsCategoryModalVisible(prev => !prev);
+    if (!isCategoryModalVisible) {
+      setIsCategoryModalVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 600,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsCategoryModalVisible(false);
+      });
+    }
   };
 
   const toggleBalanceEditStatus = () => {
@@ -166,26 +184,12 @@ const PaymentDivideItem = ({
       </View>
 
       {/* 카테고리 선택 모달 */}
-      <Modal
-        visible={isCategoryModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={toggleCategoryModal}>
-        <View style={styles.bottomModalContainer}>
-          <View style={styles.bottomModalContent}>
-            <Text style={styles.modalTitle}>카테고리 선택</Text>
-            <CategoryList
-              onCategorySelect={handleCategorySelect}
-              renderAddButton={false}
-            />
-            <TouchableOpacity
-              onPress={toggleCategoryModal}
-              style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <CategorySelectModal
+        isVisible={isCategoryModalVisible}
+        toggleModal={toggleCategoryModal}
+        onCategorySelect={handleCategorySelect}
+        slideAnim={slideAnim}
+      />
     </View>
   );
 };
