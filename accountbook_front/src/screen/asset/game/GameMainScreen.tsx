@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import NotificationHeader from '@/components/common/NotificationHeader';
 import {AddSquareSettlement} from '@/assets/icons';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {GameStackParamList} from '@/navigations/stack/GameStackNavigator';
@@ -60,7 +59,6 @@ const GameMainScreen = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <NotificationHeader />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

@@ -11,17 +11,16 @@ import CustomButton from '@/components/common/CustomButton';
 import {useEffect, useState} from 'react';
 import {AccountInfo, getAssets} from '@/api/asset';
 import Toast from 'react-native-toast-message';
-import {postSettlement} from '@/api/settlement';
+import {postSettlement, postTransferSettlement} from '@/api/settlement';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
 import {colors, gameNavigations, accountBookNavigations} from '@/constants';
 import useGameCreateStore from '@/store/useGameCreateStore';
-import {postGame} from '@/api/game';
+import {acceptGame, postGame} from '@/api/game';
 
 const SelectAccountScreen = ({route, navigation}) => {
   const pageNumber = route?.params?.pageNumber;
   const [title, setTitle] = useState('');
   const [nextText, setNextText] = useState('');
-
   useEffect(() => {
     switch (pageNumber) {
       case 1:
@@ -34,7 +33,8 @@ const SelectAccountScreen = ({route, navigation}) => {
         break;
       case 3:
         setTitle('참가비를 낼');
-        setNextText('내기 신청하기');
+        if (gameCategoryId) setNextText('내기 신청하기');
+        else setNextText('내기 참여하기');
         break;
     }
   }, [pageNumber]);
@@ -61,7 +61,8 @@ const SelectAccountScreen = ({route, navigation}) => {
     getAssetList();
   }, []);
 
-  const {reset} = useSettlementCreateStore();
+  const {resetSettlement} = useSettlementCreateStore();
+  const {resetGame} = useGameCreateStore();
   const enterSettlement = async (accountId: number) => {
     const state = useSettlementCreateStore.getState();
 
@@ -76,11 +77,12 @@ const SelectAccountScreen = ({route, navigation}) => {
         })),
     }));
     try {
+      console.log('new', newPaymentList[0].settlementUserList);
       const data = await postSettlement({
         accountId: accountId,
         settlementPaymentList: newPaymentList,
       });
-      reset();
+      resetSettlement();
       navigation.navigate(accountBookNavigations.TABBAR, {
         screen: accountBookNavigations.SETTLEMENTMAIN,
       });
@@ -101,9 +103,41 @@ const SelectAccountScreen = ({route, navigation}) => {
     startDate,
     endDate,
     fee,
+    participantId,
   } = useGameCreateStore();
 
+  const acceptGameRequest = async (accountNumber: string) => {
+    try {
+      const data = await acceptGame({
+        participantId,
+        customCategoryIds,
+        accountNumber,
+      });
+      console.log(data);
+      navigation.navigate(gameNavigations.MAIN);
+      Toast.show({
+        type: 'success',
+        text1: '내기 참여에 성공했습니다.',
+      });
+      resetGame();
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data.message,
+      });
+    }
+  };
   const enterGame = async (accountNumber: string) => {
+    console.log({
+      participantIds,
+      gameCategoryId,
+      customCategoryIds,
+      startDate,
+      endDate,
+      fee,
+      accountNumber,
+    });
     try {
       const data = await postGame({
         participantIds,
@@ -120,6 +154,7 @@ const SelectAccountScreen = ({route, navigation}) => {
         type: 'success',
         text1: '내기 신청에 성공했습니다.',
       });
+      resetGame();
     } catch (err) {
       console.log(err.response.data);
       Toast.show({
@@ -129,6 +164,26 @@ const SelectAccountScreen = ({route, navigation}) => {
     }
   };
 
+  const {settlementId} = useSettlementCreateStore();
+  const transfer = async (accountId: number, accountNumber: string) => {
+    console.log({settlementId, accountId});
+    try {
+      const data = await postTransferSettlement({
+        settlementId,
+        accountId,
+        accountNumber,
+      });
+      console.log(data);
+      Toast.show({
+        type: 'success',
+        text1: '송금 완료!',
+      });
+      navigation.navigate(accountBookNavigations.NOTICE);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+    }
+  };
   const handleOnPress = () => {
     if (!account) {
       Toast.show({
@@ -138,9 +193,12 @@ const SelectAccountScreen = ({route, navigation}) => {
     } else if (pageNumber === 1) {
       enterSettlement(account.id);
     } else if (pageNumber === 3) {
-      console.log('account ', account.accountNo);
-      setAccountNumber(account.accountNo);
-      enterGame(account.accountNo);
+      console.log('account ', account.accountNumber);
+      setAccountNumber(account.accountNumber);
+      if (gameCategoryId) enterGame(account.accountNumber);
+      else acceptGameRequest(account.accountNumber);
+    } else if (pageNumber === 2) {
+      transfer(account.id, account.accountNumber);
     }
   };
 

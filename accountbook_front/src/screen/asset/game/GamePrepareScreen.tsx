@@ -49,7 +49,7 @@ const GamePrepareScreen = ({route, navigation}) => {
     }
   };
   const getData = async () => {
-    console.log('getdata');
+    console.log('대기 중인 내기 getdata');
     setUserData(await getEncryptStorage('user'));
 
     try {
@@ -199,10 +199,8 @@ const GamePrepareScreen = ({route, navigation}) => {
               showsHorizontalScrollIndicator={false}
               style={{marginTop: 10}}>
               {gameData?.afterParticipant &&
-                gameData?.afterParticipant.map(item => (
-                  <View
-                    key={item.userName + item.gameCount}
-                    style={styles.user}>
+                gameData?.afterParticipant.map((item, index) => (
+                  <View key={item.userName + index} style={styles.user}>
                     <UserIcon name={item.userName} disabled={false} />
                   </View>
                 ))}

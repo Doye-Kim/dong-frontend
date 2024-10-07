@@ -7,6 +7,8 @@ import BudgetMainScreen from '@/screen/accountBook/budget/BudgetMainScreen';
 import CategoryEditScreen from '@/screen/category/CategoryEditScreen';
 import SpendingReportScreen from '@/screen/common/SpendingReportScreen';
 import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
+import NotificationScreen from '@/screen/NotificationScreen';
+import NotificationHeader from '@/components/common/NotificationHeader';
 
 export type ExtraStackParamList = {
   [extraNavigations.MAIN]: undefined;
@@ -14,6 +16,7 @@ export type ExtraStackParamList = {
   [extraNavigations.BUDGET]: undefined;
   [extraNavigations.CATEGORY]: undefined;
   [extraNavigations.REPORT]: undefined;
+  [extraNavigations.NOTICE]: undefined;
 };
 
 const Stack = createStackNavigator<ExtraStackParamList>();
@@ -41,8 +44,8 @@ function ExtraStackNavigator() {
         name={extraNavigations.MAIN}
         component={ExtraMainScreen}
         options={{
-          headerTitle: ' ',
-          headerShown: false,
+          headerShown: true,
+          header: () => <NotificationHeader />,
         }}
       />
       <Stack.Screen
@@ -50,15 +53,15 @@ function ExtraStackNavigator() {
         component={PointMarketScreen}
         options={{
           headerTitle: ' ',
-          headerShown: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name={extraNavigations.BUDGET}
         component={BudgetMainScreen}
         options={{
-          headerTitle: '예산 관리',
-          headerShown: false,
+          headerTitle: '',
+          headerShown: true,
         }}
       />
       <Stack.Screen
@@ -66,13 +69,21 @@ function ExtraStackNavigator() {
         component={CategoryEditScreen}
         options={{
           headerTitle: ' ',
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name={extraNavigations.REPORT}
         component={SpendingReportScreen}
         options={{
-          headerTitle: '소비 리포트',
+          headerTitle: ' ',
+        }}
+      />
+      <Stack.Screen
+        name={extraNavigations.NOTICE}
+        component={NotificationScreen}
+        options={{
+          headerTitle: '알림',
         }}
       />
     </Stack.Navigator>

@@ -22,7 +22,39 @@ const getDateWithSeparator = (
   ].join(separator);
 }
 
-const getDateLocaleFormat = (dateString: Date | string) => {
+function convertDateToString(dateString: string) {
+  const dateTime = new Date(dateString);
+  const now = new Date();
+
+  // 한국 시간을 위한 UTC+9 보정
+  const kstOffset = 9 * 60; // 9시간을 분으로 변환
+  const localOffset = now.getTimezoneOffset(); // 현재 로컬 타임존 오프셋(분)
+
+  // diff는 밀리초 차이
+  const diff =
+    now.getTime() + (kstOffset - localOffset) * 60 * 1000 - dateTime.getTime();
+
+  const minutes = Math.floor(diff / (1000 * 60));
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+  const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+
+  if (years === 0 && months === 0 && days === 0 && hours === 0) {
+    return `${minutes}분 전`;
+  } else if (years === 0 && months === 0 && days === 0) {
+    return `${hours}시간 전`;
+  } else if (years === 0 && months === 0) {
+    return `${days}일 전`;
+  } else {
+    const year = dateTime.getFullYear();
+    const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateTime.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}
+
+function getDateLocaleFormat(dateString: Date | string) {
   const {year, month, day} = getDateDetails(dateString);
 
   return `${year}년 ${month}월 ${day}일`;
@@ -58,9 +90,14 @@ const getDateLocaleFormatDiff = (dateString: Date | string) => {
   )}`;
 }
 
-const getTimeLocalFormat = (dateString: Date | string): string => {
-  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-  return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
+function getTimeLocalFormat(dateString: Date | string): string {
+  const date =
+    typeof dateString === 'string' ? new Date(dateString) : dateString;
+  return date.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
 }
 
 const getMonthYearDetails = (initialDate: Date) => {
@@ -123,6 +160,7 @@ const getYearMonth = (dateString: Date | string) => {
 }
 
 export {
+  convertDateToString,
   getDateWithSeparator,
   getDateLocaleFormat,
   getYearMonthLocalFormat,

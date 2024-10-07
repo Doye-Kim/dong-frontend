@@ -13,18 +13,14 @@ import {
 import axiosInstance from '@/api/axios';
 import BuyConfirmModal from '@/components/extra/BuyConfirmModal';
 import BarcodeModal from '@/components/extra/BarcodeModal';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { ExtraStackParamList } from '@/navigations/stack/ExtraStackNavigator';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
 
 type GiftData = Gift[];
 
-type PointMarketRouteProp = RouteProp<
-  ExtraStackParamList,
-  'PointMarket'
->;
+type PointMarketRouteProp = RouteProp<ExtraStackParamList, 'PointMarket'>;
 
 const PointMarketScreen = () => {
-  
   const route = useRoute<PointMarketRouteProp>();
   const [point, setPoint] = useState(route.params.point);
   const [giftList, setGiftList] = useState<GiftData | null>(null);
@@ -85,12 +81,6 @@ const PointMarketScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity>
-          <BackArrow />
-        </TouchableOpacity>
-        <NotificationHeader />
-      </View>
       <View style={styles.pointSectionContainer}>
         <Text style={styles.pointTitleText}>내 포인트</Text>
         <View style={styles.pointContainer}>
@@ -141,12 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.WHITE,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 20,
   },
   pointSectionContainer: {
     marginHorizontal: 20,

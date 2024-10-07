@@ -27,7 +27,7 @@ const GameItem = ({item}: {item: ResponseGame}) => {
         size={40}
       />
       <Text style={styles.titleText}>
-        김도예 외 {item.participantCount - 1}명
+        {item.ownerName} 외 {item.participantCount - 1}명
       </Text>
     </TouchableOpacity>
   );

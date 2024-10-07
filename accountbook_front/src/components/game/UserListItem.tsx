@@ -44,7 +44,7 @@ const UserListItem = ({
       onPress={() => handlePressFriend(item)}>
       <User width={40} height={40} />
       <View style={styles.contactDetails}>
-        <Text key={item.id} style={styles.nameText}>
+        <Text key={item.friendId} style={styles.nameText}>
           {item.nickname}
         </Text>
         {item.phone && (

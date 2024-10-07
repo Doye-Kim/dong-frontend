@@ -1,9 +1,8 @@
-import {seedNavigations} from '@/constants';
+import {colors, seedNavigations} from '@/constants';
 import SeedCreateScreen from '@/screen/asset/seed/SeedCreateScreen';
 import SeedDetailScreen from '@/screen/asset/seed/SeedDetailScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
 
 export type SeedStackParamList = {
   [seedNavigations.CREATE]: undefined;
@@ -14,21 +13,35 @@ const Stack = createStackNavigator<SeedStackParamList>();
 
 const SeedStackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: {
+          backgroundColor: colors.WHITE,
+        },
+        headerStyle: {
+          shadowColor: 'transparent',
+          backgroundColor: colors.WHITE,
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          fontFamily: 'Pretendard-Bold',
+          paddingLeft: 0,
+          marginLeft: 0,
+        },
+        headerTintColor: colors.BLACK,
+      }}>
       <Stack.Screen
         name={seedNavigations.CREATE}
         component={SeedCreateScreen}
-        options={{headerTitle: ''}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={seedNavigations.DETAIL}
         component={SeedDetailScreen}
-        options={{headerTitle: ''}}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default SeedStackNavigator;

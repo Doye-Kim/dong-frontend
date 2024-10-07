@@ -1,25 +1,36 @@
-import { BellIcon } from '@/assets/icons';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {BellIcon} from '@/assets/icons';
+import {colors} from '@/constants';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-interface NotificationHeaderProps {
+const NotificationHeader = () => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
-}
+  const onPressNotice = () => {
+    console.log('onPressNotice');
+    navigation.navigate('Notification');
+  };
 
-const NotificationHeader = ({}: NotificationHeaderProps) => {
   return (
-    <View style={styles.headerContainer}>
-      <BellIcon />
+    <View style={styles.header}>
+      <TouchableOpacity onPress={onPressNotice}>
+        <BellIcon width={30} height={30} />
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
+  header: {
+    paddingHorizontal: 20,
+    paddingBottom: 5,
+    height: 50,
+    backgroundColor: colors.WHITE,
     justifyContent: 'flex-end',
-    padding: 16,
-  }
+    alignItems: 'flex-end',
+  },
 });
 
 export default NotificationHeader;

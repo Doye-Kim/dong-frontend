@@ -12,20 +12,24 @@ export type SettlementPayment = {
 };
 interface SettlementCreationState {
   accountId: number;
+  settlementId: number;
   settlementPaymentList: SettlementPayment[];
   paymentList: ResponsePayment[];
   setAccountId: (id: number) => void; // accountId 설정
+  setSettlementId: (settlementId: number) => void;
   setPaymentList: (payment: ResponsePayment[]) => void;
   setSettlementPayment: (payment: SettlementPayment[]) => void; // 결제 정보 추가
   setSettlementUser: (paymentId: number, user: SettlementUser[]) => void; // 특정 결제의 유저 정보 업데이트
-  reset: () => void; // 모든 상태 초기화
+  resetSettlement: () => void; // 모든 상태 초기화
 }
 
 const useSettlementCreateStore = create<SettlementCreationState>(set => ({
   accountId: 0,
+  settlementId: 0,
   settlementPaymentList: [],
   paymentList: [],
   userList: [],
+  setSettlementId: (settlementId: number) => set({settlementId}),
   setAccountId: (id: number) => set({accountId: id}),
   setPaymentList: (payments: ResponsePayment[]) =>
     set({
@@ -49,11 +53,12 @@ const useSettlementCreateStore = create<SettlementCreationState>(set => ({
     })),
 
   // 상태 초기화 함수
-  reset: () =>
+  resetSettlement: () =>
     set({
       accountId: 0,
       settlementPaymentList: [],
       paymentList: [],
+      settlementId: 0,
     }),
 }));
 

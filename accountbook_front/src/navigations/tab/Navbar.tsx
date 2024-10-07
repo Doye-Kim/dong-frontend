@@ -110,15 +110,9 @@ const Navbar = () => {
             return {
               tabBarLabel: '내기',
               tabBarStyle:
-                routeName === gameNavigations.CREATE ||
-                routeName === gameNavigations.CATEGORY ||
-                routeName === gameNavigations.FRIENDS ||
-                routeName === gameNavigations.ACCOUNT ||
-                routeName === gameNavigations.DETAIL ||
-                routeName === gameNavigations.PREPARE ||
-                routeName === gameNavigations.RESULT
-                  ? {display: 'none'}
-                  : styles.tabBarStyle,
+                routeName === gameNavigations.MAIN
+                  ? styles.tabBarStyle
+                  : {display: 'none'},
             };
           }}
         />
