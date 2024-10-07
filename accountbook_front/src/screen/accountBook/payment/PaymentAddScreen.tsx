@@ -40,7 +40,7 @@ const PaymentAddScreen = () => {
     balance: 0,
     paymentName: '수기 입력',
     memo: '',
-    paymentTime: new Date().toISOString(),
+    paymentTime: formatInTimeZone(new Date(), 'Asia/Seoul',"yyyy-MM-dd'T'HH:mm:ss"),
     paymentState: 'INCLUDE',
     paymentType: 'EXPENSE',
   });
@@ -58,10 +58,10 @@ const PaymentAddScreen = () => {
         paymentTime: payment.paymentTime,
         type: payment.paymentType,
 
-        cardIssuerName: '카드', // 이거도 비워서 낼 수 있어야함
+        // cardIssuerName: null,
         // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
-        asset: 'ACCOUNT', // 수정 필요
-        assetId: 19, // 이거도 수정필요. 비워서 낼 수 있어야함(수기입력의 경우)
+        // asset: null,
+        // assetId: null,
       });
       console.log(response.data);
     } catch (error) {
