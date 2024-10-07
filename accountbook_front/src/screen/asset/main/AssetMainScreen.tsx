@@ -42,7 +42,7 @@ const AssetMainScreen = () => {
     try {
       const response = await axiosInstance.get('/assets');
       const {accountList, cardList} = response.data;
-      console.log("데이터", response.data);
+      console.log('데이터', response.data);
       setAssetData({
         accounts: accountList,
         cards: cardList,
@@ -136,7 +136,7 @@ const AssetMainScreen = () => {
     const totalAmount = filteredAccounts.reduce((acc, account) => {
       return acc + (account.balance || 0);
     }, 0);
-  
+
     setAssetAmount(totalAmount);
   }, [filteredAccounts]);
 
@@ -147,10 +147,20 @@ const AssetMainScreen = () => {
         <AssetListHeader username={username} assetAmount={assetAmount} />
 
         {/* 자산 */}
-        <Text style={styles.headerText}>계좌</Text>
+        {filteredAccounts.length === 0 ? (
+          <></>
+        ) : (
+          <Text style={styles.headerText}>계좌</Text>
+        )}
         <AssetItemList accountData={filteredAccounts} />
-        <Text style={styles.headerText}>카드</Text>
+        
+        {filteredCards.length === 0 ? (
+          <></>
+        ) : (
+          <Text style={styles.headerText}>카드</Text>
+        )}
         <AssetItemList cardData={filteredCards} />
+
 
         {/* 자산 숨기기 버튼 */}
         <TouchableOpacity
