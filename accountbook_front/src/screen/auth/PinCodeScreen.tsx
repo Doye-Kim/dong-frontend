@@ -1,6 +1,11 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import PinPad from '@/components/auth/PinPad';
-import {authNavigations, colors} from '@/constants';
+import {
+  accountBookNavigations,
+  authNavigations,
+  colors,
+  gameNavigations,
+} from '@/constants';
 import {useEffect, useState} from 'react';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import {getAccessToken, patchPassword, postLogin} from '@/api/auth';
@@ -8,6 +13,10 @@ import {validatePin} from '@/utils/validate';
 import Toast from 'react-native-toast-message';
 import useUserStore from '@/store/useUserStore';
 import {removeEncryptStorage} from '@/utils/encryptedStorage';
+import {postTransferSettlement} from '@/api/settlement';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
+import useGameCreateStore from '@/store/useGameCreateStore';
+import {acceptGame} from '@/api/game';
 
 const clearAllData = async () => {
   console.log('clear');
@@ -19,7 +28,15 @@ const clearAllData = async () => {
 };
 
 const PinCodeScreen = ({route, navigation}) => {
+  // pageNumber === 1: 회원 가입, 등록할 비밀번호 입력
+  // pageNumber === 2: 회원 가입, 비밀번호 2차 확인
+  // pageNumber === 3: 로그인/송금
   const pageNumber = route?.params?.pageNumber ?? 1;
+  const participantId = route?.params?.participantId;
+  const settlementId = route?.params?.settlementId;
+  const account = route?.params?.account;
+
+  console.log('pin', participantId, settlementId, account);
   const [pin, setPin] = useState<number[]>([]);
   const [pw, setPw] = useState('');
   const [error, setError] = useState('');
@@ -44,6 +61,53 @@ const PinCodeScreen = ({route, navigation}) => {
 
   const MAX_LOGIN_ATTEMPTS = 5;
   const [loginAttempts, setLoginAttempts] = useState(0); // Track failed attempts
+  const {resetSettlement} = useSettlementCreateStore();
+  const {resetGame, customCategoryIds} = useGameCreateStore();
+
+  const transfer = async () => {
+    try {
+      const data = await postTransferSettlement({
+        settlementId,
+        accountId: account.id,
+        accountNumber: account.accountNumber,
+      });
+      console.log(data);
+      Toast.show({
+        type: 'success',
+        text1: '송금 완료!',
+      });
+      resetSettlement();
+      navigation.navigate(accountBookNavigations.NOTICE);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+    }
+  };
+
+  const acceptGameRequest = async () => {
+    try {
+      const data = await acceptGame({
+        participantId,
+        customCategoryIds,
+        accountNumber: account.accountNumber,
+      });
+      console.log(data);
+      navigation.navigate(gameNavigations.MAIN);
+      Toast.show({
+        type: 'success',
+        text1: '내기 참여에 성공했습니다.',
+      });
+      resetGame();
+    } catch (err) {
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data
+          ? err.response.data.message
+          : '알 수 없는 오류가 발생했습니다.',
+      });
+    }
+  };
 
   const handleLogin = async (retry = false) => {
     const storedData = await getEncryptStorage('user');
@@ -57,6 +121,11 @@ const PinCodeScreen = ({route, navigation}) => {
       // 로그인 성공 처리
       setIsLogin(true);
       setLoginAttempts(0); // 로그인 성공 시 시도 횟수 초기화
+      if (settlementId) {
+        transfer();
+      } else if (participantId) {
+        acceptGameRequest();
+      }
     } catch (err) {
       const errorStatus = err.response?.status;
       const errorMessage = err.response?.data?.message;

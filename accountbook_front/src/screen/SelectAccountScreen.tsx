@@ -11,11 +11,11 @@ import CustomButton from '@/components/common/CustomButton';
 import {useEffect, useState} from 'react';
 import {AccountInfo, getAssets} from '@/api/asset';
 import Toast from 'react-native-toast-message';
-import {postSettlement, postTransferSettlement} from '@/api/settlement';
+import {postSettlement} from '@/api/settlement';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
 import {colors, gameNavigations, accountBookNavigations} from '@/constants';
 import useGameCreateStore from '@/store/useGameCreateStore';
-import {acceptGame, postGame} from '@/api/game';
+import {postGame} from '@/api/game';
 
 const SelectAccountScreen = ({route, navigation}) => {
   const pageNumber = route?.params?.pageNumber;
@@ -106,38 +106,7 @@ const SelectAccountScreen = ({route, navigation}) => {
     participantId,
   } = useGameCreateStore();
 
-  const acceptGameRequest = async (accountNumber: string) => {
-    try {
-      const data = await acceptGame({
-        participantId,
-        customCategoryIds,
-        accountNumber,
-      });
-      console.log(data);
-      navigation.navigate(gameNavigations.MAIN);
-      Toast.show({
-        type: 'success',
-        text1: '내기 참여에 성공했습니다.',
-      });
-      resetGame();
-    } catch (err) {
-      console.log(err.response.data);
-      Toast.show({
-        type: 'error',
-        text1: err.response.data.message,
-      });
-    }
-  };
   const enterGame = async (accountNumber: string) => {
-    console.log({
-      participantIds,
-      gameCategoryId,
-      customCategoryIds,
-      startDate,
-      endDate,
-      fee,
-      accountNumber,
-    });
     try {
       const data = await postGame({
         participantIds,
@@ -165,25 +134,7 @@ const SelectAccountScreen = ({route, navigation}) => {
   };
 
   const {settlementId} = useSettlementCreateStore();
-  const transfer = async (accountId: number, accountNumber: string) => {
-    console.log({settlementId, accountId});
-    try {
-      const data = await postTransferSettlement({
-        settlementId,
-        accountId,
-        accountNumber,
-      });
-      console.log(data);
-      Toast.show({
-        type: 'success',
-        text1: '송금 완료!',
-      });
-      navigation.navigate(accountBookNavigations.NOTICE);
-    } catch (err) {
-      console.log(err);
-      console.log(err.response.data);
-    }
-  };
+
   const handleOnPress = () => {
     if (!account) {
       Toast.show({
@@ -196,9 +147,18 @@ const SelectAccountScreen = ({route, navigation}) => {
       console.log('account ', account.accountNumber);
       setAccountNumber(account.accountNumber);
       if (gameCategoryId) enterGame(account.accountNumber);
-      else acceptGameRequest(account.accountNumber);
+      else
+        navigation.navigate(gameNavigations.PIN, {
+          pageNumber: 3,
+          participantId,
+          account,
+        });
     } else if (pageNumber === 2) {
-      transfer(account.id, account.accountNumber);
+      navigation.navigate(accountBookNavigations.PIN, {
+        pageNumber: 3,
+        settlementId,
+        account,
+      });
     }
   };
 
