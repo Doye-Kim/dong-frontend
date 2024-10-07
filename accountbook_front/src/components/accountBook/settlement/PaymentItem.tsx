@@ -40,7 +40,9 @@ const PaymentItem = ({
           <View style={styles.paymentContainer}>
             <Text style={styles.titleText}>{item.merchantName}</Text>
             <Text style={styles.infoText}>
-              {item.categoryName} | {item.paymentName}
+              {item.paymentName
+                ? `${item.categoryName} | ${item.paymentName}`
+                : item.categoryName}
             </Text>
           </View>
         </View>
@@ -56,7 +58,6 @@ const PaymentItem = ({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 20,
-    paddingHorizontal: 15,
     paddingVertical: 10,
     marginVertical: 5,
   },

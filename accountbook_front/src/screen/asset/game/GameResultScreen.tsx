@@ -35,20 +35,18 @@ const GameResultScreen = ({route, navigation}) => {
   }, []);
 
   const sortedParticipants =
-    gameData &&
-    [...gameData?.afterParticipant].sort((a, b) => a.gameCount - b.gameCount);
+    gameData?.afterParticipant &&
+    [...gameData.afterParticipant].sort((a, b) => a.gameCount - b.gameCount);
 
-  // 1등의 gameCount를 가져옴
-  const winnerGameCount = sortedParticipants[0]?.gameCount;
+  const winnerGameCount = sortedParticipants?.[0]?.gameCount;
 
-  // 1등의 gameCount와 같은 참가자를 모두 우승자로 처리
-  const winners = sortedParticipants.filter(
+  const winners = sortedParticipants?.filter(
     participant => participant.gameCount === winnerGameCount,
   );
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      {gameData && myInfo && (
+      {gameData && myInfo && sortedParticipants && winners && (
         <View style={styles.container}>
           <Text style={styles.titleText}>
             {category[gameData.category.imageNumber]} 내기
