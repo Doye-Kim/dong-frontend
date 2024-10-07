@@ -20,16 +20,21 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
       <View style={styles.container}>
         {accountData.map(account => (
           <AssetItem
-            id={account.accountId}
-            key={account.accountId}
+            id={account.id}
+            key={account.id}
             title={account.nickname}
-            balance={account.accountBalance}
+            balance={account.balance}
             isAccount={true}
-            hide={account.hideStatus === 'HIDE_ASSET' ? true : false}
+            hide={
+              account.hideStatus === 'HIDE_ASSET' ||
+              account.hideStatus === 'HIDE_ASSET'
+                ? true
+                : false
+            }
             handleNavigate={() =>
               navigation.navigate(assetNavigations.DETAIL, {
                 screen: assetDetailNavigations.ACCOUNTDETAIL,
-                params: {accountId: Number(account.accountId)},
+                params: {accountId: account.id},
               })
             }
           />
@@ -44,15 +49,19 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
         {cardData.map(card => (
           <AssetItem
             id={card.id}
-            key={card.cardNo}
-            title={`${card.cardIssuerName}`}
-            cardName={card.cardName}
+            key={card.cardNumber}
+            title={card.nickname}
+            cardName={card.name}
             isAccount={false}
-            hide={card.hideStatus === 'hide_asset' ? true : false}
+            hide={
+              card.hideStatus === 'HIDE_ALL' || card.hideStatus === 'HIDE_ASSET'
+                ? true
+                : false
+            }
             handleNavigate={() =>
               navigation.navigate(assetNavigations.DETAIL, {
                 screen: assetDetailNavigations.CARDDETAIL,
-                params: {cardId: Number(card.id)},
+                params: {cardId: card.id},
               })
             }
           />

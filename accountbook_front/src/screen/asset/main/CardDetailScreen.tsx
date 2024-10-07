@@ -8,8 +8,10 @@ import {
   NavigationProp,
   RouteProp,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
 import {AssetDetailStackParamList} from '@/navigations/stack/asset/AssetDetailStackNavigator';
+import axiosInstance from '@/api/axios';
 
 type CardDetailScreenNavigationProp = NavigationProp<AssetDetailStackParamList>;
 type CardDetailScreenRouteProp = RouteProp<
@@ -17,32 +19,32 @@ type CardDetailScreenRouteProp = RouteProp<
   typeof assetDetailNavigations.CARDDETAIL
 >;
 
-interface CardDetailScreenProps {
-  route: CardDetailScreenRouteProp;
-  // card?: Card;
-}
-
 type PaymentData = Payment[];
 
-const CardDetailScreen = ({route}: CardDetailScreenProps) => {
+const CardDetailScreen = () => {
+  const route = useRoute<CardDetailScreenRouteProp>();
+  const cardId = route.params.cardId;
   const [accountPaymentData, setAccountPaymentData] =
     useState<PaymentData | null>(null);
   const navigation = useNavigation<CardDetailScreenNavigationProp>();
-
-  const card = {
-    name: '카드이름',
-    nickname: '별명',
-    cardNumber: '123456789',
-    totalUse: '10000000',
-  };
 
   const handlePaymentPress = (paymentId: number) => {
     navigation.navigate(assetDetailNavigations.PAYMENTDETAIL, {paymentId});
   };
 
+  const fetchPaymentDate = async (cardId: number) => {
+    try {
+      const response = await axiosInstance.get(`/payments/cards/${cardId}`)
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
-    setAccountPaymentData(PaymentDummyData.paymentResponse);
-  }, []);
+    if (cardId !== undefined) {
+      fetchPaymentDate(cardId);
+    }
+  }, [cardId]);
 
   useEffect(() => {
     if (card) {

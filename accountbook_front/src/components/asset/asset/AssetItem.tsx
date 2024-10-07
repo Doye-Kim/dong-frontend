@@ -4,10 +4,10 @@ import {colors} from '@/constants';
 import {AccountIcon, CardIcon} from '@/assets/icons';
 
 interface AssetItemProps {
-  id: number
+  id: number;
   title: string;
   cardName?: string;
-  balance?: string;
+  balance?: number;
   isAccount: boolean;
   hide: boolean;
   handleNavigate?: () => void;
@@ -22,21 +22,29 @@ const AssetItem = ({
   hide,
   handleNavigate,
 }: AssetItemProps): React.ReactElement => {
+  const truncatedTitle = title.length > 10 ? `${title.slice(0, 10)}...` : title;
   return (
-    <TouchableOpacity style={styles.container} onPress={handleNavigate ? handleNavigate : () => {}}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={handleNavigate ? handleNavigate : () => {}}>
       <View style={styles.titleContainer}>
         {isAccount ? (
           <AccountIcon width={30} height={30} />
         ) : (
           <CardIcon width={30} height={30} />
         )}
-        <Text style={[styles.title, hide ? styles.hidedTitle : null]}>{title}</Text>
+        <Text style={[styles.title, hide ? styles.hidedTitle : null]}>
+          {truncatedTitle}
+        </Text>
         {!isAccount && cardName && (
-          <Text style={[styles.cardName, hide ? styles.hidedCardName : null]}> | {cardName}</Text>
+          <Text style={[styles.cardName, hide ? styles.hidedCardName : null]}>
+            {' | '}
+            {cardName}
+          </Text>
         )}
       </View>
-      {isAccount && balance && (
-        <Text style={styles.balance}>{Number(balance).toLocaleString()}원</Text>
+      {isAccount && balance !== undefined && (
+        <Text style={styles.balance}>{balance.toLocaleString()}원</Text>
       )}
     </TouchableOpacity>
   );
@@ -61,7 +69,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   hidedTitle: {
-    color: colors.GRAY_600
+    color: colors.GRAY_600,
   },
   cardName: {
     fontFamily: 'Pretendard-SemiBold',
@@ -69,7 +77,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   hidedCardName: {
-    color: colors.GRAY_600
+    color: colors.GRAY_600,
   },
   balance: {
     fontFamily: 'Pretendard-Medium',

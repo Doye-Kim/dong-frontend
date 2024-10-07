@@ -33,7 +33,7 @@ type SeedData = Seed[];
 
 const AssetMainScreen = () => {
   const [username, setUsername] = useState('장효승');
-  const [assetAmount, setAssetAmount] = useState('20000000');
+  const [assetAmount, setAssetAmount] = useState<number>(0);
   const [assetData, setAssetData] = useState<AssetData | null>(null);
   const [showHiddenAssets, setShowHiddenAssets] = useState(false);
   const [seedData, setSeedData] = useState<SeedData | null>(null);
@@ -43,7 +43,7 @@ const AssetMainScreen = () => {
     try {
       const response = await axiosInstance.get('/assets');
       const {accountList, cardList} = response.data;
-      console.log(response.data);
+      console.log("데이터", response.data);
       setAssetData({
         accounts: accountList,
         cards: cardList,
@@ -128,6 +128,14 @@ const AssetMainScreen = () => {
       ) || []
     );
   }, [seedData]);
+
+  useEffect(() => {
+    const totalAmount = filteredAccounts.reduce((acc, account) => {
+      return acc + (account.balance || 0);
+    }, 0);
+  
+    setAssetAmount(totalAmount);
+  }, [filteredAccounts]);
 
   return (
     <SafeAreaView style={styles.container}>

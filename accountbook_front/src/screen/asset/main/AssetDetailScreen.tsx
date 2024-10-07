@@ -8,8 +8,10 @@ import {
   NavigationProp,
   RouteProp,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
 import {AssetDetailStackParamList} from '@/navigations/stack/asset/AssetDetailStackNavigator';
+import axiosInstance from '@/api/axios';
 
 type AssetDetailScreenNavigationProp =
   NavigationProp<AssetDetailStackParamList>;
@@ -17,10 +19,6 @@ type AssetDetailScreenRouteProp = RouteProp<
   AssetDetailStackParamList,
   typeof assetDetailNavigations.PAYMENTDETAIL
 >;
-
-interface AssetDetailScreenProps {
-  route: AssetDetailScreenRouteProp;
-}
 
 type PaymentData = Payment[];
 
@@ -34,17 +32,32 @@ const assetData = {
   depositStatus: '0',
   accountBalance: '124500000',
 };
+type AccountDetailRouteProp = RouteProp<
+  AssetDetailStackParamList,
+  typeof assetDetailNavigations.ACCOUNTDETAIL
+>;
 
-const AssetDetailScreen = ({route}: AssetDetailScreenProps) => {
+const AssetDetailScreen = () => {
+  const route = useRoute<AccountDetailRouteProp>();
+  const assetId = route.params?.accountId;
   const [accountPaymentData, setAccountPaymentData] =
     useState<PaymentData | null>(null);
   const [asset, setAsset] = useState<Account | null>(null);
   const navigation = useNavigation<AssetDetailScreenNavigationProp>();
 
+  const fetchAssetPaymenData = async (assetId: number) => {
+    try {
+      const response = await axiosInstance.get(`/payments/accounts/${assetId}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    setAccountPaymentData(PaymentDummyData.paymentResponse);
-    setAsset(assetData);
-  }, []);
+    if (assetId !== undefined) {
+      fetchAssetPaymenData(assetId);
+    }
+  }, [assetId]);
 
   useEffect(() => {
     if (asset) {

@@ -4,7 +4,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 interface AssetListHeaderProps {
   username: string;
-  assetAmount: string;
+  assetAmount: number;
 }
 
 const AssetListHeader = ({username, assetAmount}: AssetListHeaderProps) => {
@@ -12,7 +12,7 @@ const AssetListHeader = ({username, assetAmount}: AssetListHeaderProps) => {
     <View style={styles.headerContainer}>
       <Text style={styles.usernameText}>{username}님의 자산</Text>
       <Text style={styles.assetAmount}>
-        {Number(assetAmount).toLocaleString()}원
+        {assetAmount.toLocaleString()}원
       </Text>
     </View>
   );

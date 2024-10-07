@@ -16,23 +16,25 @@ type Payment = {
 };
 
 type Account = {
-  accountId: number;
+  id: number;
   nickname: string;
   name: string;
   accountNumber: string;
+  balance: number;
   bank: string;
   hideStatus: string;
-  depositStatus: string;
-  accountBalance: string;
+  depositState: string;
 }
 
 type Card = {
   id: number;
-  cardNo: string;
-  cardIssuerName: string;
-  cardName: string;
-  hideStatus: string;
   nickname: string;
+  name: string;
+  cardNumber: string;
+  cvc: string;
+  issuer: string;
+  hideStatus: string;
+  depositState: string;
 }
 
 type Game = {
