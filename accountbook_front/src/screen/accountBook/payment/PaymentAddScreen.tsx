@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Modal,
+  Animated,
 } from 'react-native';
 import {format, formatInTimeZone} from 'date-fns-tz';
 import {EditIcon} from '@/assets/icons';
@@ -22,6 +23,7 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import CategoryList from '@/components/accountBook/category/CategoryList';
 import {useNavigation} from '@react-navigation/native';
+import CategorySelectModal from '@/components/accountBook/common/CategorySelectModal';
 
 const PaymentAddScreen = () => {
   const navigation = useNavigation();
@@ -31,6 +33,7 @@ const PaymentAddScreen = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  const slideAnim = useRef(new Animated.Value(300)).current;
   const [paymentData, setPaymentData] = useState<Payment>({
     paymentsId: 1,
     merchantName: '',
@@ -40,7 +43,11 @@ const PaymentAddScreen = () => {
     balance: 0,
     paymentName: '수기 입력',
     memo: '',
-    paymentTime: formatInTimeZone(new Date(), 'Asia/Seoul',"yyyy-MM-dd'T'HH:mm:ss"),
+    paymentTime: formatInTimeZone(
+      new Date(),
+      'Asia/Seoul',
+      "yyyy-MM-dd'T'HH:mm:ss",
+    ),
     paymentState: 'INCLUDE',
     paymentType: 'EXPENSE',
   });
@@ -134,7 +141,24 @@ const PaymentAddScreen = () => {
   };
 
   const toggleCategoryModal = () => {
-    setIsCategoryModalVisible(prev => !prev);
+    if (!isCategoryModalVisible) {
+      // 모달을 열 때 애니메이션을 시작하여 위로 슬라이드합니다.
+      setIsCategoryModalVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0, // 화면 아래에서 0으로 슬라이드 (위로 올라옴)
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      // 모달을 닫을 때 아래로 슬라이드 후 모달을 숨깁니다.
+      Animated.timing(slideAnim, {
+        toValue: 600, // 다시 화면 아래로 슬라이드
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsCategoryModalVisible(false);
+      });
+    }
   };
 
   const handleCategorySelect = (categoryId: number, categoryName: string) => {
@@ -276,26 +300,12 @@ const PaymentAddScreen = () => {
                   }}
                 />
               )}
-              <Modal
-                visible={isCategoryModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={toggleCategoryModal}>
-                <View style={styles.bottomModalContainer}>
-                  <View style={styles.bottomModalContent}>
-                    <Text style={styles.modalTitle}>카테고리 선택</Text>
-                    <CategoryList
-                      onCategorySelect={handleCategorySelect}
-                      renderAddButton={false}
-                    />
-                    <TouchableOpacity
-                      onPress={toggleCategoryModal}
-                      style={styles.closeButton}>
-                      <Text style={styles.closeButtonText}>닫기</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
+              <CategorySelectModal
+                isVisible={isCategoryModalVisible}
+                toggleModal={toggleCategoryModal}
+                onCategorySelect={handleCategorySelect}
+                slideAnim={slideAnim}
+              />
             </View>
           </ScrollView>
           {isOpenCalendar}
@@ -435,37 +445,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: colors.WHITE,
     fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-  },
-  bottomModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end', // 화면 하단에 모달이 위치하도록 설정
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%', // 모달의 최대 높이 제한 (화면의 50%)
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: colors.WHITE,
-    fontSize: 16,
     fontFamily: 'Pretendard-Bold',
   },
   loadingText: {

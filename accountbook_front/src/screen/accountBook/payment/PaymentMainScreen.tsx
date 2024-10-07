@@ -3,10 +3,13 @@ import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
 import {accountBookNavigations, colors} from '@/constants';
 import {Payment} from '@/types/domain';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {NavigationProp, useFocusEffect, useNavigation} from '@react-navigation/native';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import useDateStore from '@/store/useDateStore';
+import usePaymentDataStore from '@/store/usePaymentDataStore';
+import { getDateWithSeparator } from '@/utils';
 
 interface PaymentMainScreenProps {
   paymentList: Payment[];
@@ -16,6 +19,8 @@ type PaymentMainScreenNavigationProp =
   NavigationProp<AccountBookStackParamList>;
 
 const PaymentMainScreen = ({paymentList}: PaymentMainScreenProps) => {
+  const date = useDateStore(state => state.date);
+  const {fetchPaymentData} = usePaymentDataStore();
   const [balance, setBalance] = useState<number>(0);
   const [income, setIncome] = useState<number>(0);
 
@@ -41,6 +46,12 @@ const PaymentMainScreen = ({paymentList}: PaymentMainScreenProps) => {
     setBalance(totalBalance);
     setIncome(totalIncome);
   }, [totalBalance, totalIncome]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPaymentData(getDateWithSeparator(date, "-"));
+    }, [date])
+  )
 
   const handlePaymentPress = (paymentId: number) => {
     navigation.navigate(accountBookNavigations.PAYMENTDETAIL, {paymentId});

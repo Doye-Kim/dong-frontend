@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   Platform,
+  Animated,
 } from 'react-native';
 import {
   accountBookNavigations,
@@ -19,7 +20,12 @@ import {
   colors,
 } from '@/constants';
 import BudgetCreateItem from '@/components/accountBook/budget/BudgetCreateItem';
-import {CompositeNavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  CompositeNavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import CustomButton from '@/components/common/CustomButton';
@@ -29,9 +35,8 @@ import axiosInstance from '@/api/axios';
 import useDateStore from '@/store/useDateStore';
 import {getYearMonth, getYearMonthLocalFormat} from '@/utils';
 import Toast from 'react-native-toast-message';
-import { AccountBookTabParamList } from '@/navigations/tab/AccountBookTabNavigator';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { setDate } from 'date-fns';
+import {AccountBookTabParamList} from '@/navigations/tab/AccountBookTabNavigator';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 type CategoryBudgetCreate = {
   categoryId: number;
@@ -68,6 +73,7 @@ const BudgetCreateScreen = () => {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const slideAnim = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
     const initialCategories = route.params.categories;
@@ -124,8 +130,7 @@ const BudgetCreateScreen = () => {
     );
   };
 
-  const navigation =
-    useNavigation<AccountBookNavigationProp>();
+  const navigation = useNavigation<AccountBookNavigationProp>();
 
   const handleCategorySelect = (
     categoryId: number,
@@ -158,7 +163,22 @@ const BudgetCreateScreen = () => {
   };
 
   const toggleModalVisible = () => {
-    setIsModalVisible(prev => !prev);
+    if (!isModalVisible) {
+      setIsModalVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 600,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsModalVisible(false);
+      });
+    }
   };
 
   const handleSaveBudget = async (categories: CategoryBudgetCreate[]) => {
@@ -274,13 +294,17 @@ const BudgetCreateScreen = () => {
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={toggleModalVisible}>
         <TouchableWithoutFeedback onPress={toggleModalVisible}>
           <View style={styles.modalOverlay}>
             <View style={styles.bottomModalContainer}>
               <TouchableWithoutFeedback onPress={e => e.stopPropagation()}>
-                <View style={styles.bottomModalContent}>
+                <Animated.View
+                  style={[
+                    styles.bottomModalContent,
+                    {transform: [{translateY: slideAnim}]}, // 슬라이드 애니메이션 적용
+                  ]}>
                   <Text style={styles.modalTitle}>카테고리 선택</Text>
                   <CategoryList
                     onCategorySelect={handleCategorySelect}
@@ -292,7 +316,7 @@ const BudgetCreateScreen = () => {
                     style={styles.closeButton}>
                     <Text style={styles.closeButtonText}>닫기</Text>
                   </TouchableOpacity>
-                </View>
+                </Animated.View>
               </TouchableWithoutFeedback>
             </View>
           </View>
