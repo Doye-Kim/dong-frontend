@@ -1,27 +1,17 @@
 import CategoryIcon from '@/components/common/CategoryIcon';
 import {colors} from '@/constants';
+import {Payment} from '@/types/domain';
 import {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-type ResponsePayment = {
-  paymentsId: number;
-  merchantName: string;
-  categoryId: number;
-  categoryName: string;
-  balance: number;
-  paymentName: string;
-  memo: string;
-  paymentTime: string;
-  paymentState: 'INCLUDE' | 'EXCLUDE';
-  paymentType: 'INCOME' | 'EXPENSE';
-};
+
 const PaymentItem = ({
   item,
   selectedPayments,
   setSelectedPayments,
 }: {
-  item: ResponsePayment;
-  selectedPayments: ResponsePayment[];
-  setSelectedList(selectedList: (item: ResponsePayment[]) => void): void;
+  item: Payment;
+  selectedPayments: Payment[];
+  setSelectedList(selectedList: (item: Payment[]) => void): void;
 }) => {
   const [checked, setChecked] = useState(false);
   const handleOnPress = () => {
@@ -46,7 +36,7 @@ const PaymentItem = ({
       ]}>
       <View style={styles.leftContainer}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <CategoryIcon categoryNumber={item.categoryId} size={40} />
+          <CategoryIcon categoryNumber={item.categoryImageNumber} size={40} />
           <View style={styles.paymentContainer}>
             <Text style={styles.titleText}>{item.merchantName}</Text>
             <Text style={styles.infoText}>

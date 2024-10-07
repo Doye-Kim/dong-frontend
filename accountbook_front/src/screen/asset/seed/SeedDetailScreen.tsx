@@ -1,4 +1,5 @@
 import {ResponseSeed, deleteSeed, getSeed} from '@/api/seed';
+import BackHeader from '@/components/common/BackHeader';
 import SeedInfo from '@/components/seed/SeedInfo';
 import SeedTitle from '@/components/seed/SeedTitle';
 import {alerts, assetNavigations, colors} from '@/constants';
@@ -67,30 +68,35 @@ const SeedDetailScreen = ({route}: {route: any}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {seed && (
-        <>
-          <SeedTitle
-            title={seed.title}
-            targetAmount={seed.targetAmount}
-            entireRound={seed.entireRound}
-            dataStatus={seed.status}
-            passedRound={seed.passedRound}
-            totalTransferredAmount={seed.totalTransferredAmount}
-          />
-          <SeedInfo
-            depositAccount={seed.depositAccount}
-            withdrawAccount={seed.withdrawAccount}
-            endDate={seed.endDate}
-            dueDate={seed.dueDate}
-            perPaymentDeposit={Math.round(seed.targetAmount / seed.entireRound)}
-          />
-        </>
-      )}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={onPressDelete}>
-          <Text style={styles.buttonText}>해지하기</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={{flex: 1}}>
+      <BackHeader navigation={navigation} />
+      <View style={styles.container}>
+        {seed && (
+          <>
+            <SeedTitle
+              title={seed.title}
+              targetAmount={seed.targetAmount}
+              entireRound={seed.entireRound}
+              dataStatus={seed.status}
+              passedRound={seed.passedRound}
+              totalTransferredAmount={seed.totalTransferredAmount}
+            />
+            <SeedInfo
+              depositAccount={seed.depositAccount}
+              withdrawAccount={seed.withdrawAccount}
+              endDate={seed.endDate}
+              dueDate={seed.dueDate}
+              perPaymentDeposit={Math.round(
+                seed.targetAmount / seed.entireRound,
+              )}
+            />
+          </>
+        )}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={onPressDelete}>
+            <Text style={styles.buttonText}>해지하기</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

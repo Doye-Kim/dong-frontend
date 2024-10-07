@@ -1,56 +1,76 @@
+import {
+  ResponseRequestSettlement,
+  getRequestSettlement,
+} from '@/api/settlement';
+import BackHeader from '@/components/common/BackHeader';
 import CustomButton from '@/components/common/CustomButton';
-import {colors} from '@/constants';
+import {accountBookNavigations, colors} from '@/constants';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
+import {useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import Toast from 'react-native-toast-message';
 
-const data = {
-  settlementId: 5,
-  accountId: 3,
-  username: '김도예',
-  date: '2024.08.29.목',
-  settlementPaymentList: [
-    {
-      settlementPaymentsId: 12,
-      paymentId: 157,
-      balance: 15000,
-      merchantName: '우버택시',
-      categoryId: 6,
-      categoryName: '택시',
-      amount: 7500,
-    },
-    {
-      settlementPaymentId: 11,
-      paymentId: 160,
-      balance: 5700,
-      merchantName: 'CU 강서신호점',
-      categoryId: 13,
-      categoryName: '유흥',
-      amount: 3700,
-    },
-  ],
-  cost: 11200,
-};
-const SettlementRequestScreen = () => {
+const SettlementRequestScreen = ({route, navigation}) => {
+  const settlementId = route?.params?.settlementId;
+  const {setSettlementId} = useSettlementCreateStore();
+  const [settlementData, setSettlementData] =
+    useState<ResponseRequestSettlement>();
+  const getData = async () => {
+    console.log('settlementID', settlementId);
+    try {
+      const data = await getRequestSettlement(settlementId);
+      setSettlementData(data);
+      setSettlementId(settlementId);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response.data);
+      Toast.show({
+        type: 'error',
+        text1: err.response.data
+          ? err.response.data.message
+          : '요청 중 오류가 발생했습니다.',
+      });
+      navigation.goBack();
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handlePressTransfer = () => {
+    navigation.navigate(accountBookNavigations.ACCOUNT, {pageNumber: 2});
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>{data.username} 님의 정산 요청</Text>
-      <Text style={styles.dateText}>{data.date}</Text>
-      {data.settlementPaymentList.map(item => (
-        <View style={styles.infoContainer}>
-          <Text style={styles.merchantNameText}>{item.merchantName}</Text>
-          <Text style={styles.balanceText}>
-            {item.balance.toLocaleString()}원 /{' '}
-            <Text style={styles.amountText}>
-              {item.amount.toLocaleString()}원
-            </Text>
+    <SafeAreaView style={{flex: 1}}>
+      <BackHeader navigation={navigation} />
+      {settlementData && (
+        <View style={styles.container}>
+          <Text style={styles.titleText}>
+            {settlementData.userName} 님의 정산 요청
           </Text>
+          {settlementData.settlementPaymentList.map(item => (
+            <View style={styles.infoContainer}>
+              <Text style={styles.merchantNameText}>{item.merchantName}</Text>
+              <Text style={styles.balanceText}>
+                {item.balance.toLocaleString()}원 /{' '}
+                <Text style={styles.amountText}>
+                  {item.amount.toLocaleString()}원
+                </Text>
+              </Text>
+            </View>
+          ))}
+          <View style={styles.costContainer}>
+            <Text style={styles.costText}>
+              총 {settlementData.cost.toLocaleString()}원
+            </Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <CustomButton text="송금하기" onPress={handlePressTransfer} />
+          </View>
         </View>
-      ))}
-      <View style={styles.costContainer}>
-        <Text style={styles.costText}>총 {data.cost.toLocaleString()}원</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <CustomButton text="송금하기" />
-      </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -58,7 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
-    marginTop: 50,
+    marginTop: 20,
     marginBottom: 20,
     backgroundColor: colors.WHITE,
   },
@@ -66,6 +86,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 28,
     color: colors.BLACK,
+    marginBottom: 20,
   },
   dateText: {
     fontFamily: 'Pretendard-Medium',

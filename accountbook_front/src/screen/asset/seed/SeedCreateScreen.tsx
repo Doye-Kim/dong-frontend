@@ -20,6 +20,7 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
 import {StackNavigationProp} from '@react-navigation/stack';
+import BackHeader from '@/components/common/BackHeader';
 
 const period: Record<PeriodOptions, string> = {
   DAILY: '매일',
@@ -127,117 +128,120 @@ const SeedCreateScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.dateInfo} onPress={onPressDate}>
-        <View style={styles.startendDate}>
-          <Text style={styles.dateText}>
-            {startDate
-              ? getDateLocaleFormatDiff(startDate)
-              : getDateLocaleFormatDiff(curDate)}
-            ~
-            {endDate
-              ? getDateLocaleFormatDiff(endDate)
-              : getDateLocaleFormatDiff(curDate)}
-          </Text>
-        </View>
-      </TouchableOpacity>
-      {isOpenCalendar && (
-        <CalendarModal
-          isVisible={isOpenCalendar}
-          curDate={curDate}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
-          onClose={() => setIsOpneCalendar(false)}
-          marginTop={130}
-          seedOrGame={true}
-        />
-      )}
-      <View style={styles.animationContainer}>
-        <LottieView
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          source={require('@/assets/lottie/seed.json')}
-          autoPlay
-          loop={true}
-          speed={0.7}
-        />
-      </View>
-      <View style={styles.seedFormContainer}>
-        <View style={styles.rowContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.formText}
-              value={title}
-              onChangeText={handleOnChangeTitle}
-            />
+    <SafeAreaView style={{flex: 1}}>
+      <BackHeader navigation={navigation} />
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.dateInfo} onPress={onPressDate}>
+          <View style={styles.startendDate}>
+            <Text style={styles.dateText}>
+              {startDate
+                ? getDateLocaleFormatDiff(startDate)
+                : getDateLocaleFormatDiff(curDate)}
+              ~
+              {endDate
+                ? getDateLocaleFormatDiff(endDate)
+                : getDateLocaleFormatDiff(curDate)}
+            </Text>
           </View>
-          <Text style={styles.formText}>을/를 위해</Text>
+        </TouchableOpacity>
+        {isOpenCalendar && (
+          <CalendarModal
+            isVisible={isOpenCalendar}
+            curDate={curDate}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            onClose={() => setIsOpneCalendar(false)}
+            marginTop={130}
+            seedOrGame={true}
+          />
+        )}
+        <View style={styles.animationContainer}>
+          <LottieView
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            source={require('@/assets/lottie/seed.json')}
+            autoPlay
+            loop={true}
+            speed={0.7}
+          />
         </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.formText}>총</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.moneyText}
-              placeholder="0"
-              value={amount}
-              onChangeText={getFormattedAmount}
-              keyboardType="numeric"
-            />
-            <Text style={styles.moneyText}>{unit}</Text>
+        <View style={styles.seedFormContainer}>
+          <View style={styles.rowContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.formText}
+                value={title}
+                onChangeText={handleOnChangeTitle}
+              />
+            </View>
+            <Text style={styles.formText}>을/를 위해</Text>
           </View>
-          <Text style={styles.formText}>을</Text>
-          <TouchableOpacity
-            style={styles.dropdownContainer}
-            onPress={handlePeriodDropdown}>
-            <Text style={styles.formText}>{period[selectedPeriod]}</Text>
-            <DropdownButton width={30} height={30} />
-          </TouchableOpacity>
-          {isOpenPeriodDropdown && (
-            <DropdownMenu
-              isVisible={isOpenPeriodDropdown}
-              onSelect={handlePeriodSelect}
-              onClose={() => setIsOpenPeriodDropdown(false)}
-            />
-          )}
+          <View style={styles.rowContainer}>
+            <Text style={styles.formText}>총</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.moneyText}
+                placeholder="0"
+                value={amount}
+                onChangeText={getFormattedAmount}
+                keyboardType="numeric"
+              />
+              <Text style={styles.moneyText}>{unit}</Text>
+            </View>
+            <Text style={styles.formText}>을</Text>
+            <TouchableOpacity
+              style={styles.dropdownContainer}
+              onPress={handlePeriodDropdown}>
+              <Text style={styles.formText}>{period[selectedPeriod]}</Text>
+              <DropdownButton width={30} height={30} />
+            </TouchableOpacity>
+            {isOpenPeriodDropdown && (
+              <DropdownMenu
+                isVisible={isOpenPeriodDropdown}
+                onSelect={handlePeriodSelect}
+                onClose={() => setIsOpenPeriodDropdown(false)}
+              />
+            )}
+          </View>
+          <View style={styles.rowContainer}>
+            <TouchableOpacity
+              style={styles.inputContainer}
+              onPress={() => setIsOpenSendAccountDropdown(true)}>
+              <Text style={styles.formText}>{sendAccount.bank}</Text>
+            </TouchableOpacity>
+            <Text style={styles.formText}>계좌에서</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <TouchableOpacity
+              style={styles.inputContainer}
+              onPress={() => setIsOpenSaveAccountDropdown(true)}>
+              <Text style={styles.formText}>{saveAccount.bank}</Text>
+            </TouchableOpacity>
+            <Text style={styles.formText}>계좌로 모을 거예요</Text>
+          </View>
         </View>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            style={styles.inputContainer}
-            onPress={() => setIsOpenSendAccountDropdown(true)}>
-            <Text style={styles.formText}>{sendAccount.bank}</Text>
-          </TouchableOpacity>
-          <Text style={styles.formText}>계좌에서</Text>
+        <View style={styles.buttonContainer}>
+          <CustomButton text="시작" onPress={onPressStart} />
         </View>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            style={styles.inputContainer}
-            onPress={() => setIsOpenSaveAccountDropdown(true)}>
-            <Text style={styles.formText}>{saveAccount.bank}</Text>
-          </TouchableOpacity>
-          <Text style={styles.formText}>계좌로 모을 거예요</Text>
-        </View>
+        {isOpenSaveAccountDropdown && (
+          <SelectAccountModal
+            isVisible={isOpenSaveAccountDropdown}
+            onClose={() => setIsOpenSaveAccountDropdown(false)}
+            setAccount={setSaveAccount}
+          />
+        )}
+        {isOpenSendAccountDropdown && (
+          <SelectAccountModal
+            isVisible={isOpenSendAccountDropdown}
+            onClose={() => setIsOpenSendAccountDropdown(false)}
+            setAccount={setSendAccount}
+          />
+        )}
       </View>
-      <View style={styles.buttonContainer}>
-        <CustomButton text="시작" onPress={onPressStart} />
-      </View>
-      {isOpenSaveAccountDropdown && (
-        <SelectAccountModal
-          isVisible={isOpenSaveAccountDropdown}
-          onClose={() => setIsOpenSaveAccountDropdown(false)}
-          setAccount={setSaveAccount}
-        />
-      )}
-      {isOpenSendAccountDropdown && (
-        <SelectAccountModal
-          isVisible={isOpenSendAccountDropdown}
-          onClose={() => setIsOpenSendAccountDropdown(false)}
-          setAccount={setSendAccount}
-        />
-      )}
     </SafeAreaView>
   );
 };

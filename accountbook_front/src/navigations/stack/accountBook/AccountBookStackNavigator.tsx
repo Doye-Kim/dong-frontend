@@ -18,6 +18,8 @@ import SettlementPaymentsScreen from '@/screen/accountBook/settlement/Settlement
 import SettlementRequestScreen from '@/screen/accountBook/settlement/SettlementRequestScreen';
 import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
+import NotificationScreen from '@/screen/NotificationScreen';
+import NotificationHeader from '@/components/common/NotificationHeader';
 
 
 export type AccountBookStackParamList = {
@@ -37,7 +39,7 @@ export type AccountBookStackParamList = {
   [accountBookNavigations.SETTLEMENTCOST]: undefined;
   [accountBookNavigations.SETTLEMENTFRIENDS]: undefined;
   [accountBookNavigations.SETTLEMENTPAYMENTS]: undefined;
-  [accountBookNavigations.SETTLEMENTREQUEST]: undefined;
+  [accountBookNavigations.SETTLEMENTREQUEST]: {settlementId: number};
   [accountBookNavigations.PAYMENTDIVIDE]: {payment: Payment};
 };
 
@@ -46,11 +48,26 @@ const Stack = createStackNavigator();
 const AccountBookStackNavigator = () => {
   return (
     <Stack.Navigator
-      screenOptions={{headerStyle: {backgroundColor: colors.WHITE}}}>
+      screenOptions={{
+        cardStyle: {
+          backgroundColor: colors.WHITE,
+        },
+        headerStyle: {
+          shadowColor: 'transparent',
+          backgroundColor: colors.WHITE,
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          fontFamily: 'Pretendard-Bold',
+          paddingLeft: 0,
+          marginLeft: 0,
+        },
+        headerTintColor: colors.BLACK,
+      }}>
       <Stack.Screen
         name={accountBookNavigations.TABBAR}
         component={AccountBookTabNavigator}
-        options={{headerShown: false}}
+        options={{headerShown: true, header: () => <NotificationHeader />}}
       />
       <Stack.Screen
         name={accountBookNavigations.HEADER}
@@ -105,11 +122,19 @@ const AccountBookStackNavigator = () => {
       <Stack.Screen
         name={accountBookNavigations.SETTLEMENTREQUEST}
         component={SettlementRequestScreen}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={accountBookNavigations.PAYMENTDIVIDE}
         component={PaymentDivideScreen}
         options={{headerTitle: ''}}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.NOTICE}
+        component={NotificationScreen}
+        options={{
+          headerTitle: '알림',
+        }}
       />
     </Stack.Navigator>
   );

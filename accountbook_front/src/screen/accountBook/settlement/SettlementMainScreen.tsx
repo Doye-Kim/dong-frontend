@@ -5,7 +5,11 @@ import SettlementList from '@/components/accountBook/settlement/SettlementList';
 
 import {accountBookNavigations, colors} from '@/constants';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
-import {getMonthYearDetails, getNewMonthYear} from '@/utils';
+import {
+  getDateWithSeparator,
+  getMonthYearDetails,
+  getNewMonthYear,
+} from '@/utils';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useCallback, useEffect, useState} from 'react';
@@ -23,15 +27,15 @@ import {
 import Toast from 'react-native-toast-message';
 
 const SettlementMainScreen = () => {
-
   const [settlementData, setSettlementData] = useState<ResponseSettlements[]>();
   const [ongoingData, setOnGoingData] = useState<ResponseSettlements[]>();
   const [completeData, setCompleteData] = useState<ResponseSettlements[]>();
+  const date = useDateStore(state => state.date);
+  const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
   const getData = async () => {
     console.log('getdata');
     try {
-      // #todo 헤더에 있는 날짜값으로 변경해야 함
-      const data = await getSettlements('2024-08');
+      const data = await getSettlements(yearMonth);
       console.log(data);
       setSettlementData(data);
       const ongoing = data.filter(
@@ -86,7 +90,7 @@ const SettlementMainScreen = () => {
               <SettlementList
                 data={ongoingData}
                 isFinished={false}
-                refresh={getData}
+                refresh={() => getData()}
               />
             </View>
           ) : (
@@ -122,6 +126,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     marginHorizontal: 10,
+    marginBottom: 70,
   },
   labelText: {
     fontFamily: 'Pretendard-Medium',

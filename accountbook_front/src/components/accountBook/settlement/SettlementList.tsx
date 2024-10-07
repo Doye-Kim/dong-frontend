@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import SettlementItem from './SettlementItem';
 import {colors} from '@/constants';
@@ -11,6 +12,7 @@ interface paymentListProps {
   categoryName: string;
   imageNumber: number;
 }
+
 interface settlementProps {
   settlementId: number;
   settlementState: string;
@@ -19,6 +21,7 @@ interface settlementProps {
   settlementPaymentCnt: number;
   settlementPaymentList: paymentListProps[];
 }
+
 const SettlementList = ({
   data,
   isFinished,
@@ -26,7 +29,7 @@ const SettlementList = ({
 }: {
   data: settlementProps[];
   isFinished: boolean;
-  refresh?: () => void;
+  refresh: () => void;
 }) => {
   return (
     <View>
@@ -34,23 +37,27 @@ const SettlementList = ({
         const prevItem = index > 0 ? data[index - 1] : null; // 이전 아이템 가져오기
         const showDate =
           index === 0 || item.settlementDate !== prevItem?.settlementDate; // 첫 번째 아이템이거나 이전 날짜와 다를 때
+
+        // 고유한 key 생성 (settlementId가 고유하다고 가정)
+        const fragmentKey = `settlement-${item.settlementId}`;
+
         return (
-          <>
+          <React.Fragment key={fragmentKey}>
             {showDate && (
               <Text style={styles.dateText}>{item.settlementDate}</Text>
             )}
             <SettlementItem
-              key={item.settlementId + item.settlementPaymentCnt}
               data={item}
               isFinished={isFinished}
               refresh={refresh}
             />
-          </>
+          </React.Fragment>
         );
       })}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   dateText: {
     fontFamily: 'Pretendard-Medium',
@@ -58,4 +65,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
+
 export default SettlementList;

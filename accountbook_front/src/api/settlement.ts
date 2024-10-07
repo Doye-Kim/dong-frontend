@@ -58,17 +58,17 @@ const postSettlement = async ({
 
 const postTransferSettlement = async ({
   settlementId,
+  accountId,
   accountNumber,
-  paymentId,
 }: {
   settlementId: number;
   accountNumber: string;
-  paymentId: number;
+  accountId: number;
 }) => {
   const {data} = await axiosInstance.post('/settlements/transfer', {
     settlementId,
     accountNumber,
-    paymentId,
+    accountId,
   });
   return data;
 };

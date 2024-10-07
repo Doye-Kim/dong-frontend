@@ -58,12 +58,10 @@ const RoundCost = ({
     const uneditedUsers = users.filter(user => !user.edit);
     const uneditedUsersCount = uneditedUsers.length;
 
-    console.log('remaining', remainingBalance);
     if (uneditedUsersCount > 0) {
       // 5. 나눌 금액을 Math.floor로 계산해서 소수점 버림
       let distributedCost = Math.floor(remainingBalance / uneditedUsersCount);
 
-      console.log(distributedCost);
       // 6. 소수점 때문에 남는 금액 계산
       let extraAmount = remainingBalance - distributedCost * uneditedUsersCount;
       let flag = false;
@@ -89,7 +87,6 @@ const RoundCost = ({
     }
   };
   const handleEndEditing = (userIndex: number) => {
-    console.log('handleEndEditing index', userIndex);
     // 1. costEdit이 true인 사용자들의 cost 합산
     let totalEditedCost = users
       .filter(user => user.edit)

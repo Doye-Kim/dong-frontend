@@ -4,7 +4,14 @@ import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
 import {useEffect, useState} from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const GameDetailScreen = ({route, navigation}) => {
@@ -81,6 +88,14 @@ const GameDetailScreen = ({route, navigation}) => {
                 </View>
               ))}
           </View>
+          <View
+            style={{
+              width: Dimensions.get('screen').width - 60,
+              alignItems: 'flex-end',
+              marginTop: 5,
+            }}>
+            <Text style={styles.infoText}>어제까지 집계된 횟수예요!</Text>
+          </View>
         </>
       )}
     </SafeAreaView>
@@ -109,6 +124,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: colors.BLACK,
+  },
+  infoText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: colors.GRAY_600,
+    marginBottom: 5,
   },
   userListContainer: {
     width: '100%',

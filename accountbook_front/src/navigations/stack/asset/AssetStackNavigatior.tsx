@@ -1,13 +1,11 @@
 import {assetNavigations, colors} from '@/constants';
 import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
-import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import AssetDetailStackNavigator, {
-  AssetDetailStackParamList,
-} from './AssetDetailStackNavigator';
+import AssetDetailStackNavigator from './AssetDetailStackNavigator';
 import SeedStackNavigator from './SeedStackNavigator';
+import NotificationHeader from '@/components/common/NotificationHeader';
+import NotificationScreen from '@/screen/NotificationScreen';
 
 export type AssetStackParamList = {
   [assetNavigations.MAIN]: undefined;
@@ -16,18 +14,34 @@ export type AssetStackParamList = {
     params: {accountId?: number; cardId?: number; paymentId?: number};
   };
   [assetNavigations.SEED]: {screen: string; params: {seedId?: number}};
+  [assetNavigations.NOTICE]: undefined;
 };
 
 const Stack = createStackNavigator<AssetStackParamList>();
 
 const AssetStackNavigatior = () => {
-  const navigation = useNavigation();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: {
+          backgroundColor: colors.WHITE,
+        },
+        headerStyle: {
+          shadowColor: 'transparent',
+          backgroundColor: colors.WHITE,
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          fontFamily: 'Pretendard-Bold',
+          paddingLeft: 0,
+          marginLeft: 0,
+        },
+        headerTintColor: colors.BLACK,
+      }}>
       <Stack.Screen
         name={assetNavigations.MAIN}
         component={AssetMainScreen}
-        options={{headerTitle: '', headerShown: false}}
+        options={{headerShown: true, header: () => <NotificationHeader />}}
       />
       <Stack.Screen
         name={assetNavigations.DETAIL}
@@ -39,24 +53,15 @@ const AssetStackNavigatior = () => {
         component={SeedStackNavigator}
         options={{headerTitle: '', headerShown: false}}
       />
+      <Stack.Screen
+        name={assetNavigations.NOTICE}
+        component={NotificationScreen}
+        options={{
+          headerTitle: '알림',
+        }}
+      />
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  manageButton: {
-    marginRight: 15,
-  },
-  manageText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-  },
-});
 
 export default AssetStackNavigatior;

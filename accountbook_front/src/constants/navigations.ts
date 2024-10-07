@@ -26,6 +26,7 @@ const accountBookNavigations = {
   BUDGETCREATE: 'BudgetCreate',
   BUDGET: 'Budget',
   PAYMENTDIVIDE: 'PaymentDivide',
+  NOTICE: 'Notification',
 } as const;
 
 const accountBookTabNavigations = {
@@ -49,6 +50,8 @@ const gameNavigations = {
   ACCOUNT: 'SelectAccount',
   CATEGORY: 'SelectCategory',
   RESULT: 'GameResult',
+  NOTICE: 'Notification',
+  REQUEST: 'GameRequest',
 } as const;
 
 const extraNavigations = {
@@ -57,6 +60,7 @@ const extraNavigations = {
   CATEGORY: 'CategoryEdit',
   BUDGET: 'Budget',
   REPORT: 'Report',
+  NOTICE: 'Notification',
 } as const;
 
 const assetNavigations = {
@@ -64,6 +68,7 @@ const assetNavigations = {
   DETAIL: 'AssetDetailNavigator',
   GAME: 'GameNavigator',
   SEED: 'SeedNavigator',
+  NOTICE: 'Notification',
 } as const;
 
 const assetDetailNavigations = {

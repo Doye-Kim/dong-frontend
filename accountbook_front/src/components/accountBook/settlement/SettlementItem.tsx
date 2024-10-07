@@ -23,20 +23,10 @@ interface PaymentUserProps {
   transferState: string;
 }
 
-type Payment = {
-  payments_id: string;
-  merchantName: string;
-  categoryName: string;
-  balance: number;
-  cardName: string;
-  memo: string;
-  createdDate: string;
-  imageNumber: number;
-};
 interface SettlementProps {
   settlementId: number;
   settlementState: string;
-  representiveMerchandise: string;
+  representativeMerchandise: string;
   settlementPaymentCnt: number;
   settlementPaymentList: PaymentItemProps[];
   settlementUserCnt: number;
@@ -49,31 +39,16 @@ const SettlementItem = ({
 }: {
   data: SettlementProps;
   isFinished: boolean;
-  refresh?: () => void;
+  refresh: () => void;
 }) => {
   const [isOpenDetail, setIsOpenDetail] = useState(false);
 
   const handlePressTitle = () => {
     setIsOpenDetail(prev => !prev);
   };
-
-  const transformPaymentList = (paymentList: PaymentItemProps[]): Payment[] => {
-    return paymentList.map(payment => ({
-      payments_id: payment.paymentId.toString(),
-      merchantName: payment.merchantName,
-      categoryName: payment.categoryName,
-      balance: payment.balance,
-      cardName: payment.paymentName,
-      imageNumber: payment.imageNumber,
-      memo: '', // memo와 createdDate는 데이터를 추가하거나 기본값을 지정
-      createdDate: '',
-    }));
-  };
-  const transformedPayments = transformPaymentList(data.settlementPaymentList);
   const finishSettlement = async () => {
     try {
-      // const data = await postFinishSettlement(data.settlementId);
-      // console.log(data);
+      const res = await postFinishSettlement(data.settlementId);
       refresh();
     } catch (err) {
       console.log(err.reponse.data);
@@ -108,7 +83,7 @@ const SettlementItem = ({
         ]}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={[styles.titleText, isFinished && {color: colors.BLACK}]}>
-            {data.representiveMerchandise}
+            {data.representativeMerchandise}
             {data.settlementPaymentCnt > 1
               ? ` 외 ${data.settlementPaymentCnt - 1}건`
               : ''}
@@ -126,10 +101,10 @@ const SettlementItem = ({
       {isOpenDetail && (
         <View style={{padding: 5}}>
           <View style={styles.paymentListContainer}>
-            {transformedPayments.map(item => (
+            {data.settlementPaymentList.map(item => (
               <TouchableOpacity
                 style={styles.itemContainer}
-                key={item.payments_id}>
+                key={item.paymentId}>
                 <CategoryIcon categoryNumber={item.imageNumber} size={40} />
                 <View style={styles.itemContent}>
                   <View style={styles.itemHeader}>
@@ -137,9 +112,7 @@ const SettlementItem = ({
                       <Text style={styles.merchantName}>
                         {item.merchantName}
                       </Text>
-                      <Text style={styles.details}>
-                        {item.categoryName} | {item.cardName}
-                      </Text>
+                      <Text style={styles.details}>{item.categoryName}</Text>
                     </View>
                     <View style={styles.balanceContainer}>
                       <Text style={styles.balance}>
@@ -153,7 +126,7 @@ const SettlementItem = ({
           </View>
           <View style={{marginVertical: 10}}>
             {data.settlementUserList.map(item => (
-              <UserStateItem data={item} />
+              <UserStateItem key={item.userId} data={item} />
             ))}
           </View>
         </View>

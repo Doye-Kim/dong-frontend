@@ -1,61 +1,133 @@
+import {postGameInvalid} from '@/api/game';
+import {ResponseAlarm, patchAlarm} from '@/api/noti';
 import NotiIcon from '@/components/common/NotiIcon';
-import {colors} from '@/constants';
+import {
+  accountBookNavigations,
+  assetNavigations,
+  colors,
+  gameNavigations,
+  mainNavigations,
+  seedNavigations,
+} from '@/constants';
+import {convertDateToString} from '@/utils';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Toast from 'react-native-toast-message';
 
-interface NotiProps {
-  read: boolean;
-  category: string;
-  name?: string;
-  point?: number;
-  icon: number;
-  dateTime: string;
-}
+const notiTypeStatus = {
+  GAME_REQUEST: '내기 요청',
+  GAME_RESULT: '내기 결과',
+  SETTLEMENT_REQUEST: '정산 요청',
+  FIXED_EXPENSES: '고정 지출',
+  SEED_SEND: '종잣돈 송금',
+  SEED_FINISH: '종잣돈 종료',
+};
 
-const NotiItem: React.FC<NotiProps> = ({
-  read,
-  category,
-  name,
-  point,
-  icon,
-  dateTime,
-}) => {
+const notiNumber = {
+  SETTLEMENT_REQUEST: 0,
+  GAME_REQUEST: 1,
+  GAME_RESULT: 1,
+  FIXED_EXPENSES: 2,
+  SEED_SEND: 3,
+  SEED_FINISH: 3,
+};
+const NotiItem = ({item}: {item: ResponseAlarm}) => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const contentTextStyle = {
     ...styles.contentText,
-    color: read ? colors.GRAY_500 : colors.BLACK,
+    color: item.status === 'READ' ? colors.GRAY_500 : colors.BLACK,
   };
 
+  const checkRead = async () => {
+    console.log('checkREad', item.id);
+    console.log(item.id);
+    try {
+      const data = await patchAlarm(item.id);
+      console.log('success', data);
+    } catch (err) {
+      console.log('err', err);
+    }
+  };
+  const handlePress = async () => {
+    if (item.status === 'NONREAD') {
+      checkRead();
+    }
+    if (item.type === 'GAME_REQUEST') {
+      try {
+        const data = await postGameInvalid({participantId: item.typeId});
+        console.log('게임요청 invalid', data);
+        navigation.navigate(mainNavigations.GAME, {
+          screen: gameNavigations.REQUEST,
+          params: {participantId: item.typeId},
+        });
+      } catch (err) {
+        console.log(err);
+        console.log(err.response.data);
+        Toast.show({
+          type: 'error',
+          text1: err.response.data
+            ? err.response.data.message
+            : '알 수 없는 오류가 발생했습니다.',
+        });
+      }
+    } else if (item.type === 'GAME_RESULT') {
+      navigation.navigate(mainNavigations.GAME, {
+        screen: gameNavigations.RESULT,
+        params: {participantId: item.typeId},
+      });
+    } else if (item.type === 'SEED_SEND' || item.type === 'SEED_FINISH') {
+      console.log('SEED');
+      navigation.navigate(mainNavigations.ASSET, {
+        screen: assetNavigations.SEED, // SeedNavigator로 이동
+        params: {
+          screen: seedNavigations.DETAIL, // SeedNavigator 내의 SeedDetail 화면으로 이동
+          params: {seedId: item.typeId}, // SeedDetail 화면에 전달할 파라미터
+        },
+      });
+    } else if (item.type === 'SETTLEMENT_REQUEST') {
+      console.log('정산요청!', item.typeId);
+      navigation.navigate(mainNavigations.ACCOUNTBOOK, {
+        screen: accountBookNavigations.SETTLEMENTREQUEST,
+        params: {settlementId: item.typeId},
+      });
+    } else if (item.type === 'FIXED_EXPENSES') {
+      navigation.navigate(mainNavigations.ACCOUNTBOOK, {
+        screen: accountBookNavigations.TABBAR,
+      });
+    }
+  };
   return (
-    <View
+    <TouchableOpacity
+      onPress={handlePress}
       style={[
         styles.container,
-        read
+        item.status === 'READ'
           ? {backgroundColor: colors.GRAY_200}
           : {backgroundColor: colors.WHITE},
       ]}>
       <View style={styles.icon}>
-        <NotiIcon notiNumber={icon} />
+        <NotiIcon notiNumber={notiNumber[item.type]} size={40} />
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>{category}</Text>
-          <Text style={styles.headerText}>{dateTime}</Text>
-        </View>
-        {category === '정산 요청' ? (
-          <Text style={contentTextStyle}>{name}님이 정산을 요청했습니다.</Text>
-        ) : category === '내기 신청' ? (
-          <Text style={contentTextStyle}>{name}님이 내기를 신청했습니다.</Text>
-        ) : category === '고정 지출 알림' ? (
-          <Text style={contentTextStyle}>
-            내일 {name}에 지출이 있을 예정이에요!
+          <Text style={styles.headerText}>{notiTypeStatus[item.type]}</Text>
+          <Text style={styles.headerText}>
+            {convertDateToString(item.createdAt)}
           </Text>
-        ) : category === '고정 지출 등록' ? (
-          <Text style={contentTextStyle}>3개월 연속 {name}을 결제했어요</Text>
-        ) : (
-          <Text style={contentTextStyle}>{point} 포인트 적립 완료!</Text>
-        )}
+        </View>
+        <Text style={contentTextStyle} numberOfLines={1} ellipsizeMode="tail">
+          {item.content}
+        </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -65,6 +137,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'pink',
     padding: 5,
+    height: 70,
   },
   icon: {
     margin: 10,
@@ -75,6 +148,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginRight: 10,
   },
   headerText: {
     fontFamily: 'Pretendard-Medium',
@@ -83,7 +157,8 @@ const styles = StyleSheet.create({
   },
   contentText: {
     fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
+    fontSize: 20,
+    width: Dimensions.get('screen').width - 100,
   },
 });
 

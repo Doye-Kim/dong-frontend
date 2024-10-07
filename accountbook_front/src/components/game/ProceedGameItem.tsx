@@ -24,7 +24,7 @@ const GameItem = ({item}: {item: ResponseGame}) => {
         {category[item.gameCategory.imageNumber]}
       </Text>
       <View style={styles.countContainer}>
-        <Text style={styles.countText}>현재까지 총 5회</Text>
+        <Text style={styles.countText}>현재까지 총 {item.gameCount}회</Text>
       </View>
     </TouchableOpacity>
   );

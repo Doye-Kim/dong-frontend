@@ -5,7 +5,6 @@ import {
 } from '@/assets/icons';
 import AssetItemList from '@/components/asset/asset/AssetItemList';
 import AssetListHeader from '@/components/asset/asset/AssetListHeader';
-import NotificationHeader from '@/components/common/NotificationHeader';
 import {assetNavigations, colors, seedNavigations} from '@/constants';
 import {Account, Card, Seed} from '@/types/domain';
 import React, {useEffect, useState, useMemo, useCallback} from 'react';
@@ -70,8 +69,12 @@ const AssetMainScreen = () => {
   useEffect(() => {
     handleGetAssets();
     getSeedData();
+    getUserName();
   }, []);
 
+  const getUserName = () => {
+    // set
+  };
   useFocusEffect(
     useCallback(() => {
       getSeedData();
@@ -131,7 +134,6 @@ const AssetMainScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <NotificationHeader />
       <ScrollView>
         {/* 헤더 */}
         <AssetListHeader username={username} assetAmount={assetAmount} />

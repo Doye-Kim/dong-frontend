@@ -26,7 +26,23 @@ export type AssetDetailStackParamList = {
 
 const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: {
+          backgroundColor: colors.WHITE,
+        },
+        headerStyle: {
+          shadowColor: 'transparent',
+          backgroundColor: colors.WHITE,
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          fontFamily: 'Pretendard-Bold',
+          paddingLeft: 0,
+          marginLeft: 0,
+        },
+        headerTintColor: colors.BLACK,
+      }}>
       <Stack.Screen
         name={assetDetailNavigations.ACCOUNTDETAIL}
         component={AssetDetailScreen}

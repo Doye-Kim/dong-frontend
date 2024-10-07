@@ -101,6 +101,10 @@ const getPrepareGame = async (
   return data;
 };
 
+const postGameInvalid = async ({participantId}: {participantId: number}) => {
+  const {data} = await axiosInstance.post('/games/invalid', {participantId});
+  return data;
+};
 const getProgressGame = async (
   participantId: number,
 ): Promise<ResponseGameState> => {
@@ -147,6 +151,7 @@ export {
   getGames,
   getCategory,
   putCategory,
+  postGameInvalid,
   postGame,
   startGame,
   leaveGame,

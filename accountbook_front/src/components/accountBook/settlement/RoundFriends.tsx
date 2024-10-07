@@ -36,7 +36,6 @@ const RoundFriends = ({data}: ResponsePayment) => {
 
   const getInit = async () => {
     const userData = JSON.parse(await getEncryptStorage('user'));
-    console.log(userData);
     setSelectedFriends([{userId: userData.id, nickname: '나'}]);
   };
   useEffect(() => {
@@ -45,11 +44,10 @@ const RoundFriends = ({data}: ResponsePayment) => {
 
   useEffect(() => {
     const newUser = selectedFriends.map(friend => ({
-      userId: friend.userId,
+      userId: friend.friendId ? friend.friendId : friend.userId,
       nickname: friend.nickname,
       amount: 0,
     }));
-    console.log(newUser);
     setSettlementUser(data.paymentsId, newUser);
   }, [data.paymentsId, selectedFriends, setSettlementUser]);
 

@@ -11,6 +11,9 @@ import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SelectCategoryScreen from '@/screen/asset/game/SelectCategoryScreen';
 import GameResultScreen from '@/screen/asset/game/GameResultScreen';
 import {Category} from '@/api/game';
+import NotificationHeader from '@/components/common/NotificationHeader';
+import NotificationScreen from '@/screen/NotificationScreen';
+import GameRequestScreen from '@/screen/asset/game/GameRequestScreen';
 
 export type GameStackParamList = {
   [gameNavigations.MAIN]: undefined;
@@ -21,6 +24,8 @@ export type GameStackParamList = {
   [gameNavigations.FRIENDS]: undefined;
   [gameNavigations.PREPARE]: {participantId: number};
   [gameNavigations.RESULT]: {participantId: number};
+  [gameNavigations.NOTICE]: undefined;
+  [gameNavigations.REQUEST]: {participantId: number};
 };
 
 const Stack = createStackNavigator<GameStackParamList>();
@@ -48,8 +53,8 @@ function ExtraStackNavigator() {
         name={gameNavigations.MAIN}
         component={GameMainScreen}
         options={{
-          headerTitle: ' ',
-          headerShown: false,
+          headerShown: true,
+          header: () => <NotificationHeader />,
         }}
       />
       <Stack.Screen
@@ -100,6 +105,20 @@ function ExtraStackNavigator() {
         component={GameResultScreen}
         options={{
           headerTitle: ' ',
+        }}
+      />
+      <Stack.Screen
+        name={gameNavigations.REQUEST}
+        component={GameRequestScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={gameNavigations.NOTICE}
+        component={NotificationScreen}
+        options={{
+          headerTitle: '알림',
         }}
       />
     </Stack.Navigator>
