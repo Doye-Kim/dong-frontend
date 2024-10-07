@@ -27,6 +27,7 @@ const accountBookNavigations = {
   BUDGET: 'Budget',
   PAYMENTDIVIDE: 'PaymentDivide',
   NOTICE: 'Notification',
+  PIN: 'PinCode',
 } as const;
 
 const accountBookTabNavigations = {
@@ -52,6 +53,7 @@ const gameNavigations = {
   RESULT: 'GameResult',
   NOTICE: 'Notification',
   REQUEST: 'GameRequest',
+  PIN: 'PinCode',
 } as const;
 
 const extraNavigations = {

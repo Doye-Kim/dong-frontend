@@ -14,6 +14,8 @@ import {Category} from '@/api/game';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
 import GameRequestScreen from '@/screen/asset/game/GameRequestScreen';
+import {AccountInfo} from '@/api/asset';
+import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 
 export type GameStackParamList = {
   [gameNavigations.MAIN]: undefined;
@@ -26,6 +28,12 @@ export type GameStackParamList = {
   [gameNavigations.RESULT]: {participantId: number};
   [gameNavigations.NOTICE]: undefined;
   [gameNavigations.REQUEST]: {participantId: number};
+  [gameNavigations.PIN]: {
+    pageNumber: number;
+    settlementId?: number;
+    participantId?: number;
+    account?: AccountInfo;
+  };
 };
 
 const Stack = createStackNavigator<GameStackParamList>();
@@ -119,6 +127,13 @@ function ExtraStackNavigator() {
         component={NotificationScreen}
         options={{
           headerTitle: '알림',
+        }}
+      />
+      <Stack.Screen
+        name={gameNavigations.PIN}
+        component={PinCodeScreen}
+        options={{
+          headerTitle: '',
         }}
       />
     </Stack.Navigator>

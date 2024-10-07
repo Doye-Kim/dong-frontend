@@ -20,7 +20,8 @@ import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SettlementMainScreen from '@/screen/accountBook/settlement/SettlementMainScreen';
 import NotificationScreen from '@/screen/NotificationScreen';
 import NotificationHeader from '@/components/common/NotificationHeader';
-
+import PinCodeScreen from '@/screen/auth/PinCodeScreen';
+import {AccountInfo} from '@/api/asset';
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]:
@@ -41,6 +42,12 @@ export type AccountBookStackParamList = {
   [accountBookNavigations.SETTLEMENTPAYMENTS]: undefined;
   [accountBookNavigations.SETTLEMENTREQUEST]: {settlementId: number};
   [accountBookNavigations.PAYMENTDIVIDE]: {payment: Payment};
+  [accountBookNavigations.PIN]: {
+    pageNumber: number;
+    settlementId?: number;
+    participantId?: number;
+    account?: AccountInfo;
+  };
 };
 
 const Stack = createStackNavigator();
@@ -134,6 +141,13 @@ const AccountBookStackNavigator = () => {
         component={NotificationScreen}
         options={{
           headerTitle: '알림',
+        }}
+      />
+      <Stack.Screen
+        name={accountBookNavigations.PIN}
+        component={PinCodeScreen}
+        options={{
+          headerTitle: '',
         }}
       />
     </Stack.Navigator>

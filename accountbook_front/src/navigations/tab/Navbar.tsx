@@ -76,7 +76,8 @@ const Navbar = () => {
                 routeName === accountBookNavigations.ACCOUNT ||
                 routeName === accountBookNavigations.PAYMENTADD ||
                 routeName === accountBookNavigations.PAYMENTDIVIDE ||
-                routeName === accountBookNavigations.BUDGETCREATE
+                routeName === accountBookNavigations.BUDGETCREATE ||
+                routeName === accountBookNavigations.PIN
               ) {
                 return {display: 'none'};
               }
