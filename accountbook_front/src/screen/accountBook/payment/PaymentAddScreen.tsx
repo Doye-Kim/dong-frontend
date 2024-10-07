@@ -21,7 +21,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import CategoryList from '@/components/accountBook/category/CategoryList';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const PaymentAddScreen = () => {
   const navigation = useNavigation();
@@ -47,7 +47,6 @@ const PaymentAddScreen = () => {
   const [inputBalanceValue, setInputBalanceValue] = useState<string>('');
 
   const handlePostPayment = async (payment: Payment) => {
-
     try {
       const response = await axiosInstance.post('/payments', {
         merchantName: payment.merchantName,
@@ -57,11 +56,6 @@ const PaymentAddScreen = () => {
         memo: payment.memo,
         paymentTime: payment.paymentTime,
         type: payment.paymentType,
-
-        // cardIssuerName: null,
-        // 수기입력의 경우 비워서 낼 수 있어야함. 아닌경우 paymentdetail에서 받아올 수 있어야함
-        // asset: null,
-        // assetId: null,
       });
       console.log(response.data);
     } catch (error) {
@@ -72,7 +66,7 @@ const PaymentAddScreen = () => {
   const pressSaveButton = async (payment: Payment) => {
     handlePostPayment(payment);
     navigation.goBack();
-  }
+  };
 
   const toggleBalanceEditStatus = () => {
     setBalanceEditStatus(prevStatus => !prevStatus);
@@ -124,8 +118,12 @@ const PaymentAddScreen = () => {
       if (selectedDate) {
         const selectedDateObj = new Date(selectedDate);
         selectedDateObj.setHours(date.getHours(), date.getMinutes());
-        const newPaymentTime = formatInTimeZone(selectedDateObj, 'Asia/Seoul',"yyyy-MM-dd'T'HH:mm:ss");
-  
+        const newPaymentTime = formatInTimeZone(
+          selectedDateObj,
+          'Asia/Seoul',
+          "yyyy-MM-dd'T'HH:mm:ss",
+        );
+
         setPaymentData(prevPayment => ({
           ...prevPayment,
           paymentTime: newPaymentTime,
@@ -236,7 +234,9 @@ const PaymentAddScreen = () => {
                 <Text style={styles.detailLabel}>카테고리</Text>
                 <TouchableOpacity onPress={toggleCategoryModal}>
                   {paymentData.categoryId === 0 ? (
-                    <Text style={styles.detailValue}>카테고리를 입력하세요</Text>
+                    <Text style={styles.detailValue}>
+                      카테고리를 입력하세요
+                    </Text>
                   ) : (
                     <Text style={styles.detailValue}>
                       {paymentData.categoryName}
@@ -269,7 +269,7 @@ const PaymentAddScreen = () => {
                   value={selectedTime}
                   mode="time"
                   display="default"
-                  timeZoneName='Asia/Seoul'
+                  timeZoneName="Asia/Seoul"
                   onChange={(event, data) => {
                     setIsOpenTimePicker(false);
                     handleTimeChange(event, data);
@@ -284,7 +284,10 @@ const PaymentAddScreen = () => {
                 <View style={styles.bottomModalContainer}>
                   <View style={styles.bottomModalContent}>
                     <Text style={styles.modalTitle}>카테고리 선택</Text>
-                    <CategoryList onCategorySelect={handleCategorySelect} renderAddButton={false} />
+                    <CategoryList
+                      onCategorySelect={handleCategorySelect}
+                      renderAddButton={false}
+                    />
                     <TouchableOpacity
                       onPress={toggleCategoryModal}
                       style={styles.closeButton}>
