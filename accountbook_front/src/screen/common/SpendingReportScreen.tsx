@@ -172,7 +172,7 @@ const SpendingReportScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 50,
+    marginBottom: 50,
   },
   scrollContainer: {
     // backgroundColor: 'pink',
