@@ -2,15 +2,33 @@ import axiosInstance from '@/api/axios';
 import {ExpandRight, StoreIcon, UserProfileImage} from '@/assets/icons';
 import {colors, extraNavigations} from '@/constants';
 import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
+import { getEncryptStorage } from '@/utils/encryptedStorage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-interface ExtraMainScreenProps {}
-
-const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
+const ExtraMainScreen = () => {
   const [point, setPoint] = useState<Number>(0);
   const navigation = useNavigation<NavigationProp<ExtraStackParamList>>();
+  const [username, setUsername] = useState('');
+  const [phone, setPhone] = useState('');
+
+  const getInit = async () => {
+    const data = JSON.parse(await getEncryptStorage('user'));
+    setUsername(data.name);
+    setPhone(formatPhoneNumber(data.phone));
+  };
+
+  const formatPhoneNumber = (phone: string) => {
+    if (phone.length === 11) {
+      return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    }
+    return phone; // 길이가 11이 아닌 경우, 포맷팅 없이 반환
+  };
+
+  useEffect(() => {
+    getInit();
+  })
 
   const fetchPoint = async () => {
     try {
@@ -27,13 +45,11 @@ const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
 
   const DATALIST = [
     {id: '1', title: '카테고리 편집', navigationKey: extraNavigations.CATEGORY},
-    {id: '2', title: '예산 관리', navigationKey: extraNavigations.BUDGET},
     {
-      id: '3',
+      id: '2',
       title: '월간 소비 리포트',
       navigationKey: extraNavigations.REPORT,
     },
-    {id: '4', title: '내기 목록', navigationKey: extraNavigations.REPORT}, // 내기 목록도 REPORT로 설정된 경우
   ];
 
   return (
@@ -42,8 +58,8 @@ const ExtraMainScreen = ({}: ExtraMainScreenProps) => {
       <View style={styles.profileContainer}>
         <UserProfileImage />
         <View style={styles.profileInfoContainer}>
-          <Text style={styles.usernameText}>이현규</Text>
-          <Text style={styles.phoneNumberText}>010-1234-1234</Text>
+          <Text style={styles.usernameText}>{username}</Text>
+          <Text style={styles.phoneNumberText}>{phone}</Text>
         </View>
       </View>
       <Text style={styles.sectionHeaderText}>포인트</Text>

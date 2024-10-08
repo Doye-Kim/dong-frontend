@@ -1,6 +1,4 @@
-import {BackArrow} from '@/assets/icons';
-import NotificationHeader from '@/components/common/NotificationHeader';
-import {colors, extraNavigations} from '@/constants';
+import {colors} from '@/constants';
 import {Gift} from '@/types/domain';
 import React, {useEffect, useState} from 'react';
 import {
@@ -13,16 +11,11 @@ import {
 import axiosInstance from '@/api/axios';
 import BuyConfirmModal from '@/components/extra/BuyConfirmModal';
 import BarcodeModal from '@/components/extra/BarcodeModal';
-import {RouteProp, useRoute} from '@react-navigation/native';
-import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
 
 type GiftData = Gift[];
 
-type PointMarketRouteProp = RouteProp<ExtraStackParamList, 'PointMarket'>;
-
 const PointMarketScreen = () => {
-  const route = useRoute<PointMarketRouteProp>();
-  const [point, setPoint] = useState(route.params.point);
+  const [point, setPoint] = useState(0);
   const [giftList, setGiftList] = useState<GiftData | null>(null);
   const [selectedGiftId, setSelectedGiftId] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,8 +24,20 @@ const PointMarketScreen = () => {
 
   useEffect(() => {
     handleGift();
-    setPoint(point);
   }, []);
+
+  const fetchPoint = async () => {
+    try {
+      const response = await axiosInstance.get('/users/point');
+      setPoint(response.data);
+    } catch (error) {
+      console.error('포인트불러오기 에러 : ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPoint;
+  }, [point]);
 
   // 기프티콘 목록 가져오기
   const handleGift = async (
@@ -88,24 +93,39 @@ const PointMarketScreen = () => {
         </View>
       </View>
       <ScrollView style={styles.giftListContainer}>
-        {giftList?.map(gift => (
-          <View style={styles.giftContainer} key={gift.id}>
-            <View style={styles.giftTitleContainer}>
-              <Text style={styles.giftTitle}>{gift.name}</Text>
-              <Text style={styles.giftPrice}>
-                {gift.price.toLocaleString()} p
-              </Text>
+        {giftList?.map(gift => {
+          const isDisabled = point < gift.price; // 포인트가 부족한지 확인
+
+          return (
+            <View style={styles.giftContainer} key={gift.id}>
+              <View style={styles.giftTitleContainer}>
+                <Text style={styles.giftTitle}>{gift.name}</Text>
+                <Text style={styles.giftPrice}>
+                  {gift.price.toLocaleString()} p
+                </Text>
+              </View>
+              <View style={styles.buyContainer}>
+                <Text>남은 수량 : {gift.stock}개</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.buttonContainer,
+                    isDisabled && styles.disabledButtonContainer, // 포인트 부족 시 비활성화 스타일 적용
+                  ]}
+                  onPress={() => !isDisabled && openModal(gift.id)} // 비활성화 상태에서는 클릭 불가능하게
+                  disabled={isDisabled} // 버튼 비활성화
+                >
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      isDisabled && styles.disabledButtonText, // 비활성화 상태일 때 텍스트 스타일 변경
+                    ]}>
+                    {isDisabled ? '포인트 부족' : '구매'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.buyContainer}>
-              <Text>남은 수량 : {gift.stock}개</Text>
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => openModal(gift.id)}>
-                <Text style={styles.buttonText}>구매</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+          );
+        })}
       </ScrollView>
       {/* 구매 확인 모달 */}
       <BuyConfirmModal
@@ -202,6 +222,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Pretendard-Bold',
     color: colors.WHITE,
+  },
+  disabledButtonContainer: {
+    backgroundColor: colors.GRAY_600,
+  },
+  disabledButtonText: {
+    color: colors.GRAY_200,
   },
 });
 
