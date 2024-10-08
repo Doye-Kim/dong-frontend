@@ -30,7 +30,7 @@ const SettlementRequestScreen = ({route, navigation}) => {
           ? err.response.data.message
           : '요청 중 오류가 발생했습니다.',
       });
-      navigation.goBack();
+      navigation.navigate(accountBookNavigations.NOTICE);
     }
   };
 
