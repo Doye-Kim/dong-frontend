@@ -20,6 +20,8 @@ import Toast from 'react-native-toast-message';
 
 const GameRequestScreen = ({route, navigation}) => {
   const [gameData, setGameData] = useState<ResponseGameState>();
+  // const state = navigation.getState(); // 현재 내비게이션 상태 가져오기
+  // console.log('gameRequest', state); // 상태 출력
   const [userData, setUserData] = useState();
   const {setParticipantId} = useGameCreateStore();
   const participantId = route?.params.participantId;

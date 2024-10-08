@@ -42,7 +42,7 @@ const AssetMainScreen = () => {
     try {
       const response = await axiosInstance.get('/assets');
       const {accountList, cardList} = response.data;
-      console.log("데이터", response.data);
+      console.log('데이터', response.data);
       setAssetData({
         accounts: accountList,
         cards: cardList,
@@ -136,7 +136,7 @@ const AssetMainScreen = () => {
     const totalAmount = filteredAccounts.reduce((acc, account) => {
       return acc + (account.balance || 0);
     }, 0);
-  
+
     setAssetAmount(totalAmount);
   }, [filteredAccounts]);
 
@@ -167,12 +167,7 @@ const AssetMainScreen = () => {
         <SeedList seedData={filteredSeeds} />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() =>
-            navigation.navigate(assetNavigations.SEED, {
-              screen: seedNavigations.CREATE,
-              params: {seedId: undefined},
-            })
-          }>
+          onPress={() => navigation.navigate(assetNavigations.SEEDCREATE)}>
           <AddRoundButton />
           <Text style={styles.buttonText}>생성</Text>
         </TouchableOpacity>

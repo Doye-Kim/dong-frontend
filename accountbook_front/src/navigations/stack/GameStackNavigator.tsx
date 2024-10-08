@@ -2,18 +2,18 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import {gameNavigations, colors} from '@/constants';
-import GameMainScreen from '@/screen/asset/game/GameMainScreen';
-import GameCreateScreen from '@/screen/asset/game/GameCreateScreen';
-import GameDetailScreen from '@/screen/asset/game/GameDetailScreen';
-import GameFriendsScreen from '@/screen/asset/game/GameFriendsScreen';
-import GamePrepareScreen from '@/screen/asset/game/GamePrepareScreen';
+import GameMainScreen from '@/screen/game/GameMainScreen';
+import GameCreateScreen from '@/screen/game/GameCreateScreen';
+import GameDetailScreen from '@/screen/game/GameDetailScreen';
+import GameFriendsScreen from '@/screen/game/GameFriendsScreen';
+import GamePrepareScreen from '@/screen/game/GamePrepareScreen';
 import SelectAccountScreen from '@/screen/SelectAccountScreen';
-import SelectCategoryScreen from '@/screen/asset/game/SelectCategoryScreen';
-import GameResultScreen from '@/screen/asset/game/GameResultScreen';
+import SelectCategoryScreen from '@/screen/game/SelectCategoryScreen';
+import GameResultScreen from '@/screen/game/GameResultScreen';
 import {Category} from '@/api/game';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
-import GameRequestScreen from '@/screen/asset/game/GameRequestScreen';
+import GameRequestScreen from '@/screen/game/GameRequestScreen';
 import {AccountInfo} from '@/api/asset';
 import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 
@@ -112,7 +112,7 @@ function ExtraStackNavigator() {
         name={gameNavigations.RESULT}
         component={GameResultScreen}
         options={{
-          headerTitle: ' ',
+          headerShown: false,
         }}
       />
       <Stack.Screen

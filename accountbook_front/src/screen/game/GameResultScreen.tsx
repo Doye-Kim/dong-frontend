@@ -1,4 +1,5 @@
 import {ResponseGameState, getProgressGame} from '@/api/game';
+import BackHeader from '@/components/common/BackHeader';
 import {colors} from '@/constants';
 import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
@@ -46,6 +47,7 @@ const GameResultScreen = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      <BackHeader navigation={navigation} />
       {gameData && myInfo && sortedParticipants && winners && (
         <View style={styles.container}>
           <Text style={styles.titleText}>
