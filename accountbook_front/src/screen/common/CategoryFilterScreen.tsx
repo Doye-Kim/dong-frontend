@@ -143,7 +143,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Pretendard-Bold',
   },
-  checkListContainer: {},
+  checkListContainer: {
+    paddingBottom: 100,
+  },
   headerRightText: {
     fontSize: 16,
     color: colors.BLACK,
