@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   titleText: {
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 20,
     color: colors.BLACK,
   },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     color: colors.GRAY_600,
   },
   balanceText: {
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 22,
     color: colors.BLACK,
   },

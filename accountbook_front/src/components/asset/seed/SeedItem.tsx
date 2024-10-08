@@ -28,10 +28,7 @@ const SeedItem = ({
     <TouchableOpacity
       style={styles.container}
       onPress={() =>
-        navigation.navigate(assetNavigations.SEED, {
-          screen: seedNavigations.DETAIL,
-          params: {seedId: id},
-        })
+        navigation.navigate(assetNavigations.SEEDDETAIL, {seedId: id})
       }>
       <View style={styles.itemHeader}>
         <Text style={styles.itemTitle}>{title}</Text>

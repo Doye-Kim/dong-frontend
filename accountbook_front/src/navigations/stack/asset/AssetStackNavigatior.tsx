@@ -3,9 +3,10 @@ import AssetMainScreen from '@/screen/asset/main/AssetMainScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import AssetDetailStackNavigator from './AssetDetailStackNavigator';
-import SeedStackNavigator from './SeedStackNavigator';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
+import SeedCreateScreen from '@/screen/asset/seed/SeedCreateScreen';
+import SeedDetailScreen from '@/screen/asset/seed/SeedDetailScreen';
 
 export type AssetStackParamList = {
   [assetNavigations.MAIN]: undefined;
@@ -13,7 +14,8 @@ export type AssetStackParamList = {
     screen: string;
     params: {accountId?: number; cardId?: number; paymentId?: number};
   };
-  [assetNavigations.SEED]: {screen: string; params: {seedId?: number}};
+  [assetNavigations.SEEDDETAIL]: {seedId: number};
+  [assetNavigations.SEEDCREATE]: undefined;
   [assetNavigations.NOTICE]: undefined;
 };
 
@@ -49,8 +51,13 @@ const AssetStackNavigatior = () => {
         options={{headerTitle: '', headerShown: false}}
       />
       <Stack.Screen
-        name={assetNavigations.SEED}
-        component={SeedStackNavigator}
+        name={assetNavigations.SEEDCREATE}
+        component={SeedCreateScreen}
+        options={{headerTitle: '', headerShown: false}}
+      />
+      <Stack.Screen
+        name={assetNavigations.SEEDDETAIL}
+        component={SeedDetailScreen}
         options={{headerTitle: '', headerShown: false}}
       />
       <Stack.Screen
