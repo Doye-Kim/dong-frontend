@@ -5,13 +5,11 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Switch,
   TextInput,
   ScrollView,
-  Modal,
   Animated,
 } from 'react-native';
-import {format, formatInTimeZone} from 'date-fns-tz';
+import {formatInTimeZone} from 'date-fns-tz';
 import {EditIcon} from '@/assets/icons';
 import {getDateLocaleFormat, getTimeLocalFormat} from '@/utils';
 import {colors} from '@/constants';
@@ -21,9 +19,9 @@ import DatePickCalendar from '@/components/common/DatePickCalendar';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import CategoryList from '@/components/accountBook/category/CategoryList';
 import {useNavigation} from '@react-navigation/native';
 import CategorySelectModal from '@/components/accountBook/common/CategorySelectModal';
+import Toast from 'react-native-toast-message';
 
 const PaymentAddScreen = () => {
   const navigation = useNavigation();
@@ -70,9 +68,36 @@ const PaymentAddScreen = () => {
     }
   };
 
+  const validateFields = () => {
+    if (!paymentData.merchantName) {
+      Toast.show({
+        type: 'error',
+        text1: '상품 이름을 선택해주세요.',
+      });
+      return false;
+    }
+    if (paymentData.categoryId === 0) {
+      Toast.show({
+        type: 'error',
+        text1: '카테고리를 선택해주세요.',
+      });
+      return false;
+    }
+    if (paymentData.balance <= 0) {
+      Toast.show({
+        type: 'error',
+        text1: '금액을 입력해주세요.',
+      });
+      return false;
+    }
+    return true;
+  };
+
   const pressSaveButton = async (payment: Payment) => {
-    handlePostPayment(payment);
-    navigation.goBack();
+    if (validateFields()) {
+      handlePostPayment(payment);
+      navigation.goBack();
+    }
   };
 
   const toggleBalanceEditStatus = () => {
@@ -446,6 +471,13 @@ const styles = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 18,
     fontFamily: 'Pretendard-Bold',
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'Pretendard-SemiBold',
+    color: colors.RED_500,
+    textAlign: 'center',
+    marginTop: 10,
   },
   loadingText: {
     fontSize: 30,
