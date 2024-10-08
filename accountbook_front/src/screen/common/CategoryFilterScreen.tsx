@@ -108,8 +108,8 @@ const CategoryFilterScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 50,
+    paddingHorizontal: 20,
+    marginBottom: 50,
   },
   hideListContainer: {
     flexDirection: 'row',
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   actionButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: colors.PRIMARY,
+    backgroundColor: colors.GRAY_700,
     borderRadius: 8,
   },
   actionButtonText: {
