@@ -31,7 +31,10 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => handlePress(paymentsId)}>
-      <CategoryIcon categoryNumber={categoryImageNumber ? categoryImageNumber : 0} size={40} />
+      <CategoryIcon
+        categoryNumber={categoryImageNumber ? categoryImageNumber : 0}
+        size={40}
+      />
       <View style={styles.itemContent}>
         <View style={styles.itemHeader}>
           <View style={styles.merchantInfo}>
@@ -42,9 +45,13 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
               ]}>
               {merchantName}
             </Text>
-            <Text style={styles.details}>
-              {categoryName} | {paymentName}
-            </Text>
+            {paymentName ? (
+              <Text style={styles.details}>
+                {categoryName} | {paymentName}
+              </Text>
+            ) : (
+              <Text style={styles.details}>{categoryName}</Text>
+            )}
           </View>
           <View style={styles.balanceContainer}>
             <Text
