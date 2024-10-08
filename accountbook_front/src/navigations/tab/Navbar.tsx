@@ -13,11 +13,15 @@ import {
 import {View, StyleSheet} from 'react-native';
 
 import AccountBookStackNavigator from '../stack/accountBook/AccountBookStackNavigator';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   accountBookNavigations,
   assetNavigations,
   colors,
+  extraNavigations,
   gameNavigations,
   mainNavigations,
 } from '@/constants';
@@ -28,6 +32,7 @@ import GameStackNavigator from '../stack/GameStackNavigator';
 const Tab = createBottomTabNavigator();
 
 const Navbar = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Tab.Navigator
@@ -61,6 +66,15 @@ const Navbar = () => {
         <Tab.Screen
           name={mainNavigations.ACCOUNTBOOK}
           component={AccountBookStackNavigator}
+          listeners={{
+            tabPress: e => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{name: mainNavigations.ACCOUNTBOOK}],
+              });
+            },
+          }}
           options={({route}) => ({
             tabBarLabel: '가계부',
             tabBarStyle: (route => {
@@ -77,7 +91,8 @@ const Navbar = () => {
                 routeName === accountBookNavigations.PAYMENTADD ||
                 routeName === accountBookNavigations.PAYMENTDIVIDE ||
                 routeName === accountBookNavigations.BUDGETCREATE ||
-                routeName === accountBookNavigations.PIN
+                routeName === accountBookNavigations.PIN ||
+                routeName === accountBookNavigations.NOTICE
               ) {
                 return {display: 'none'};
               }
@@ -88,6 +103,15 @@ const Navbar = () => {
         <Tab.Screen
           name={mainNavigations.ASSET}
           component={AssetStackNavigatior}
+          listeners={{
+            tabPress: e => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{name: mainNavigations.ASSET}],
+              });
+            },
+          }}
           options={({route}) => {
             const routeName =
               getFocusedRouteNameFromRoute(route) ?? assetNavigations.MAIN;
@@ -96,7 +120,9 @@ const Navbar = () => {
               tabBarStyle:
                 routeName === assetNavigations.DETAIL ||
                 routeName === assetNavigations.GAME ||
-                routeName === assetNavigations.SEED
+                routeName === assetNavigations.SEEDCREATE ||
+                routeName === assetNavigations.SEEDDETAIL ||
+                routeName === assetNavigations.NOTICE
                   ? {display: 'none'}
                   : styles.tabBarStyle,
             };
@@ -105,6 +131,15 @@ const Navbar = () => {
         <Tab.Screen
           name={mainNavigations.GAME}
           component={GameStackNavigator}
+          listeners={{
+            tabPress: e => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{name: mainNavigations.GAME}],
+              });
+            },
+          }}
           options={({route}) => {
             const routeName =
               getFocusedRouteNameFromRoute(route) ?? gameNavigations.MAIN;
@@ -120,7 +155,26 @@ const Navbar = () => {
         <Tab.Screen
           name={mainNavigations.EXTRA}
           component={ExtraStackNavigator}
-          options={{tabBarLabel: '더보기'}}
+          listeners={{
+            tabPress: e => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{name: mainNavigations.EXTRA}],
+              });
+            },
+          }}
+          options={({route}) => {
+            const routeName =
+              getFocusedRouteNameFromRoute(route) ?? extraNavigations.MAIN;
+            return {
+              tabBarLabel: '더보기',
+              tabBarStyle:
+                routeName === extraNavigations.MAIN
+                  ? styles.tabBarStyle
+                  : {display: 'none'},
+            };
+          }}
         />
       </Tab.Navigator>
     </View>

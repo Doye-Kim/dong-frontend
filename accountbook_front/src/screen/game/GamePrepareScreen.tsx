@@ -245,9 +245,9 @@ const GamePrepareScreen = ({route, navigation}) => {
               style={{flexDirection: 'row', alignItems: 'center'}}>
               {categoryData &&
                 categoryData.map(item => (
-                  <>
-                    <Text style={styles.categoryText}>{item.name}</Text>
-                  </>
+                  <Text key={item.categoryId} style={styles.categoryText}>
+                    {item.name}
+                  </Text>
                 ))}
             </TouchableOpacity>
           </View>

@@ -69,7 +69,8 @@ const assetNavigations = {
   MAIN: 'AssetMain',
   DETAIL: 'AssetDetailNavigator',
   GAME: 'GameNavigator',
-  SEED: 'SeedNavigator',
+  SEEDCREATE: 'SeedCreate',
+  SEEDDETAIL: 'SeedDetail',
   NOTICE: 'Notification',
 } as const;
 

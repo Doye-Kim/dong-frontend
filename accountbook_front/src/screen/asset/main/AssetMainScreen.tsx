@@ -177,12 +177,7 @@ const AssetMainScreen = () => {
         <SeedList seedData={filteredSeeds} />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() =>
-            navigation.navigate(assetNavigations.SEED, {
-              screen: seedNavigations.CREATE,
-              params: {seedId: undefined},
-            })
-          }>
+          onPress={() => navigation.navigate(assetNavigations.SEEDCREATE)}>
           <AddRoundButton />
           <Text style={styles.buttonText}>생성</Text>
         </TouchableOpacity>

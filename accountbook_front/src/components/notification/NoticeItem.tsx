@@ -7,7 +7,6 @@ import {
   colors,
   gameNavigations,
   mainNavigations,
-  seedNavigations,
 } from '@/constants';
 import {convertDateToString} from '@/utils';
 import {useNavigation} from '@react-navigation/native';
@@ -45,7 +44,6 @@ const NotiItem = ({item}: {item: ResponseAlarm}) => {
     ...styles.contentText,
     color: item.status === 'READ' ? colors.GRAY_500 : colors.BLACK,
   };
-
   const checkRead = async () => {
     console.log('checkREad', item.id);
     console.log(item.id);
@@ -63,7 +61,6 @@ const NotiItem = ({item}: {item: ResponseAlarm}) => {
     if (item.type === 'GAME_REQUEST') {
       try {
         const data = await postGameInvalid({participantId: item.typeId});
-        console.log('게임요청 invalid', data);
         navigation.navigate(mainNavigations.GAME, {
           screen: gameNavigations.REQUEST,
           params: {participantId: item.typeId},
@@ -86,11 +83,8 @@ const NotiItem = ({item}: {item: ResponseAlarm}) => {
     } else if (item.type === 'SEED_SEND' || item.type === 'SEED_FINISH') {
       console.log('SEED');
       navigation.navigate(mainNavigations.ASSET, {
-        screen: assetNavigations.SEED, // SeedNavigator로 이동
-        params: {
-          screen: seedNavigations.DETAIL, // SeedNavigator 내의 SeedDetail 화면으로 이동
-          params: {seedId: item.typeId}, // SeedDetail 화면에 전달할 파라미터
-        },
+        screen: assetNavigations.SEEDDETAIL,
+        params: {seedId: item.typeId},
       });
     } else if (item.type === 'SETTLEMENT_REQUEST') {
       console.log('정산요청!', item.typeId);
