@@ -10,10 +10,10 @@ import GamePrepareScreen from '@/screen/game/GamePrepareScreen';
 import SelectAccountScreen from '@/screen/SelectAccountScreen';
 import SelectCategoryScreen from '@/screen/game/SelectCategoryScreen';
 import GameResultScreen from '@/screen/game/GameResultScreen';
+import GameRequestScreen from '@/screen/game/GameRequestScreen';
 import {Category} from '@/api/game';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
-import GameRequestScreen from '@/screen/game/GameRequestScreen';
 import {AccountInfo} from '@/api/asset';
 import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 
