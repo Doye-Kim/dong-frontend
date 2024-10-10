@@ -12,27 +12,28 @@ import {
   Animated,
 } from 'react-native';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
-import {EditIcon, MeatballMenuIcon} from '@/assets/icons';
+import {MeatballMenuIcon} from '@/assets/icons';
 import {
   getDateLocaleFormat,
-  getDateTimeLocaleFormat,
   getDateWithSeparator,
   getTimeLocalFormat,
 } from '@/utils';
 import {colors} from '@/constants';
 import axiosInstance from '@/api/axios';
 import {Payment} from '@/types/domain';
-import CategoryList from '@/components/accountBook/category/CategoryList';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
 import useDateStore from '@/store/useDateStore';
 import PaymentOption from '@/components/accountBook/payment/PaymentOption';
 import CategorySelectModal from '@/components/accountBook/common/CategorySelectModal';
+import useThemeStore from '@/store/useThemeStore';
 
 type RouteParams = {
   PaymentDetail?: {paymentId: number};
 };
 
 const PaymentDetailScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const route = useRoute<RouteProp<RouteParams, 'PaymentDetail'>>();
   const navigation = useNavigation();
   const paymentId = route.params?.paymentId;
@@ -218,7 +219,7 @@ const PaymentDetailScreen = () => {
                 <TextInput
                   style={styles.memoInput}
                   placeholder="메모를 입력하세요"
-                  placeholderTextColor={colors.GRAY_400}
+                  placeholderTextColor={colors[theme].GRAY_400}
                   onChangeText={text =>
                     setPaymentData({...paymentData, memo: text})
                   }
@@ -269,164 +270,165 @@ const PaymentDetailScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  headerBelow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  backButton: {
-    padding: 8,
-    width: 60,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    padding: 0,
-  },
-  moreButton: {
-    padding: 8,
-  },
-  amountText: {
-    fontSize: 32,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  detailsContainer: {
-    paddingHorizontal: 16,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    height: 40,
-  },
-  detailLabel: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_600,
-  },
-  detailValue: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-  },
-  categoryButton: {
-    height: 30,
-    width: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.GRAY_300,
-    marginLeft: 8,
-  },
-  selectedButton: {
-    borderColor: colors.PRIMARY,
-  },
-  categoryButtonText: {
-    color: colors.GRAY_600,
-    fontSize: 14,
-    bottom: 1,
-  },
-  selectedButtonText: {
-    color: colors.PRIMARY,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  memoInput: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    width: '80%',
-    textAlign: 'right',
-    padding: 0,
-  },
-  buttonContainer: {
-    padding: 16,
-  },
-  saveButton: {
-    backgroundColor: colors.PRIMARY,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: colors.WHITE,
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-  },
-  loadingText: {
-    fontSize: 30,
-    color: colors.BLACK,
-  },
-  bottomModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: colors.WHITE,
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  optionModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  optionModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    header: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    headerBelow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    backButton: {
+      padding: 8,
+      width: 60,
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      padding: 0,
+    },
+    moreButton: {
+      padding: 8,
+    },
+    amountText: {
+      fontSize: 32,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    detailsContainer: {
+      paddingHorizontal: 16,
+    },
+    detailItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      height: 40,
+    },
+    detailLabel: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_600,
+    },
+    detailValue: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    categoryContainer: {
+      flexDirection: 'row',
+    },
+    categoryButton: {
+      height: 30,
+      width: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors[theme].GRAY_300,
+      marginLeft: 8,
+    },
+    selectedButton: {
+      borderColor: colors[theme].PRIMARY,
+    },
+    categoryButtonText: {
+      color: colors[theme].GRAY_600,
+      fontSize: 14,
+      bottom: 1,
+    },
+    selectedButtonText: {
+      color: colors[theme].PRIMARY,
+    },
+    switchContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 12,
+    },
+    memoInput: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      width: '80%',
+      textAlign: 'right',
+      padding: 0,
+    },
+    buttonContainer: {
+      padding: 16,
+    },
+    saveButton: {
+      backgroundColor: colors[theme].PRIMARY,
+      padding: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    saveButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+    },
+    loadingText: {
+      fontSize: 30,
+      color: colors[theme].BLACK,
+    },
+    bottomModalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    bottomModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      padding: 20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      alignItems: 'center',
+      maxHeight: '50%',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      marginBottom: 20,
+    },
+    closeButton: {
+      marginTop: 20,
+      backgroundColor: colors[theme].PRIMARY,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    closeButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+    optionModalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    optionModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      alignItems: 'center',
+      maxHeight: '50%',
+    },
+  });
 
 export default PaymentDetailScreen;

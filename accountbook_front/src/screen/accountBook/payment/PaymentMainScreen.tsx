@@ -5,11 +5,16 @@ import {accountBookNavigations, colors} from '@/constants';
 import {Payment} from '@/types/domain';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {NavigationProp, useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import useDateStore from '@/store/useDateStore';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
-import { getDateWithSeparator } from '@/utils';
+import {getDateWithSeparator} from '@/utils';
+import useThemeStore from '@/store/useThemeStore';
 
 interface PaymentMainScreenProps {
   paymentList: Payment[];
@@ -19,6 +24,8 @@ type PaymentMainScreenNavigationProp =
   NavigationProp<AccountBookStackParamList>;
 
 const PaymentMainScreen = ({paymentList}: PaymentMainScreenProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const date = useDateStore(state => state.date);
   const {fetchPaymentData} = usePaymentDataStore();
   const [balance, setBalance] = useState<number>(0);
@@ -49,9 +56,9 @@ const PaymentMainScreen = ({paymentList}: PaymentMainScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchPaymentData(getDateWithSeparator(date, "-"));
-    }, [date])
-  )
+      fetchPaymentData(getDateWithSeparator(date, '-'));
+    }, [date]),
+  );
 
   const handlePaymentPress = (paymentId: number) => {
     navigation.navigate(accountBookNavigations.PAYMENTDETAIL, {paymentId});
@@ -90,48 +97,49 @@ const PaymentMainScreen = ({paymentList}: PaymentMainScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  balanceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  textContainer: {
-    flexDirection: 'row',
-    width: '80%',
-    marginLeft: 20,
-    borderColor: colors.PRIMARY,
-    borderWidth: 1.5,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 15,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  balanceItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  balanceLabel: {
-    fontSize: 14,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.PRIMARY,
-  },
-  balanceAmount: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.PRIMARY,
-  },
-  addButton: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    balanceRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 10,
+    },
+    textContainer: {
+      flexDirection: 'row',
+      width: '80%',
+      marginLeft: 20,
+      borderColor: colors[theme].PRIMARY,
+      borderWidth: 1.5,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+      borderRadius: 15,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    balanceItem: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    balanceLabel: {
+      fontSize: 14,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].PRIMARY,
+    },
+    balanceAmount: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].PRIMARY,
+    },
+    addButton: {
+      width: 40,
+      height: 40,
+      marginRight: 10,
+    },
+  });
 
 export default PaymentMainScreen;

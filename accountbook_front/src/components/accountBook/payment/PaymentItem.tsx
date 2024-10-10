@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import CategoryIcon from '@/components/common/CategoryIcon';
 import {colors} from '@/constants';
 import {Payment} from '@/types/domain';
+import useThemeStore from '@/store/useThemeStore';
 
 interface PaymentItemProps {
   payment: Payment;
@@ -10,12 +11,13 @@ interface PaymentItemProps {
 }
 
 const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const {
     paymentsId,
     paymentName,
     merchantName,
     categoryName,
-    categoryId,
     categoryImageNumber,
     balance,
     paymentState,
@@ -69,49 +71,50 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  itemContainer: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemContent: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  merchantInfo: {
-    flex: 1,
-  },
-  merchantName: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  balance: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  details: {
-    fontSize: 13,
-    color: colors.GRAY_500,
-    marginTop: 2,
-  },
-  excludeItem: {
-    color: colors.GRAY_500,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    itemContainer: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      marginBottom: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    itemContent: {
+      marginLeft: 16,
+      flex: 1,
+    },
+    itemHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    merchantInfo: {
+      flex: 1,
+    },
+    merchantName: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    balanceContainer: {
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+    },
+    balance: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    details: {
+      fontSize: 13,
+      color: colors[theme].GRAY_500,
+      marginTop: 2,
+    },
+    excludeItem: {
+      color: colors[theme].GRAY_500,
+    },
+  });
 
 export default PaymentItem;

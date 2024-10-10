@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import {colors} from '@/constants';
 import CategoryIcon from '@/components/common/CategoryIcon';
-import { CloseButton } from '@/assets/icons';
+import {CloseButton} from '@/assets/icons';
+import useThemeStore from '@/store/useThemeStore';
 
 type CategoryBudgetCreate = {
   categoryId: number;
@@ -33,6 +34,8 @@ const BudgetCreateItem = ({
   onSubmitEditing,
   inputRef,
 }: BudgetCreateItemProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const formatNumber = (num: number) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
@@ -59,51 +62,54 @@ const BudgetCreateItem = ({
         placeholder="0"
       />
       <Text style={styles.wonText}>원</Text>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => onDeleteCategory(category.categoryId)}>
-        <CloseButton/>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => onDeleteCategory(category.categoryId)}>
+        <CloseButton />
       </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  categoryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-    paddingVertical: 5,
-  },
-  categoryName: {
-    flex: 1,
-    fontSize: 18,
-    marginLeft: 10,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  categoryBudget: {
-    width: 150,
-    paddingVertical: 0,
-    textAlign: 'right',
-    borderBottomWidth: 1.5,
-    borderBottomColor: colors.GRAY_700,
-    fontSize: 20,
-    fontFamily: 'Pretendard-Medium',
-  },
-  wonText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    marginLeft: 5,
-  },
-  deleteButton: {
-    alignItems: 'center',
-    padding: 10,
-  },
-  deleteButtonText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    categoryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+      paddingVertical: 5,
+    },
+    categoryName: {
+      flex: 1,
+      fontSize: 18,
+      marginLeft: 10,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    categoryBudget: {
+      width: 150,
+      paddingVertical: 0,
+      textAlign: 'right',
+      borderBottomWidth: 1.5,
+      borderBottomColor: colors[theme].GRAY_700,
+      fontSize: 20,
+      fontFamily: 'Pretendard-Medium',
+    },
+    wonText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      marginLeft: 5,
+    },
+    deleteButton: {
+      alignItems: 'center',
+      padding: 10,
+    },
+    deleteButtonText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default BudgetCreateItem;

@@ -4,6 +4,7 @@ import SeedInfo from '@/components/seed/SeedInfo';
 import SeedTitle from '@/components/seed/SeedTitle';
 import {alerts, assetNavigations, colors} from '@/constants';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
+import useThemeStore from '@/store/useThemeStore';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useEffect, useState} from 'react';
@@ -17,6 +18,8 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 const SeedDetailScreen = ({route}: {route: any}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
   const {seedId} = route.params;
   const [seed, setSeed] = useState<ResponseSeed>();
@@ -101,31 +104,31 @@ const SeedDetailScreen = ({route}: {route: any}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 20,
-  },
-  buttonContainer: {
-    flex: 1,
-    marginTop: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    height: 50,
-    width: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.ORANGE_500,
-    borderRadius: 30,
-  },
-  buttonText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    color: colors.WHITE,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginVertical: 20,
+    },
+    buttonContainer: {
+      flex: 1,
+      marginTop: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    button: {
+      height: 50,
+      width: 200,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors[theme].PRIMARY,
+      borderRadius: 30,
+    },
+    buttonText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      color: colors['light'].WHITE,
+    },
+  });
 export default SeedDetailScreen;

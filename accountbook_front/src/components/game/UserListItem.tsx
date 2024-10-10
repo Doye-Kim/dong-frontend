@@ -1,6 +1,7 @@
 import {ResponseFriend} from '@/api/friends';
 import {User, FriendCheckFill, FriendCheck} from '@/assets/icons';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 
 const UserListItem = ({
@@ -12,6 +13,8 @@ const UserListItem = ({
   setSelectedFriends(selectedFriends: []): void;
   selectedFriends: [];
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const isSelected = selectedFriends.some(
     friend => friend.nickname === item.nickname,
   );
@@ -59,26 +62,27 @@ const UserListItem = ({
     </TouchableOpacity>
   );
 };
-const styles = StyleSheet.create({
-  friendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-  },
-  contactDetails: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  nameText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-  numberText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.GRAY_600,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    friendContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+    },
+    contactDetails: {
+      flex: 1,
+      marginLeft: 10,
+    },
+    nameText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+    },
+    numberText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].GRAY_600,
+    },
+  });
 export default UserListItem;

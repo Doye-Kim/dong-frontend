@@ -20,8 +20,12 @@ import {ResponsePayment} from '@/screen/accountBook/settlement/SettlementPayment
 import useSettlementCreateStore from '@/store/useSettlementCreate';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const RoundFriends = ({data}: ResponsePayment) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const {friends} = useFriendsStore();
   const {refreshFriends} = useContacts();
   const {setSettlementUser} = useSettlementCreateStore();
@@ -172,70 +176,71 @@ const RoundFriends = ({data}: ResponsePayment) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: Dimensions.get('screen').width - 40,
-    height: Dimensions.get('screen').height - 300,
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: colors.PRIMARY,
-    padding: 10,
-  },
-  merchantNameText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.BLACK,
-  },
-  balanceText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  selectedContainer: {
-    flexDirection: 'row',
-    marginHorizontal: 5,
-    marginTop: 10,
-    height: 80,
-  },
-  selectedUser: {
-    margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  listContainer: {
-    marginTop: 10,
-    height: 300,
-  },
-  searchContainer: {
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: colors.PRIMARY,
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 5,
-  },
-  addGhost: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: colors.GRAY_600,
-    paddingBottom: 5,
-    height: 35,
-  },
-  addGhostText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 18,
-    color: colors.BLACK,
-    marginLeft: 5,
-  },
-  updateText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 15,
-    margin: 5,
-    color: colors.GRAY_600,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      width: Dimensions.get('screen').width - 40,
+      height: Dimensions.get('screen').height - 300,
+      borderRadius: 30,
+      borderWidth: 2,
+      borderColor: colors[theme].PRIMARY,
+      padding: 10,
+    },
+    merchantNameText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].BLACK,
+    },
+    balanceText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    selectedContainer: {
+      flexDirection: 'row',
+      marginHorizontal: 5,
+      marginTop: 10,
+      height: 80,
+    },
+    selectedUser: {
+      margin: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    listContainer: {
+      marginTop: 10,
+      height: 300,
+    },
+    searchContainer: {
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: colors[theme].PRIMARY,
+      width: '100%',
+      height: 50,
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 5,
+    },
+    addGhost: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderColor: colors[theme].GRAY_600,
+      paddingBottom: 5,
+      height: 35,
+    },
+    addGhostText: {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+      marginLeft: 5,
+    },
+    updateText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 15,
+      margin: 5,
+      color: colors[theme].GRAY_600,
+    },
+  });
 
 export default RoundFriends;

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import CustomButton from '@/components/common/CustomButton';
-import {colors} from '@/constants/colors';
+import {colors} from '@/constants';
 import AssetList from '@/components/common/AssetList';
 import {useEffect, useState} from 'react';
 import {
@@ -21,8 +21,11 @@ import {
 } from '@/api/asset';
 import Toast from 'react-native-toast-message';
 import useUserStore from '@/store/useUserStore';
+import useThemeStore from '@/store/useThemeStore';
 
 const SelectAssetsScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [assetList, setAssetList] = useState<RegisterAsset>();
   const [selectedList, setSelectedList] = useState<
     Array<RegisterAccountInfo | AccountInfo | RegisterCardInfo | CardInfo>
@@ -106,31 +109,32 @@ const SelectAssetsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  titleContainer: {},
-  title: {
-    fontSize: 28,
-    color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
-  },
-  assetListContainer: {
-    marginVertical: 10,
-    height: Dimensions.get('screen').height - 320,
-  },
-  assetTitle: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  assetContainer: {
-    flex: 1,
-  },
-  buttonContainer: {
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+    },
+    titleContainer: {},
+    title: {
+      fontSize: 28,
+      color: colors[theme].BLACK,
+      fontFamily: 'Pretendard-Bold',
+    },
+    assetListContainer: {
+      marginVertical: 10,
+      height: Dimensions.get('screen').height - 320,
+    },
+    assetTitle: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    assetContainer: {
+      flex: 1,
+    },
+    buttonContainer: {
+      justifyContent: 'flex-end',
+    },
+  });
 export default SelectAssetsScreen;

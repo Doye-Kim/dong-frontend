@@ -1,6 +1,7 @@
 import {ResponseAlarm, getAlarm} from '@/api/noti';
 import NotiItem from '@/components/notification/NoticeItem';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import {
@@ -12,9 +13,11 @@ import {
   Text,
 } from 'react-native';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 const NotificationScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [alarmData, setAlarmData] = useState<ResponseAlarm[]>([]);
   const [endAlarmId, setEndAlarmId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +29,6 @@ const NotificationScreen = () => {
     try {
       setLoading(true);
       const data = await getAlarm(alarmId);
-      console.log('Fetched Alarm Data:', data);
 
       if (Array.isArray(data.data)) {
         setAlarmData(prev => [...prev, ...data.data]);
@@ -109,19 +111,20 @@ const NotificationScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContainer: {
-    paddingVertical: 8,
-  },
-  emptyText: {
-    fontFamily: 'Pretendard-Bold',
-    textAlign: 'center',
-    marginTop: 20,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    scrollContainer: {
+      paddingVertical: 8,
+    },
+    emptyText: {
+      fontFamily: 'Pretendard-Bold',
+      textAlign: 'center',
+      marginTop: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default NotificationScreen;

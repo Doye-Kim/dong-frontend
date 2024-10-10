@@ -7,6 +7,7 @@ import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
 import SeedCreateScreen from '@/screen/asset/seed/SeedCreateScreen';
 import SeedDetailScreen from '@/screen/asset/seed/SeedDetailScreen';
+import useThemeStore from '@/store/useThemeStore';
 
 export type AssetStackParamList = {
   [assetNavigations.MAIN]: undefined;
@@ -22,15 +23,16 @@ export type AssetStackParamList = {
 const Stack = createStackNavigator<AssetStackParamList>();
 
 const AssetStackNavigatior = () => {
+  const {theme} = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -38,7 +40,7 @@ const AssetStackNavigatior = () => {
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       <Stack.Screen
         name={assetNavigations.MAIN}

@@ -19,9 +19,9 @@ const getAlarm = async (alarmId?: number) => {
   let url = '';
   console.log(alarmId);
   if (alarmId !== undefined && alarmId !== null) {
-    url = `/alarms?alarmId=${alarmId}&pageSize=10`;
+    url = `/alarms?alarmId=${alarmId}&pageSize=20`;
   } else {
-    url = `/alarms?pageSize=10`;
+    url = `/alarms?pageSize=20`;
   }
 
   const {data} = await axiosInstance.get(url);

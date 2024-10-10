@@ -1,4 +1,5 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 const Category = ({
@@ -12,25 +13,30 @@ const Category = ({
   selectedCategoryId: number;
   setSelectedCategoryId: (selectedCategoryId: number) => void;
 }) => {
+  const {theme} = useThemeStore();
   const handleCategoryPress = () => {
     if (categoryId === selectedCategoryId) {
       setSelectedCategoryId(1);
     } else {
       setSelectedCategoryId(categoryId);
     }
-    
   };
   const containerStyle = [
     styles.container,
     {
       backgroundColor:
-        selectedCategoryId === categoryId ? colors.BLACK : colors.GRAY_200,
+        selectedCategoryId === categoryId
+          ? colors[theme].BLACK
+          : colors[theme].GRAY_200,
     },
   ];
   const textStyle = [
     styles.text,
     {
-      color: selectedCategoryId === categoryId ? colors.WHITE : colors.GRAY_500,
+      color:
+        selectedCategoryId === categoryId
+          ? colors[theme].WHITE
+          : colors[theme].GRAY_500,
     },
   ];
   return (

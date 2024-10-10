@@ -3,6 +3,7 @@ import {BackArrow} from '@/assets/icons';
 import UserIcon from '@/components/game/UserIcon';
 import {colors, gameNavigations} from '@/constants';
 import useGameCreateStore from '@/store/useGameCreateStore';
+import useThemeStore from '@/store/useThemeStore';
 import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
@@ -19,6 +20,8 @@ import {
 import Toast from 'react-native-toast-message';
 
 const GameRequestScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [gameData, setGameData] = useState<ResponseGameState>();
   // const state = navigation.getState(); // 현재 내비게이션 상태 가져오기
   // console.log('gameRequest', state); // 상태 출력
@@ -125,9 +128,10 @@ const GameRequestScreen = ({route, navigation}) => {
                 onPress={handlePressDecline}
                 style={[
                   styles.buttonContainer,
-                  {borderColor: colors.PRIMARY, borderWidth: 2},
+                  {borderColor: colors[theme].PRIMARY, borderWidth: 2},
                 ]}>
-                <Text style={[styles.buttonText, {color: colors.PRIMARY}]}>
+                <Text
+                  style={[styles.buttonText, {color: colors[theme].PRIMARY}]}>
                   거절
                 </Text>
               </TouchableOpacity>
@@ -135,9 +139,9 @@ const GameRequestScreen = ({route, navigation}) => {
                 onPress={handlePressAccept}
                 style={[
                   styles.buttonContainer,
-                  {backgroundColor: colors.PRIMARY},
+                  {backgroundColor: colors[theme].PRIMARY},
                 ]}>
-                <Text style={[styles.buttonText, {color: colors.WHITE}]}>
+                <Text style={[styles.buttonText, {color: colors[theme].WHITE}]}>
                   수락
                 </Text>
               </TouchableOpacity>
@@ -149,51 +153,52 @@ const GameRequestScreen = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-    marginBottom: 5,
-  },
-  dateText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.GRAY_500,
-  },
-  peopleText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-    marginBottom: 10,
-  },
-  feeText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    color: colors.BLACK,
-    marginVertical: 10,
-  },
-  buttonContainer: {
-    marginTop: 60,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-    borderRadius: 20,
-    marginHorizontal: 10,
-    marginBottom: 60,
-  },
-  buttonText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+      marginBottom: 5,
+    },
+    dateText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].GRAY_500,
+    },
+    peopleText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+      marginBottom: 10,
+    },
+    feeText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 24,
+      color: colors[theme].BLACK,
+      marginVertical: 10,
+    },
+    buttonContainer: {
+      marginTop: 60,
+      paddingVertical: 10,
+      paddingHorizontal: 50,
+      borderRadius: 20,
+      marginHorizontal: 10,
+      marginBottom: 60,
+    },
+    buttonText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+    },
+  });
 export default GameRequestScreen;

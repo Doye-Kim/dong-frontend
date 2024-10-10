@@ -1,8 +1,10 @@
 import {DisabledUser, User} from '@/assets/icons';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {Text, View} from 'react-native';
 
 const UserIcon = ({name, disabled}: {name: string; disabled?: boolean}) => {
+  const {theme} = useThemeStore();
   return (
     <View
       style={{
@@ -20,7 +22,7 @@ const UserIcon = ({name, disabled}: {name: string; disabled?: boolean}) => {
         style={{
           fontFamily: 'Pretendard-SemiBold',
           fontSize: 14,
-          color: colors.BLACK,
+          color: colors[theme].BLACK,
           marginTop: 3,
         }}
         numberOfLines={1}

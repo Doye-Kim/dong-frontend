@@ -18,6 +18,7 @@ import {setEncryptStorage} from '@/utils/encryptedStorage';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
 import {authNavigations} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 type AuthHomeScreenProps = {
   navigation: StackNavigationProp<
@@ -26,6 +27,9 @@ type AuthHomeScreenProps = {
   >;
 };
 const JoinScreen = ({navigation}: AuthHomeScreenProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   // FCM
   const getFcmToken = useCallback(async () => {
     const data = await messaging().getToken();
@@ -117,44 +121,45 @@ const JoinScreen = ({navigation}: AuthHomeScreenProps) => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 50,
-  },
-  formContainer: {
-    gap: 20,
-    marginBottom: 30,
-  },
-  button: {
-    backgroundColor: colors.ORANGE_200,
-    width: 110,
-    height: 60,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 50,
-    marginLeft: 10,
-  },
-  buttonText: {
-    color: colors.PRIMARY,
-    fontSize: 14,
-    fontFamily: 'Pretendard-SemiBold',
-  },
-  authContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  numberContainer: {
-    flex: 1,
-    minHeight: 50,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginVertical: 50,
+    },
+    formContainer: {
+      gap: 20,
+      marginBottom: 30,
+    },
+    button: {
+      backgroundColor: colors[theme].ORANGE_200,
+      width: 110,
+      height: 60,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 50,
+      marginLeft: 10,
+    },
+    buttonText: {
+      color: colors[theme].PRIMARY,
+      fontSize: 14,
+      fontFamily: 'Pretendard-SemiBold',
+    },
+    authContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    numberContainer: {
+      flex: 1,
+      minHeight: 50,
+    },
+    buttonContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+  });
 
 export default JoinScreen;

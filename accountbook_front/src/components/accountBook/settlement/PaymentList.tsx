@@ -5,6 +5,7 @@ import {colors} from '@/constants';
 import {useEffect, useState} from 'react';
 import {Payment} from '@/types/domain';
 import axiosInstance from '@/api/axios';
+import useThemeStore from '@/store/useThemeStore';
 
 const PaymentList = ({
   selectedPayments,
@@ -13,6 +14,8 @@ const PaymentList = ({
   selectedPayments: Payment[];
   setSelectedPayments: (payments: Payment[]) => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [paymentList, setPaymentList] = useState<Payment[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜
 
@@ -81,12 +84,13 @@ const PaymentList = ({
   );
 };
 
-const styles = StyleSheet.create({
-  dateText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_600,
-    marginTop: 5,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    dateText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_600,
+      marginTop: 5,
+    },
+  });
 
 export default PaymentList;

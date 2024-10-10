@@ -4,13 +4,24 @@ export {default as MeatballMenuIcon} from './meatballMenu.svg';
 export {default as HouseHoldFillIcon} from './householdfill.svg';
 export {default as WalletFillIcon} from './walletfill.svg';
 export {default as MeatballMenuFillIcon} from './meatballmenufill.svg';
+export {default as HouseHoldIconDark} from './household_dark.svg';
+export {default as WalletIconDark} from './wallet_dark.svg';
+export {default as MeatballMenuIconDark} from './meatballMenu_dark.svg';
+export {default as HouseHoldFillIconDark} from './householdfill_dark.svg';
+export {default as WalletFillIconDark} from './walletfill_dark.svg';
+export {default as MeatballMenuFillIconDark} from './meatballmenufill_dark.svg';
 export {default as LeftArrowIcon} from './leftArrow.svg';
 export {default as RightArrowIcon} from './rightArrow.svg';
+export {default as LeftArrowIconDark} from './leftArrow_dark.svg';
+export {default as RightArrowIconDark} from './rightArrow_dark.svg';
 export {default as FilterButton} from './filterButton.svg';
 export {default as EditIcon} from './editIcon.svg';
 export {default as BackArrow} from './backArrow.svg';
+export {default as BackArrowDark} from './backArrow_dark.svg';
 export {default as GameIcon} from './game.svg';
 export {default as GameFillIcon} from './gameFill.svg';
+export {default as GameIconDark} from './game_dark.svg';
+export {default as GameFillIconDark} from './gameFill_dark.svg';
 
 export {default as AccountIcon} from './account.svg';
 export {default as CardIcon} from './card.svg';
@@ -42,7 +53,7 @@ export {default as RightArrowButton} from './rightArrowButton.svg';
 export {default as RefreshButton} from './refresh.svg';
 
 export {default as BellIcon} from './bell.svg';
-export {default as bellNotifyIcon} from './bellNotify.svg';
+export {default as BellIconDark} from './bell_dark.svg';
 
 export {default as Noti0Icon} from './noti-0.svg';
 export {default as Noti1Icon} from './noti-1.svg';

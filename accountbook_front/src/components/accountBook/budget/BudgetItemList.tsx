@@ -3,9 +3,7 @@ import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import {colors} from '@/constants';
 import CategoryIcon from '@/components/common/CategoryIcon';
-import usePaymentDataStore from '@/store/usePaymentDataStore';
-import {getYearMonth} from '@/utils';
-import useDateStore from '@/store/useDateStore';
+import useThemeStore from '@/store/useThemeStore';
 
 interface Category {
   categoryId: number;
@@ -20,6 +18,9 @@ interface BudgetItemListProps {
 }
 
 function BudgetItemList({categories}: BudgetItemListProps) {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   return (
     <ScrollView style={styles.listContainer}>
       {categories.map(item => {
@@ -46,7 +47,11 @@ function BudgetItemList({categories}: BudgetItemListProps) {
 
             <ProgressBar
               progress={usagePercentage}
-              color={colors[`CATEGORY_${item.categoryImageNumber}` as keyof typeof colors]}
+              color={
+                colors[theme][
+                  `CATEGORY_${item.categoryImageNumber}` as keyof (typeof colors)[typeof theme]
+                ]
+              }
               style={styles.progressBar}
             />
 
@@ -62,61 +67,62 @@ function BudgetItemList({categories}: BudgetItemListProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  listContainer: {
-    marginTop: 20,
-    marginBottom: 100,
-  },
-  categoryContainer: {
-    padding: 15,
-    borderRadius: 10,
-  },
-  categoryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-    height: 50,
-  },
-  categoryLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 100,
-  },
-  categoryIcon: {
-    marginRight: 5,
-  },
-  categoryName: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    marginRight: 5,
-    marginLeft: 10,
-  },
-  remainingAmount: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-  },
-  progressBar: {
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: colors.GRAY_200,
-  },
-  categoryFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  categoryUsageAmount: {
-    fontSize: 14,
-    width: '100%',
-    textAlign: 'right',
-    fontFamily: 'Pretendard-Regular',
-    color: colors.GRAY_500,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    listContainer: {
+      marginTop: 20,
+      marginBottom: 100,
+    },
+    categoryContainer: {
+      padding: 15,
+      borderRadius: 10,
+    },
+    categoryHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 10,
+      height: 50,
+    },
+    categoryLabel: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: 100,
+    },
+    categoryIcon: {
+      marginRight: 5,
+    },
+    categoryName: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      marginRight: 5,
+      marginLeft: 10,
+    },
+    remainingAmount: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+    },
+    progressBar: {
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: colors[theme].GRAY_200,
+    },
+    categoryFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    categoryUsageAmount: {
+      fontSize: 14,
+      width: '100%',
+      textAlign: 'right',
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].GRAY_500,
+    },
+  });
 
 export default BudgetItemList;

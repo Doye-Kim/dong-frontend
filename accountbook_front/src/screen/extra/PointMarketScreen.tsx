@@ -11,10 +11,13 @@ import {
 import axiosInstance from '@/api/axios';
 import BuyConfirmModal from '@/components/extra/BuyConfirmModal';
 import BarcodeModal from '@/components/extra/BarcodeModal';
+import useThemeStore from '@/store/useThemeStore';
 
 type GiftData = Gift[];
 
 const PointMarketScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [point, setPoint] = useState(0);
   const [giftList, setGiftList] = useState<GiftData | null>(null);
   const [selectedGiftId, setSelectedGiftId] = useState<number | null>(null);
@@ -147,88 +150,89 @@ const PointMarketScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  pointSectionContainer: {
-    marginHorizontal: 20,
-    marginVertical: 10,
-  },
-  pointTitleText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-  },
-  pointContainer: {
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 20,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginTop: 10,
-    marginBottom: 50,
-  },
-  pointText: {
-    fontSize: 40,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.PRIMARY,
-  },
-  giftListContainer: {
-    marginHorizontal: 20,
-    marginBottom: 10,
-  },
-  giftContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 15,
-    paddingBottom: 10,
-    borderBottomWidth: 1.5,
-    borderColor: colors.GRAY_400,
-  },
-  giftTitleContainer: {
-    flex: 1,
-  },
-  giftTitle: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    marginBottom: 15,
-  },
-  giftPrice: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  buyContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    marginTop: 10,
-  },
-  buttonText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.WHITE,
-  },
-  disabledButtonContainer: {
-    backgroundColor: colors.GRAY_600,
-  },
-  disabledButtonText: {
-    color: colors.GRAY_200,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    pointSectionContainer: {
+      marginHorizontal: 20,
+      marginVertical: 10,
+    },
+    pointTitleText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+    },
+    pointContainer: {
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 20,
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      marginTop: 10,
+      marginBottom: 50,
+    },
+    pointText: {
+      fontSize: 40,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].PRIMARY,
+    },
+    giftListContainer: {
+      marginHorizontal: 20,
+      marginBottom: 10,
+    },
+    giftContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 15,
+      paddingBottom: 10,
+      borderBottomWidth: 1.5,
+      borderColor: colors[theme].GRAY_400,
+    },
+    giftTitleContainer: {
+      flex: 1,
+    },
+    giftTitle: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      marginBottom: 15,
+    },
+    giftPrice: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    buyContainer: {
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    buttonContainer: {
+      backgroundColor: colors[theme].PRIMARY,
+      borderRadius: 15,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 5,
+      marginTop: 10,
+    },
+    buttonText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].WHITE,
+    },
+    disabledButtonContainer: {
+      backgroundColor: colors[theme].GRAY_600,
+    },
+    disabledButtonText: {
+      color: colors[theme].GRAY_200,
+    },
+  });
 
 export default PointMarketScreen;

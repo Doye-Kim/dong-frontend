@@ -14,8 +14,11 @@ import {
 import Toast from 'react-native-toast-message';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import {putCategory} from '@/api/game';
+import useThemeStore from '@/store/useThemeStore';
 
 const SelectCategoryScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [categories, setCategories] = useState<ResponseCategory[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
     route?.params?.category
@@ -95,20 +98,21 @@ const SelectCategoryScreen = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  listContainer: {
-    height: Dimensions.get('window').height - 170,
-    marginVertical: 10,
-  },
-  text: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+    },
+    listContainer: {
+      height: Dimensions.get('window').height - 170,
+      marginVertical: 10,
+    },
+    text: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+  });
 export default SelectCategoryScreen;

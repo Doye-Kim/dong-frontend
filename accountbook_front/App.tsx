@@ -1,23 +1,19 @@
 import Toast from 'react-native-toast-message';
 import RootNavigator from './src/navigations/root/RootNavigator';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import React, {useEffect} from 'react';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {colors} from '@/constants';
-import SplashScreen from 'react-native-splash-screen';
-const MyTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: colors.WHITE,
-  },
-};
+import {useColorScheme} from 'react-native';
+import useThemeStore from './src/store/useThemeStore';
 
 const App = () => {
-  // const isDarkMode = useColorScheme() === 'dark';
-  // const backgroundStyle = {
-  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  // };
+  // dark | light
+  const {setTheme} = useThemeStore();
+  const theme = useColorScheme();
+
+  useEffect(() => {
+    setTheme(theme === 'dark' ? 'dark' : 'light');
+  }, []);
 
   // getFcmToken은 회원가입 시에만 필요하나 백엔드 테스트용으로 주석처리해서 둠
   // #todo 추후 삭제할 것
@@ -33,14 +29,12 @@ const App = () => {
 
   return (
     <PaperProvider>
-      <NavigationContainer theme={MyTheme}>
+      <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
       <Toast />
     </PaperProvider>
   );
 };
-
-// const styles = StyleSheet.create({});
 
 export default App;

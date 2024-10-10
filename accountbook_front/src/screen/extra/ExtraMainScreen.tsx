@@ -2,12 +2,15 @@ import axiosInstance from '@/api/axios';
 import {ExpandRight, StoreIcon, UserProfileImage} from '@/assets/icons';
 import {colors, extraNavigations} from '@/constants';
 import {ExtraStackParamList} from '@/navigations/stack/ExtraStackNavigator';
-import { getEncryptStorage } from '@/utils/encryptedStorage';
+import useThemeStore from '@/store/useThemeStore';
+import {getEncryptStorage} from '@/utils/encryptedStorage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const ExtraMainScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [point, setPoint] = useState<Number>(0);
   const navigation = useNavigation<NavigationProp<ExtraStackParamList>>();
   const [username, setUsername] = useState('');
@@ -28,7 +31,7 @@ const ExtraMainScreen = () => {
 
   useEffect(() => {
     getInit();
-  })
+  });
 
   const fetchPoint = async () => {
     try {
@@ -88,76 +91,77 @@ const ExtraMainScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  sectionHeaderText: {
-    fontSize: 14,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-    paddingHorizontal: 13,
-  },
-  profileContainer: {
-    paddingHorizontal: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 40,
-    marginTop: 15,
-  },
-  profileInfoContainer: {
-    marginLeft: 10,
-  },
-  usernameText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  phoneNumberText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  pointContainer: {
-    paddingHorizontal: 13,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  pointText: {
-    fontSize: 35,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  storeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 25,
-    marginTop: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-  },
-  storeText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.PRIMARY,
-    marginLeft: 10,
-  },
-  listItemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 15,
-    marginVertical: 10,
-  },
-  listTitleText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    sectionHeaderText: {
+      fontSize: 14,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+      paddingHorizontal: 13,
+    },
+    profileContainer: {
+      paddingHorizontal: 15,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 40,
+      marginTop: 15,
+    },
+    profileInfoContainer: {
+      marginLeft: 10,
+    },
+    usernameText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    phoneNumberText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    pointContainer: {
+      paddingHorizontal: 13,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 30,
+    },
+    pointText: {
+      fontSize: 35,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    storeButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 25,
+      marginTop: 8,
+      paddingHorizontal: 15,
+      paddingVertical: 5,
+    },
+    storeText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].PRIMARY,
+      marginLeft: 10,
+    },
+    listItemContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginHorizontal: 15,
+      marginVertical: 10,
+    },
+    listTitleText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default ExtraMainScreen;

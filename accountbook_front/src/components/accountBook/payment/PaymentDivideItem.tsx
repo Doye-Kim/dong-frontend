@@ -1,20 +1,18 @@
 import React, {useState, useRef} from 'react';
 import {
-  Modal,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ToastAndroid,
   Animated,
 } from 'react-native';
 import {colors} from '@/constants';
 import {Payment} from '@/types/domain';
 import {getDateLocaleFormat, getTimeLocalFormat} from '@/utils';
-import CategoryList from '../category/CategoryList';
 import Toast from 'react-native-toast-message';
 import CategorySelectModal from '../common/CategorySelectModal';
+import useThemeStore from '@/store/useThemeStore';
 
 interface PaymentDivideItemProps {
   item: Payment;
@@ -27,6 +25,9 @@ const PaymentDivideItem = ({
   onDelete,
   onUpdate,
 }: PaymentDivideItemProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const [isCategoryModalVisible, setIsCategoryModalVisible] =
     useState<boolean>(false);
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -118,7 +119,7 @@ const PaymentDivideItem = ({
             ref={balanceInputRef} // TextInput에 Ref 설정
             style={[styles.itemDetail, styles.editDetail, {width: 150}]}
             placeholder="금액"
-            placeholderTextColor={colors.GRAY_600}
+            placeholderTextColor={colors[theme].GRAY_600}
             value={inputBalanceValue}
             onChangeText={setInputBalanceValue}
             onBlur={handleBlurBalance}
@@ -168,7 +169,7 @@ const PaymentDivideItem = ({
           <TextInput
             style={[styles.itemDetail, styles.editDetail]}
             placeholder="메모"
-            placeholderTextColor={colors.GRAY_600}
+            placeholderTextColor={colors[theme].GRAY_600}
             value={inputMemoValue}
             onChangeText={setInputMemoValue}
             onBlur={handleBlurMemo}
@@ -193,90 +194,90 @@ const PaymentDivideItem = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  itemContainer: {
-    backgroundColor: colors.GRAY_200,
-    width: '100%',
-    borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    marginBottom: 10,
-  },
-  itemDetailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 7,
-    alignItems: 'center',
-    height: 20,
-  },
-  itemHeader: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  itemDetail: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    padding: 0,
-  },
-  itemDeleteContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginVertical: 7,
-    alignItems: 'center',
-  },
-  deleteButton: {
-    color: colors.WHITE,
-    fontSize: 15,
-    fontFamily: 'Pretendard-Bold',
-    textAlign: 'center',
-    paddingVertical: 3,
-    paddingHorizontal: 9,
-    borderRadius: 10,
-    backgroundColor: colors.RED_500,
-  },
-  bottomModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: colors.WHITE,
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-  },
-  editDetail: {
-    borderBottomWidth: 1,
-    borderColor: colors.BLACK,
-    width: 250,
-    textAlign: 'right',
-  },
-  itemCanInput: {
-    borderBottomWidth: 1,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    itemContainer: {
+      backgroundColor: colors[theme].GRAY_200,
+      width: '100%',
+      borderRadius: 15,
+      paddingHorizontal: 15,
+      paddingVertical: 5,
+      marginBottom: 10,
+    },
+    itemDetailContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginVertical: 7,
+      alignItems: 'center',
+      height: 20,
+    },
+    itemHeader: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    itemDetail: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      padding: 0,
+    },
+    itemDeleteContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginVertical: 7,
+      alignItems: 'center',
+    },
+    deleteButton: {
+      color: colors[theme].WHITE,
+      fontSize: 15,
+      fontFamily: 'Pretendard-Bold',
+      textAlign: 'center',
+      paddingVertical: 3,
+      paddingHorizontal: 9,
+      borderRadius: 10,
+      backgroundColor: colors[theme].RED_500,
+    },
+    bottomModalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    bottomModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      padding: 20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      alignItems: 'center',
+      maxHeight: '50%',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      marginBottom: 20,
+    },
+    closeButton: {
+      marginTop: 20,
+      backgroundColor: colors[theme].PRIMARY,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    closeButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+    },
+    editDetail: {
+      borderBottomWidth: 1,
+      borderColor: colors[theme].BLACK,
+      width: 250,
+      textAlign: 'right',
+    },
+    itemCanInput: {
+      borderBottomWidth: 1,
+    },
+  });
 
 export default PaymentDivideItem;

@@ -13,6 +13,7 @@ import CustomButton from '../common/CustomButton';
 import {useEffect, useState} from 'react';
 import {AccountInfo, getAssets} from '@/api/asset';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const SelectAccountModal = ({
   isVisible,
@@ -23,6 +24,8 @@ const SelectAccountModal = ({
   onClose: () => void;
   setAccount(account: string): void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [accountList, setAccountList] = useState<AccountInfo[]>([]);
   const [selectedList, setSelectedList] = useState([]);
 
@@ -98,39 +101,40 @@ const SelectAccountModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlay: {
-    flex: 1,
-    width: '100%',
-    paddingTop: 100,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  contentContainer: {
-    backgroundColor: colors.WHITE,
-    width: '100%',
-    height: 500,
-    padding: 20,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    shadowColor: colors.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: -4,
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    elevation: 8,
-  },
-  listContainer: {height: 370, marginBottom: 10},
-  text: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-});
+    overlay: {
+      flex: 1,
+      width: '100%',
+      paddingTop: 100,
+      backgroundColor: 'transparent',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    contentContainer: {
+      backgroundColor: colors[theme].WHITE,
+      width: '100%',
+      height: 500,
+      padding: 20,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      shadowColor: colors[theme].BLACK,
+      shadowOffset: {
+        width: 0,
+        height: -4,
+      },
+      elevation: 8,
+    },
+    listContainer: {height: 370, marginBottom: 10},
+    text: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 export default SelectAccountModal;

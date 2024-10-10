@@ -12,19 +12,22 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {colors, gameNavigations} from '@/constants';
-import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
+import {GameStackParamList} from '@/navigations/stack/GameStackNavigator';
 import useFriendsStore from '@/store/useFriendsStore';
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
 import UserListItem from '@/components/game/UserListItem';
 import {RefreshButton, Search} from '@/assets/icons';
-import useContacts from '@/hooks/useContacts'; // 새로 만든 hook import
+import useContacts from '@/hooks/useContacts';
 import {ResponseFriend} from '@/api/friends';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const GameFriendsScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const friends = useFriendsStore(state => state.friends);
   const [selectedFriends, setSelectedFriends] = useState<ResponseFriend[]>([]);
   const [userData, setUserData] = useState();
@@ -154,53 +157,54 @@ const GameFriendsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 20,
-    marginBottom: 20,
-    flex: 1,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  selectedContainer: {
-    flexDirection: 'row',
-    marginHorizontal: 5,
-    marginTop: 10,
-    height: 20,
-  },
-  selectedUser: {
-    marginHorizontal: 5,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  listContainer: {
-    marginTop: 10,
-    height: 320,
-  },
-  searchContainer: {
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: colors.PRIMARY,
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 5,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  updateText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 15,
-    margin: 5,
-    color: colors.GRAY_600,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      marginHorizontal: 20,
+      marginBottom: 20,
+      flex: 1,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    selectedContainer: {
+      flexDirection: 'row',
+      marginHorizontal: 5,
+      marginTop: 10,
+      height: 20,
+    },
+    selectedUser: {
+      marginHorizontal: 5,
+      height: 70,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    listContainer: {
+      marginTop: 10,
+      height: 320,
+    },
+    searchContainer: {
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: colors[theme].PRIMARY,
+      width: '100%',
+      height: 50,
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 5,
+    },
+    buttonContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+    updateText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 15,
+      margin: 5,
+      color: colors[theme].GRAY_600,
+    },
+  });
 
 export default GameFriendsScreen;

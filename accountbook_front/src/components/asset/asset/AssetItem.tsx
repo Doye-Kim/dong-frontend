@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {colors} from '@/constants';
 import {AccountIcon, CardIcon} from '@/assets/icons';
+import useThemeStore from '@/store/useThemeStore';
 
 interface AssetItemProps {
   id: number;
@@ -22,6 +23,8 @@ const AssetItem = ({
   hide,
   handleNavigate,
 }: AssetItemProps): React.ReactElement => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const truncatedTitle = title.length > 10 ? `${title.slice(0, 10)}...` : title;
   return (
     <TouchableOpacity
@@ -50,40 +53,41 @@ const AssetItem = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    marginVertical: 8,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    marginLeft: 10,
-    color: colors.BLACK,
-  },
-  hidedTitle: {
-    color: colors.GRAY_600,
-  },
-  cardName: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-  hidedCardName: {
-    color: colors.GRAY_600,
-  },
-  balance: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 15,
+      marginVertical: 8,
+    },
+    titleContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    title: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 18,
+      marginLeft: 10,
+      color: colors[theme].BLACK,
+    },
+    hidedTitle: {
+      color: colors[theme].GRAY_600,
+    },
+    cardName: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+    },
+    hidedCardName: {
+      color: colors[theme].GRAY_600,
+    },
+    balance: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default AssetItem;

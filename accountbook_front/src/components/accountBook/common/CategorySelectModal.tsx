@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import CategoryList from '../category/CategoryList';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 interface CategorySelectModalProps {
   isVisible: boolean;
@@ -23,6 +24,8 @@ const CategorySelectModal = ({
   slideAnim,
   onCategorySelect,
 }: CategorySelectModalProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <Modal
       visible={isVisible}
@@ -40,9 +43,7 @@ const CategorySelectModal = ({
             onCategorySelect={onCategorySelect}
             renderAddButton={false}
           />
-          <TouchableOpacity
-            onPress={toggleModal}
-            style={styles.closeButton}>
+          <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>닫기</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -51,40 +52,41 @@ const CategorySelectModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  bottomModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%', // 모달의 최대 높이 제한 (화면의 50%)
-    justifyContent: 'flex-start',
-    alignContent: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: colors.WHITE,
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    bottomModalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    bottomModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      padding: 20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      alignItems: 'center',
+      maxHeight: '50%', // 모달의 최대 높이 제한 (화면의 50%)
+      justifyContent: 'flex-start',
+      alignContent: 'center',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      marginBottom: 20,
+    },
+    closeButton: {
+      marginTop: 20,
+      backgroundColor: colors[theme].PRIMARY,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    closeButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+    },
+  });
 
 export default CategorySelectModal;

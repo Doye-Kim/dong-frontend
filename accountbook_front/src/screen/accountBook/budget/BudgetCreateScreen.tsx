@@ -37,6 +37,7 @@ import {getYearMonth, getYearMonthLocalFormat} from '@/utils';
 import Toast from 'react-native-toast-message';
 import {AccountBookTabParamList} from '@/navigations/tab/AccountBookTabNavigator';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import useThemeStore from '@/store/useThemeStore';
 
 type CategoryBudgetCreate = {
   categoryId: number;
@@ -57,6 +58,8 @@ type AccountBookNavigationProp = CompositeNavigationProp<
 >;
 
 const BudgetCreateScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const route = useRoute<BudgetCreateScreenRouteProp>();
   const date = useDateStore(state => state.date);
   const setDate = useDateStore(state => state.setDate);
@@ -233,7 +236,7 @@ const BudgetCreateScreen = () => {
           <View style={styles.totalBudgetContainer}>
             <TextInput
               placeholder="총 예산을 입력하세요"
-              placeholderTextColor={colors.GRAY_600}
+              placeholderTextColor={colors[theme].GRAY_600}
               style={styles.totalBudgetAmount}
               value={inputBudgetValue}
               onChangeText={handleChangeText}
@@ -326,113 +329,114 @@ const BudgetCreateScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-    padding: 20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-  },
-  categoryListContainer: {
-    flex: 1,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  totalBudgetContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  totalBudgetText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  totalBudgetAmount: {
-    fontSize: 35,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  editButton: {
-    padding: 5,
-  },
-  spentAmountContainer: {
-    backgroundColor: colors.ORANGE_200,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 30,
-    marginVertical: 10,
-  },
-  spentAmountText: {
-    fontSize: 17,
-    fontFamily: 'Pretendard-Bold',
-    textAlign: 'right',
-    color: colors.ORANGE_600,
-  },
-  categoryTitle: {
-    fontSize: 17,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-    marginVertical: 10,
-  },
-  addButton: {
-    flexDirection: 'row',
-    backgroundColor: colors.ORANGE_300,
-    width: Dimensions.get('window').width - 40,
-    height: 60,
-    borderRadius: 20,
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.PRIMARY,
-    marginBottom: 2,
-  },
-  bottomModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: 'center',
-    maxHeight: '50%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: colors.WHITE,
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+      padding: 20,
+    },
+    scrollViewContent: {
+      flexGrow: 1,
+    },
+    categoryListContainer: {
+      flex: 1,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    totalBudgetContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginBottom: 15,
+    },
+    totalBudgetText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors['light'].BLACK,
+    },
+    totalBudgetAmount: {
+      fontSize: 35,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    editButton: {
+      padding: 5,
+    },
+    spentAmountContainer: {
+      backgroundColor: colors[theme].ORANGE_200,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      borderRadius: 30,
+      marginVertical: 10,
+    },
+    spentAmountText: {
+      fontSize: 17,
+      fontFamily: 'Pretendard-Bold',
+      textAlign: 'right',
+      color: colors[theme].ORANGE_600,
+    },
+    categoryTitle: {
+      fontSize: 17,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+      marginVertical: 10,
+    },
+    addButton: {
+      flexDirection: 'row',
+      backgroundColor: colors[theme].ORANGE_300,
+      width: Dimensions.get('window').width - 40,
+      height: 60,
+      borderRadius: 20,
+      marginTop: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    addButtonText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].PRIMARY,
+      marginBottom: 2,
+    },
+    bottomModalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    bottomModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      padding: 20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      alignItems: 'center',
+      maxHeight: '50%',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      marginBottom: 20,
+    },
+    closeButton: {
+      marginTop: 20,
+      backgroundColor: colors[theme].PRIMARY,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    closeButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+  });
 
 export default BudgetCreateScreen;

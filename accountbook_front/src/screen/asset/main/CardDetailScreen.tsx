@@ -12,6 +12,7 @@ import {
 } from '@react-navigation/native';
 import {AssetDetailStackParamList} from '@/navigations/stack/asset/AssetDetailStackNavigator';
 import axiosInstance from '@/api/axios';
+import useThemeStore from '@/store/useThemeStore';
 
 type CardDetailScreenNavigationProp = NavigationProp<AssetDetailStackParamList>;
 type CardDetailScreenRouteProp = RouteProp<
@@ -22,6 +23,8 @@ type CardDetailScreenRouteProp = RouteProp<
 type PaymentData = Payment[];
 
 const CardDetailScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const route = useRoute<CardDetailScreenRouteProp>();
   const cardId = route.params.cardId;
   const [accountPaymentData, setAccountPaymentData] =
@@ -34,11 +37,11 @@ const CardDetailScreen = () => {
 
   const fetchPaymentDate = async (cardId: number) => {
     try {
-      const response = await axiosInstance.get(`/payments/cards/${cardId}`)
-    } catch(error) {
+      const response = await axiosInstance.get(`/payments/cards/${cardId}`);
+    } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     if (cardId !== undefined) {
@@ -78,49 +81,50 @@ const CardDetailScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginVertical: 20,
-  },
-  contentContainer: {},
-  headerLeftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bankNicknameText: {
-    fontSize: 22,
-    fontFamily: 'Pretendard-Black',
-    color: colors.BLACK,
-    marginLeft: 15,
-  },
-  manageText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  titleContainer: {
-    marginHorizontal: 20,
-    marginVertical: 25,
-  },
-  bankText: {
-    fontSize: 14,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    marginLeft: 2,
-  },
-  bankBalanceText: {
-    fontSize: 40,
-    fontFamily: 'Pretendard-ExtraBold',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      marginVertical: 20,
+    },
+    contentContainer: {},
+    headerLeftContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    bankNicknameText: {
+      fontSize: 22,
+      fontFamily: 'Pretendard-Black',
+      color: colors[theme].BLACK,
+      marginLeft: 15,
+    },
+    manageText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    titleContainer: {
+      marginHorizontal: 20,
+      marginVertical: 25,
+    },
+    bankText: {
+      fontSize: 14,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      marginLeft: 2,
+    },
+    bankBalanceText: {
+      fontSize: 40,
+      fontFamily: 'Pretendard-ExtraBold',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default CardDetailScreen;

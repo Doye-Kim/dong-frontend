@@ -4,6 +4,7 @@ import AccountBookHeader from '@/components/accountBook/common/AccountBookHeader
 import {MonthYear} from '@/utils/date';
 import DateBox from './DateBox';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 interface CustomCalendarProps {
   monthYear: MonthYear;
@@ -18,7 +19,9 @@ const CustomCalendar = ({
   expenses,
   incomes,
 }: CustomCalendarProps) => {
-  const {month, year, lastDate, firstDOW} = monthYear;
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+  const {lastDate, firstDOW} = monthYear;
   const totalDays = lastDate + firstDOW;
   const remainingDays = totalDays % 7 === 0 ? 0 : 7 - (totalDays % 7);
 
@@ -59,22 +62,23 @@ const CustomCalendar = ({
   );
 };
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 25,
-    marginVertical: 16,
-  },
-  container: {
-    marginTop: 30,
-    marginBottom: 60,
-  },
-  rowSeparator: {
-    borderTopWidth: 6,
-    borderTopColor: colors.GRAY_200,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginHorizontal: 25,
+      marginVertical: 16,
+    },
+    container: {
+      marginTop: 30,
+      marginBottom: 60,
+    },
+    rowSeparator: {
+      borderTopWidth: 6,
+      borderTopColor: colors[theme].GRAY_200,
+    },
+  });
 
 export default CustomCalendar;

@@ -17,6 +17,7 @@ import {postTransferSettlement} from '@/api/settlement';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import {acceptGame} from '@/api/game';
+import useThemeStore from '@/store/useThemeStore';
 
 const clearAllData = async () => {
   console.log('clear');
@@ -28,6 +29,8 @@ const clearAllData = async () => {
 };
 
 const PinCodeScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   // pageNumber === 1: 회원 가입, 등록할 비밀번호 입력
   // pageNumber === 2: 회원 가입, 비밀번호 2차 확인
   // pageNumber === 3: 로그인/송금
@@ -267,54 +270,55 @@ const PinCodeScreen = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  textContainer: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  titleText: {
-    color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-  },
-  text: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 12,
-    color: colors.BLACK,
-    marginTop: 10,
-  },
-  inputContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  circleContainer: {
-    flexDirection: 'row',
-  },
-  circle: {
-    width: 25,
-    height: 25,
-    borderRadius: 15,
-    marginHorizontal: 10,
-  },
-  emptyCircle: {
-    backgroundColor: colors.GRAY_400,
-  },
-  filledCircle: {
-    backgroundColor: colors.PRIMARY,
-  },
-  padContainer: {
-    flex: 2.5,
-  },
-  error: {
-    color: colors.RED_500,
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 15,
-    marginTop: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    textContainer: {
+      flex: 2,
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    titleText: {
+      color: colors[theme].BLACK,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+    },
+    text: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 12,
+      color: colors[theme].BLACK,
+      marginTop: 10,
+    },
+    inputContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    circleContainer: {
+      flexDirection: 'row',
+    },
+    circle: {
+      width: 25,
+      height: 25,
+      borderRadius: 15,
+      marginHorizontal: 10,
+    },
+    emptyCircle: {
+      backgroundColor: colors[theme].GRAY_400,
+    },
+    filledCircle: {
+      backgroundColor: colors[theme].PRIMARY,
+    },
+    padContainer: {
+      flex: 2.5,
+    },
+    error: {
+      color: colors[theme].RED_500,
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 15,
+      marginTop: 10,
+    },
+  });
 export default PinCodeScreen;

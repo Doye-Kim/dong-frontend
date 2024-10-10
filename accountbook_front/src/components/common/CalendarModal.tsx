@@ -1,6 +1,7 @@
 import {Alert, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {CalendarList, LocaleConfig} from 'react-native-calendars';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 LocaleConfig.locales['ko'] = {
   monthNames: [
@@ -67,6 +68,9 @@ const CalendarModal = ({
   marginTop,
   seedOrGame,
 }: calendarModalProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const handleDayPress = day => {
     const today = new Date().toISOString().split('T')[0];
     if (seedOrGame && day.dateString < today) {
@@ -93,7 +97,7 @@ const CalendarModal = ({
 
     while (pastDate.toISOString().split('T')[0] < today) {
       const dateStr = pastDate.toISOString().split('T')[0];
-      dates[dateStr] = {textColor: colors.GRAY_400};
+      dates[dateStr] = {textColor: colors[theme].GRAY_400};
       pastDate.setDate(pastDate.getDate() + 1); // 다음 날짜로 이동
     }
 
@@ -113,10 +117,10 @@ const CalendarModal = ({
       const day = d.getDay();
       if (day === 0) {
         // Sunday
-        dates[dateStr] = {textColor: colors.RED_400};
+        dates[dateStr] = {textColor: colors[theme].RED_400};
       } else if (day === 6) {
         // Saturday
-        dates[dateStr] = {textColor: colors.BLUE_400};
+        dates[dateStr] = {textColor: colors[theme].BLUE_400};
       }
     }
     return dates;
@@ -148,16 +152,16 @@ const CalendarModal = ({
               calendarWidth={350}
               onDayPress={handleDayPress}
               calendarStyle={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: '#ffffff',
               }}
               theme={{
                 textDayFontSize: 14,
                 textDayFontFamily: 'Pretendard-Medium',
                 textMonthFontSize: 20,
                 textMonthFontFamily: 'Pretendard-SemiBold',
-                dayTextColor: colors.BLACK,
-                monthTextColor: colors.BLACK,
-                todayTextColor: colors.PRIMARY,
+                dayTextColor: colors['light'].BLACK,
+                monthTextColor: colors['light'].BLACK,
+                todayTextColor: colors['light'].PRIMARY,
               }}
               markingType={'period'}
               markedDates={{
@@ -166,20 +170,20 @@ const CalendarModal = ({
                 [startDate || '']: {
                   selected: true,
                   startingDay: true,
-                  color: colors.ORANGE_500,
+                  color: colors[theme].ORANGE_500,
                   textColor: 'white',
                 },
                 [endDate || '']: {
                   selected: true,
                   endingDay: true,
-                  color: colors.ORANGE_500,
+                  color: colors[theme].ORANGE_500,
                   textColor: 'white',
                 },
                 ...(startDate && endDate
                   ? getDatesInRange(startDate, endDate).reduce((acc, date) => {
                       acc[date] = {
-                        color: colors.ORANGE_500,
-                        textColor: colors.WHITE,
+                        color: colors[theme].ORANGE_500,
+                        textColor: colors['light'].WHITE,
                       };
                       return acc;
                     }, {} as Record<string, any>)
@@ -206,27 +210,27 @@ const getDatesInRange = (start: string, end: string) => {
   return dates;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlay: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-  },
-  calendarContainer: {
-    width: 350,
-    height: 330,
-    borderRadius: 30,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white', // 모달 배경색
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    overlay: {
+      flex: 1,
+      width: '100%',
+      backgroundColor: 'transparent',
+      alignItems: 'center',
+    },
+    calendarContainer: {
+      width: 350,
+      height: 330,
+      borderRadius: 30,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
 
 export default CalendarModal;

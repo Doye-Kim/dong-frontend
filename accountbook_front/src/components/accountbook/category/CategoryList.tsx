@@ -1,11 +1,15 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {FlatList} from 'react-native';
 import {ResponseCategory} from '@/api/category';
 import useCategoryStore from '@/store/useCategoryStore';
 import CategoryItem from './CategoryItem';
 
 type CategoryListProps = {
-  onCategorySelect?: (categoryId: number, categoryName: string, categoryImageNumber?: number) => void;
+  onCategorySelect?: (
+    categoryId: number,
+    categoryName: string,
+    categoryImageNumber?: number,
+  ) => void;
   renderAddButton?: boolean;
   selectedCategoryIds?: number[];
 };
@@ -26,7 +30,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
 
   const data = useMemo(() => {
     const filteredCategories = categories.filter(
-      cat => !selectedCategoryIds.includes(cat.categoryId)
+      cat => !selectedCategoryIds.includes(cat.categoryId),
     );
     return renderAddButton
       ? [
@@ -55,15 +59,5 @@ const CategoryList: React.FC<CategoryListProps> = ({
     />
   );
 };
-
-const styles = StyleSheet.create({
-  categoryItem: {
-    padding: 10,
-    margin: 5,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-  },
-});
 
 export default CategoryList;

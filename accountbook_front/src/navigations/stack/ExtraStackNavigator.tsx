@@ -9,6 +9,7 @@ import SpendingReportScreen from '@/screen/common/SpendingReportScreen';
 import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
 import NotificationScreen from '@/screen/NotificationScreen';
 import NotificationHeader from '@/components/common/NotificationHeader';
+import useThemeStore from '@/store/useThemeStore';
 
 export type ExtraStackParamList = {
   [extraNavigations.MAIN]: undefined;
@@ -22,15 +23,16 @@ export type ExtraStackParamList = {
 const Stack = createStackNavigator<ExtraStackParamList>();
 
 function ExtraStackNavigator() {
+  const {theme} = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -38,7 +40,7 @@ function ExtraStackNavigator() {
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       <Stack.Screen
         name={extraNavigations.MAIN}

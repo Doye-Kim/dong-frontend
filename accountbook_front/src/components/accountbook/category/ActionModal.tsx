@@ -5,6 +5,7 @@ import {Modal, Portal} from 'react-native-paper';
 import {deleteCategory} from '@/api/category';
 import Toast from 'react-native-toast-message';
 import useCategoryStore from '@/store/useCategoryStore';
+import useThemeStore from '@/store/useThemeStore';
 
 const ActionModal = ({
   isVisible,
@@ -17,6 +18,8 @@ const ActionModal = ({
   onClose: () => void;
   onEdit: () => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const handleEdit = () => {
     onClose();
     onEdit();
@@ -66,42 +69,43 @@ const ActionModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 5,
-  },
-  headerText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 22,
-    color: colors.BLACK,
-    marginBottom: 15,
-  },
-  text: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 20,
-    color: colors.GRAY_800,
-    margin: 5,
-  },
-  contentsView: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 10,
-    shadowColor: colors.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: -4,
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
     },
-    elevation: 8,
-  },
-});
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      margin: 5,
+    },
+    headerText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 22,
+      color: colors[theme].BLACK,
+      marginBottom: 15,
+    },
+    text: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 20,
+      color: colors[theme].GRAY_800,
+      margin: 5,
+    },
+    contentsView: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      padding: 10,
+      shadowColor: colors[theme].BLACK,
+      shadowOffset: {
+        width: 0,
+        height: -4,
+      },
+      elevation: 8,
+    },
+  });
 
 export default ActionModal;

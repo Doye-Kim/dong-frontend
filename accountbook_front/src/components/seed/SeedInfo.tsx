@@ -1,4 +1,5 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {StyleSheet, Text, View} from 'react-native';
 
 interface SeedInfoProps {
@@ -15,6 +16,8 @@ const SeedInfo = ({
   dueDate,
   perPaymentDeposit,
 }: SeedInfoProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <View style={styles.lineContainer}>
@@ -43,29 +46,30 @@ const SeedInfo = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-    backgroundColor: colors.GRAY_300,
-    borderRadius: 20,
-    padding: 10,
-  },
-  lineContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    padding: 15,
-  },
-  title: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-  content: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      marginTop: 50,
+      backgroundColor: colors[theme].GRAY_300,
+      borderRadius: 20,
+      padding: 10,
+    },
+    lineContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      padding: 15,
+    },
+    title: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+    },
+    content: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default SeedInfo;

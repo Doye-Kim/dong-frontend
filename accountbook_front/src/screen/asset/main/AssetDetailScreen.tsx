@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
+import {StyleSheet, Text, View} from 'react-native';
 import {Account, Payment} from '@/types/domain';
 import {assetDetailNavigations, colors} from '@/constants';
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
@@ -12,6 +11,7 @@ import {
 } from '@react-navigation/native';
 import {AssetDetailStackParamList} from '@/navigations/stack/asset/AssetDetailStackNavigator';
 import axiosInstance from '@/api/axios';
+import useThemeStore from '@/store/useThemeStore';
 
 type AssetDetailScreenNavigationProp =
   NavigationProp<AssetDetailStackParamList>;
@@ -38,6 +38,8 @@ type AccountDetailRouteProp = RouteProp<
 >;
 
 const AssetDetailScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const route = useRoute<AccountDetailRouteProp>();
   const assetId = route.params?.accountId;
   const [accountPaymentData, setAccountPaymentData] =
@@ -97,49 +99,50 @@ const AssetDetailScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginVertical: 20,
-  },
-  contentContainer: {},
-  headerLeftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bankNicknameText: {
-    fontSize: 22,
-    fontFamily: 'Pretendard-Black',
-    color: colors.BLACK,
-    marginLeft: 15,
-  },
-  manageText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  titleContainer: {
-    marginHorizontal: 20,
-    marginVertical: 25,
-  },
-  bankText: {
-    fontSize: 14,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    marginLeft: 2,
-  },
-  bankBalanceText: {
-    fontSize: 40,
-    fontFamily: 'Pretendard-ExtraBold',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      marginVertical: 20,
+    },
+    contentContainer: {},
+    headerLeftContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    bankNicknameText: {
+      fontSize: 22,
+      fontFamily: 'Pretendard-Black',
+      color: colors[theme].BLACK,
+      marginLeft: 15,
+    },
+    manageText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    titleContainer: {
+      marginHorizontal: 20,
+      marginVertical: 25,
+    },
+    bankText: {
+      fontSize: 14,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      marginLeft: 2,
+    },
+    bankBalanceText: {
+      fontSize: 40,
+      fontFamily: 'Pretendard-ExtraBold',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default AssetDetailScreen;
