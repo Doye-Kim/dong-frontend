@@ -1,9 +1,10 @@
 import Toast from 'react-native-toast-message';
 import RootNavigator from './src/navigations/root/RootNavigator';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {colors} from '@/constants';
+import SplashScreen from 'react-native-splash-screen';
 const MyTheme = {
   ...DefaultTheme,
   colors: {
@@ -25,6 +26,10 @@ const App = () => {
   //   console.log('fcm', data);
   //   return data;
   // }, []);
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <PaperProvider>
