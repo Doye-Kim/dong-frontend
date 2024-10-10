@@ -149,21 +149,17 @@ const PaymentAddScreen = () => {
 
   const handleTimeChange = (event: DateTimePickerEvent, date?: Date) => {
     if (event.type === 'set' && date) {
-      setSelectedTime(date);
-      if (selectedDate) {
-        const selectedDateObj = new Date(selectedDate);
-        selectedDateObj.setHours(date.getHours(), date.getMinutes());
-        const newPaymentTime = formatInTimeZone(
-          selectedDateObj,
-          'Asia/Seoul',
-          "yyyy-MM-dd'T'HH:mm:ss",
-        );
-
-        setPaymentData(prevPayment => ({
-          ...prevPayment,
-          paymentTime: newPaymentTime,
-        }));
-      }
+      const selectedDateObj = new Date(date);
+      selectedDateObj.setHours(date.getHours(), date.getMinutes());
+      const newPaymentTime = formatInTimeZone(
+        selectedDateObj,
+        'Asia/Seoul',
+        "yyyy-MM-dd'T'HH:mm:ss",
+      );
+      setPaymentData(prevPayment => ({
+        ...prevPayment,
+        paymentTime: newPaymentTime,
+      }));
     }
     setIsOpenTimePicker(false);
   };

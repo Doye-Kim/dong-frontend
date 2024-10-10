@@ -63,6 +63,7 @@ const extraNavigations = {
   BUDGET: 'Budget',
   REPORT: 'Report',
   NOTICE: 'Notification',
+  CATEGORYFILTER: 'CategoryFilter',
 } as const;
 
 const assetNavigations = {

@@ -1,9 +1,10 @@
-import {accountBookNavigations, colors} from '@/constants';
-import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import { accountBookNavigations, colors } from '@/constants';
+import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
+import { Payment } from '@/types/domain';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import useThemeStore from '@/store/useThemeStore';
-import {Payment} from '@/types/domain';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
@@ -19,9 +20,29 @@ const PaymentOption = ({onClose, payment}: PaymentOptionProps) => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation<PaymentOptionNavigationProp>();
+  const setSettlementPayment = useSettlementCreateStore(state => state.setPaymentList);
+
   const handleDividePress = () => {
     onClose(); // 모달을 닫습니다
     navigation.navigate(accountBookNavigations.PAYMENTDIVIDE, {payment});
+  };
+  const handleSettlementPress = () => {
+    onClose();
+    
+    const settlementPayment = {
+      paymentsId: payment.paymentsId,
+      merchantName: payment.merchantName,
+      categoryId: payment.categoryId,
+      categoryName: payment.categoryName,
+      balance: payment.balance,
+      paymentName: payment.paymentName,
+      memo: payment.memo,
+      paymentTime: payment.paymentTime,
+      paymentState: payment.paymentState,
+      paymentType: payment.paymentType,
+    }
+    setSettlementPayment([settlementPayment]);  
+    navigation.navigate(accountBookNavigations.SETTLEMENTFRIENDS);
   };
 
   return (
@@ -34,7 +55,7 @@ const PaymentOption = ({onClose, payment}: PaymentOptionProps) => {
       <TouchableOpacity style={styles.option} onPress={handleDividePress}>
         <Text style={styles.optionText}>내역 분리</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
+      <TouchableOpacity style={styles.option} onPress={handleSettlementPress}>
         <Text style={styles.optionText}>1/N 정산</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option}>
