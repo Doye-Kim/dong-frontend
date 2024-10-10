@@ -81,6 +81,7 @@ const AssetMainScreen = () => {
   useFocusEffect(
     useCallback(() => {
       getSeedData();
+      handleGetAssets();
       console.log('focus');
       return () => {
         console.log('다른 화면으로 넘어갔어요.');
@@ -92,9 +93,9 @@ const AssetMainScreen = () => {
   const sortedAccounts = useMemo(() => {
     if (!assetData) return [];
     return [...assetData.accounts].sort((a, b) => {
-      if (a.hideStatus === 'HIDE_ASSET' && b.hideStatus !== 'HIDE_ASSET')
+      if (a.hideState === 'HIDE_ASSET' && b.hideState !== 'HIDE_ASSET')
         return 1;
-      if (a.hideStatus !== 'HIDE_ASSET' && b.hideStatus === 'HIDE_ASSET')
+      if (a.hideState !== 'HIDE_ASSET' && b.hideState === 'HIDE_ASSET')
         return -1;
       return 0;
     });
@@ -103,9 +104,9 @@ const AssetMainScreen = () => {
   const sortedCards = useMemo(() => {
     if (!assetData) return [];
     return [...assetData.cards].sort((a, b) => {
-      if (a.hideStatus === 'HIDE_ASSET' && b.hideStatus !== 'HIDE_ASSET')
+      if (a.hideState === 'HIDE_ASSET' && b.hideState !== 'HIDE_ASSET')
         return 1;
-      if (a.hideStatus !== 'HIDE_ASSET' && b.hideStatus === 'HIDE_ASSET')
+      if (a.hideState !== 'HIDE_ASSET' && b.hideState === 'HIDE_ASSET')
         return -1;
       return 0;
     });
@@ -115,7 +116,7 @@ const AssetMainScreen = () => {
     () =>
       showHiddenAssets
         ? sortedAccounts
-        : sortedAccounts.filter(account => account.hideStatus !== 'HIDE_ASSET'),
+        : sortedAccounts.filter(account => account.hideState !== 'HIDE_ASSET'),
     [sortedAccounts, showHiddenAssets],
   );
 
@@ -123,7 +124,7 @@ const AssetMainScreen = () => {
     () =>
       showHiddenAssets
         ? sortedCards
-        : sortedCards.filter(card => card.hideStatus !== 'HIDE_ASSET'),
+        : sortedCards.filter(card => card.hideState !== 'HIDE_ASSET'),
     [sortedCards, showHiddenAssets],
   );
 
@@ -136,12 +137,18 @@ const AssetMainScreen = () => {
   }, [seedData]);
 
   useEffect(() => {
-    const totalAmount = filteredAccounts.reduce((acc, account) => {
-      return acc + (account.balance || 0);
-    }, 0);
-
-    setAssetAmount(totalAmount);
-  }, [filteredAccounts]);
+    if (assetData && assetData.accounts) {
+      const totalAmount = assetData.accounts.reduce((acc, account) => {
+        // hideState가 'HIDE_LIST'가 아닌 항목만 합계에 포함
+        if (account.hideState !== 'HIDE_LIST') {
+          return acc + (account.balance || 0);
+        }
+        return acc; // hideState가 'HIDE_LIST'인 경우는 제외
+      }, 0);
+  
+      setAssetAmount(totalAmount);
+    }
+  }, [assetData]); // assetData가 변경될 때만 실행
 
   return (
     <SafeAreaView style={styles.container}>

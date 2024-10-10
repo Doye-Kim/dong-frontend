@@ -1,7 +1,7 @@
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
 import {assetDetailNavigations, colors} from '@/constants';
 import {Card, Payment} from '@/types/domain';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import PaymentDummyData from '@/assets/tempData/Asset/PaymentDummyData.json';
 import {
@@ -27,8 +27,11 @@ const CardDetailScreen = () => {
   const styles = styling(theme);
   const route = useRoute<CardDetailScreenRouteProp>();
   const cardId = route.params.cardId;
+  const [card, setCard] = useState<Card | null>(null);
   const [accountPaymentData, setAccountPaymentData] =
     useState<PaymentData | null>(null);
+  
+  const [totalUse, setTotalUse] = useState<number>(0);
   const navigation = useNavigation<CardDetailScreenNavigationProp>();
 
   const handlePaymentPress = (paymentId: number) => {
@@ -38,6 +41,9 @@ const CardDetailScreen = () => {
   const fetchPaymentDate = async (cardId: number) => {
     try {
       const response = await axiosInstance.get(`/payments/cards/${cardId}`);
+      setCard(response.data.myCardResponse);
+      setAccountPaymentData(response.data.paymentResponseList);
+      
     } catch (error) {
       console.error(error);
     }
@@ -57,6 +63,13 @@ const CardDetailScreen = () => {
     }
   }, [card, navigation]);
 
+  useMemo(() => {
+    if (accountPaymentData && accountPaymentData.length > 0) {
+      const totalBalance = accountPaymentData.reduce((acc, payment) => acc + payment.balance, 0);
+      setTotalUse(totalBalance);
+    }
+  }, [accountPaymentData]);
+
   return (
     <View style={styles.container}>
       {card ? (
@@ -66,12 +79,13 @@ const CardDetailScreen = () => {
               {card.name} {card.cardNumber}
             </Text>
             <Text style={styles.bankBalanceText}>
-              {Number(card.totalUse).toLocaleString()}원
+              {totalUse.toLocaleString()}원
             </Text>
           </View>
           <PaymentItemList
             payments={accountPaymentData || []}
             onPaymentPress={handlePaymentPress}
+            isAssetData={true}
           />
         </View>
       ) : (

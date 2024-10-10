@@ -14,6 +14,7 @@ type GroupedPayments = Record<string, Payment[]>;
 interface PaymentItemListProps {
   payments: Payment[];
   onPaymentPress?: (paymentId: number) => void;
+  isAssetData? : boolean;
 }
 
 const groupPaymentsByDate = (payments: Payment[]) => {
@@ -28,7 +29,7 @@ const groupPaymentsByDate = (payments: Payment[]) => {
   }, {} as GroupedPayments);
 };
 
-const PaymentItemList = ({payments, onPaymentPress}: PaymentItemListProps) => {
+const PaymentItemList = ({payments, onPaymentPress, isAssetData}: PaymentItemListProps) => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
@@ -60,6 +61,7 @@ const PaymentItemList = ({payments, onPaymentPress}: PaymentItemListProps) => {
             key={payment.paymentsId}
             payment={payment}
             onPress={() => handlePress(payment.paymentsId)}
+            isAssetData={isAssetData}
           />
         ))}
       </View>

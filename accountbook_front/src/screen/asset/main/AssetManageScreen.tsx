@@ -1,45 +1,160 @@
+import axiosInstance from '@/api/axios';
 import {ExpandRight} from '@/assets/icons';
 import Toggle from '@/components/common/Toggle';
-import {colors} from '@/constants';
+import {assetDetailNavigations, colors} from '@/constants';
+import {AssetDetailStackParamList} from '@/navigations/stack/asset/AssetDetailStackNavigator';
 import useThemeStore from '@/store/useThemeStore';
 import {Account} from '@/types/domain';
-import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-interface AssetManageScreenProps {}
+type AssetManageScreenRouteProp = RouteProp<
+  AssetDetailStackParamList,
+  typeof assetDetailNavigations.ACCOUNTMANAGE
+>;
 
-const assetData = {
-  accountId: '1151145',
-  bankName: 'HG은행',
-  accountNumber: '11111111111',
-  accountName: '입출금이 자유로운 통장',
-  accountNickname: '월급통장',
-  hideStatus: 'none',
-  depositStatus: '0',
-  accountBalance: '50000',
-};
-
-const AssetManageScreen = ({}: AssetManageScreenProps) => {
+const AssetManageScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute<AssetManageScreenRouteProp>();
   const {theme} = useThemeStore();
   const styles = styling(theme);
-  const [asset, setAsset] = useState<Account | null>(assetData);
+  const [asset, setAsset] = useState<Account | null>(route.params?.account);
+  const [nicknameEditStatus, setNicknameEditStatus] = useState<boolean>(false);
+  const [nickname, setNickname] = useState(asset?.nickname || '');
+
+  useEffect(() => {
+    console.log(asset);
+  }, []);
+
+  const toggleMemoEditStatus = () => {
+    setNicknameEditStatus(prev => !prev);
+  };
+
+  const handleNicknameBlur = () => {
+    setAsset(prev => (prev ? {...prev, nickname} : prev));
+    toggleMemoEditStatus();
+  };
+
+  const toggleHideListStatus = () => {
+    if (!asset) return;
+    let newStatus = '';
+    if (asset.hideState == 'NONE') {
+      newStatus = 'HIDE_LIST';
+    } else if (asset.hideState === 'HIDE_LIST') {
+      newStatus = 'NONE';
+    } else if (asset.hideState === 'HIDE_ASSET') {
+      newStatus = 'HIDE_ALL';
+    } else {
+      newStatus = 'HIDE_ASSET';
+    }
+    setAsset(prev => (prev ? {...prev, hideState: newStatus} : prev));
+  };
+
+  const toggleHideAssetStatus = () => {
+    if (!asset) return;
+    let newStatus = '';
+    if (asset.hideState === 'NONE') {
+      newStatus = 'HIDE_ASSET';
+    } else if (asset.hideState === 'HIDE_ASSET') {
+      newStatus = 'NONE';
+    } else if (asset.hideState === 'HIDE_LIST') {
+      newStatus = 'HIDE_ALL';
+    } else {
+      newStatus = 'HIDE_LIST';
+    }
+    setAsset(prev => (prev ? {...prev, hideState: newStatus} : prev));
+  };
+
+  useEffect(() => {
+    if (asset) {
+      navigation.setOptions({
+        headerTitle: '',
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={handlePressButton}
+            style={styles.manageButton}>
+            <Text style={styles.manageText}>완료</Text>
+          </TouchableOpacity>
+        ),
+      });
+    }
+  }, [asset, navigation]);
+
+  const patchAssetState = async () => {
+    if (!asset || !asset.id) {
+      console.error('Invalid asset or asset ID');
+      return;
+    }
+  
+    try {
+      const response = await axiosInstance.patch(
+        `/assets/accounts/${asset.id}/state?hideState=${asset.hideState}`
+      );
+      console.log('Asset state updated:', response.data);
+    } catch (error) {
+      console.error('Error updating asset state:', error);
+    }
+  };
+
+  const patchAssetNickname = async () => {
+    if (!asset || !asset.id) {
+      console.error('Invalid asset or asset ID');
+      return;
+    }
+  
+    try {
+      const response = await axiosInstance.patch(
+        `/assets/accounts/${asset.id}/nickname?nickname=${encodeURIComponent(asset.nickname)}`
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const handlePressButton = () => {
+    patchAssetState();
+    patchAssetNickname();
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.accountTitleContainer}>
-        <Text style={styles.accountNicknameText}>{asset?.accountNickname}</Text>
+        <Text style={styles.accountNicknameText}>{asset?.nickname}</Text>
         <Text style={styles.accountInfoText}>
-          {asset?.bankName} {asset?.accountNumber}
+          {asset?.name} {asset?.accountNumber}
         </Text>
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.accountNicknameContainer}>
           <Text style={styles.accountNicknameTitle}>계좌별명</Text>
-          <TouchableOpacity style={styles.nicknameSetupContainer}>
-            <Text style={styles.accountNicknameSetup}>
-              {asset?.accountNickname}
-            </Text>
-            <ExpandRight />
-          </TouchableOpacity>
+          {nicknameEditStatus ? (
+            <TextInput
+              value={nickname}
+              onChangeText={setNickname}
+              style={styles.memoInput}
+              onBlur={handleNicknameBlur}
+            />
+          ) : (
+            <>
+              <TouchableOpacity
+                style={styles.nicknameSetupContainer}
+                onPress={toggleMemoEditStatus}>
+                <Text style={styles.accountNicknameSetup}>
+                  {asset?.nickname}
+                </Text>
+                <ExpandRight />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
         <View style={styles.manageContainer}>
           <View style={styles.manageTitleContainer}>
@@ -49,7 +164,15 @@ const AssetManageScreen = ({}: AssetManageScreenProps) => {
             </Text>
           </View>
           <View style={styles.toggleButton}>
-            <Toggle isEnabled={false} toggleSwitch={() => {}} />
+            <Toggle
+              isEnabled={
+                asset?.hideState === 'HIDE_ALL' ||
+                asset?.hideState === 'HIDE_LIST'
+                  ? true
+                  : false
+              }
+              toggleSwitch={toggleHideListStatus}
+            />
           </View>
         </View>
         <View style={styles.manageContainer}>
@@ -58,7 +181,15 @@ const AssetManageScreen = ({}: AssetManageScreenProps) => {
             <Text style={styles.manageTitleInfo}>자산 목록에서 숨겨져요</Text>
           </View>
           <View style={styles.toggleButton}>
-            <Toggle isEnabled={true} toggleSwitch={() => {}} />
+            <Toggle
+              isEnabled={
+                asset?.hideState === 'HIDE_ALL' ||
+                asset?.hideState === 'HIDE_ASSET'
+                  ? true
+                  : false
+              }
+              toggleSwitch={toggleHideAssetStatus}
+            />
           </View>
         </View>
       </View>
@@ -132,6 +263,23 @@ const styling = (theme: 'dark' | 'light') =>
     },
     toggleButton: {
       marginRight: 25,
+    },
+    memoInput: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+      width: 200,
+      borderBottomWidth: 1,
+      paddingVertical: 0,
+      marginVertical: 0,
+    },
+    manageButton: {
+      marginRight: 15,
+    },
+    manageText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
     },
   });
 

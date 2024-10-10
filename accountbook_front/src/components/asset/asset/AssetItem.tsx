@@ -11,6 +11,7 @@ interface AssetItemProps {
   balance?: number;
   isAccount: boolean;
   hide: boolean;
+  hideState: string;
   handleNavigate?: () => void;
 }
 
@@ -21,6 +22,7 @@ const AssetItem = ({
   balance,
   isAccount,
   hide,
+  hideState,
   handleNavigate,
 }: AssetItemProps): React.ReactElement => {
   const {theme} = useThemeStore();
@@ -46,9 +48,15 @@ const AssetItem = ({
           </Text>
         )}
       </View>
-      {isAccount && balance !== undefined && (
-        <Text style={styles.balance}>{balance.toLocaleString()}원</Text>
-      )}
+      {isAccount &&
+        balance !== undefined &&
+        hideState !== 'HIDE_ALL' &&
+        hideState !== 'HIDE_LIST' ?
+        (
+          <Text style={styles.balance}>{balance.toLocaleString()}원</Text>
+        ) :
+        (<Text style={styles.balance}>숨김</Text>)
+        }
     </TouchableOpacity>
   );
 };

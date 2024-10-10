@@ -28,9 +28,10 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
             title={account.nickname}
             balance={account.balance}
             isAccount={true}
+            hideState={account.hideState}
             hide={
-              account.hideStatus === 'HIDE_ASSET' ||
-              account.hideStatus === 'HIDE_ASSET'
+              account.hideState === 'HIDE_ASSET' ||
+              account.hideState === 'HIDE_ALL'
                 ? true
                 : false
             }
