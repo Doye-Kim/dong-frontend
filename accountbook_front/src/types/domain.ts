@@ -22,7 +22,7 @@ type Account = {
   accountNumber: string;
   balance: number;
   bank: string;
-  hideStatus: string;
+  hideState: string;
   depositState: string;
 }
 
@@ -33,7 +33,7 @@ type Card = {
   cardNumber: string;
   cvc: string;
   issuer: string;
-  hideStatus: string;
+  hideState: string;
   depositState: string;
 }
 

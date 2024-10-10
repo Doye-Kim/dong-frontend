@@ -9,6 +9,7 @@ import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScree
 import CardManageScreen from '@/screen/asset/main/CardManageScreen';
 import CardDetailScreen from '@/screen/asset/main/CardDetailScreen';
 import useThemeStore from '@/store/useThemeStore';
+import { Account } from '@/types/domain';
 
 const Stack = createStackNavigator<AssetDetailStackParamList>();
 
@@ -19,7 +20,7 @@ type AssetDetailStackNavigatorProps = StackScreenProps<
 
 export type AssetDetailStackParamList = {
   [assetDetailNavigations.ACCOUNTDETAIL]: {accountId?: number};
-  [assetDetailNavigations.ACCOUNTMANAGE]: {accountId?: number};
+  [assetDetailNavigations.ACCOUNTMANAGE]: {account?: Account};
   [assetDetailNavigations.PAYMENTDETAIL]: {paymentId?: number};
   [assetDetailNavigations.CARDDETAIL]: {cardId?: number};
   [assetDetailNavigations.CARDMANAGE]: {cardId?: number};
@@ -57,7 +58,7 @@ const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate(assetDetailNavigations.ACCOUNTMANAGE, {
-                  accountId: route.params.accountId,
+                  account: route.params.accountId,
                 })
               }
               style={styles.manageButton}>
@@ -78,17 +79,17 @@ const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
         options={({navigation, route}) => ({
           headerTitle: '',
           headerTitleStyle: styles.headerTitle,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(assetDetailNavigations.CARDMANAGE, {
-                  accountId: route.params.cardId,
-                })
-              }
-              style={styles.manageButton}>
-              <Text style={styles.manageText}>관리</Text>
-            </TouchableOpacity>
-          ),
+          // headerRight: () => (
+          //   <TouchableOpacity
+          //     onPress={() =>
+          //       navigation.navigate(assetDetailNavigations.CARDMANAGE, {
+          //         accountId: route.params.cardId,
+          //       })
+          //     }
+          //     style={styles.manageButton}>
+          //     <Text style={styles.manageText}>관리</Text>
+          //   </TouchableOpacity>
+          // ),
         })}
       />
       <Stack.Screen

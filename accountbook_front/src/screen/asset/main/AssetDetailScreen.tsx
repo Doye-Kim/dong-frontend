@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Account, Payment} from '@/types/domain';
 import {assetDetailNavigations, colors} from '@/constants';
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
 import {
   NavigationProp,
   RouteProp,
+  useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
@@ -46,14 +47,24 @@ const AssetDetailScreen = () => {
     useState<PaymentData | null>(null);
   const [asset, setAsset] = useState<Account | null>(null);
   const navigation = useNavigation<AssetDetailScreenNavigationProp>();
-
+  
   const fetchAssetPaymenData = async (assetId: number) => {
     try {
       const response = await axiosInstance.get(`/payments/accounts/${assetId}`);
+      setAsset(response.data.myAccountResponse);
+      setAccountPaymentData(response.data.paymentResponseList);
     } catch (error) {
       console.error(error);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (assetId !== undefined) {
+        fetchAssetPaymenData(assetId);
+      }
+    }, [assetId])
+  );
 
   useEffect(() => {
     if (assetId !== undefined) {
@@ -64,9 +75,24 @@ const AssetDetailScreen = () => {
   useEffect(() => {
     if (asset) {
       navigation.setOptions({
-        headerTitle: asset.accountNickname
-          ? asset.accountNickname
-          : asset.accountName,
+        headerTitle: asset.nickname
+          ? asset.nickname
+          : asset.name,
+      });
+    }
+  }, [asset, navigation]);
+
+  useEffect(() => {
+    if (asset) {
+      navigation.setOptions({
+        headerTitle: asset.nickname ? asset.nickname : asset.name,
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={handleManagePress}
+            style={styles.manageButton}>
+            <Text style={styles.manageText}>관리</Text>
+          </TouchableOpacity>
+        ),
       });
     }
   }, [asset, navigation]);
@@ -75,21 +101,28 @@ const AssetDetailScreen = () => {
     navigation.navigate(assetDetailNavigations.PAYMENTDETAIL, {paymentId});
   };
 
+  const handleManagePress = () => {
+    if (asset) {
+      navigation.navigate(assetDetailNavigations.ACCOUNTMANAGE, { account: asset });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {asset ? (
         <View style={styles.contentContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.bankText}>
-              {asset.bankName} {asset.accountNumber}
+              {asset.bank} {asset.accountNumber}
             </Text>
             <Text style={styles.bankBalanceText}>
-              {Number(asset.accountBalance).toLocaleString()}원
+              {Number(asset.balance).toLocaleString()}원
             </Text>
           </View>
           <PaymentItemList
             payments={accountPaymentData || []}
             onPaymentPress={handlePaymentPress}
+            isAssetData={true}
           />
         </View>
       ) : (
@@ -112,7 +145,9 @@ const styling = (theme: 'dark' | 'light') =>
       paddingHorizontal: 20,
       marginVertical: 20,
     },
-    contentContainer: {},
+    contentContainer: {
+      marginBottom: 100,
+    },
     headerLeftContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -122,11 +157,6 @@ const styling = (theme: 'dark' | 'light') =>
       fontFamily: 'Pretendard-Black',
       color: colors[theme].BLACK,
       marginLeft: 15,
-    },
-    manageText: {
-      fontSize: 16,
-      fontFamily: 'Pretendard-Bold',
-      color: colors[theme].BLACK,
     },
     titleContainer: {
       marginHorizontal: 20,
@@ -141,6 +171,14 @@ const styling = (theme: 'dark' | 'light') =>
     bankBalanceText: {
       fontSize: 40,
       fontFamily: 'Pretendard-ExtraBold',
+      color: colors[theme].BLACK,
+    },
+    manageButton: {
+      marginRight: 15,
+    },
+    manageText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Regular',
       color: colors[theme].BLACK,
     },
   });

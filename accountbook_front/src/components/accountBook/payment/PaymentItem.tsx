@@ -8,9 +8,10 @@ import useThemeStore from '@/store/useThemeStore';
 interface PaymentItemProps {
   payment: Payment;
   onPress?: (paymentId: number) => void;
+  isAssetData?: boolean;
 }
 
-const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
+const PaymentItem = ({payment, onPress, isAssetData}: PaymentItemProps) => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const {
@@ -43,7 +44,7 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
             <Text
               style={[
                 styles.merchantName,
-                paymentState === 'EXCLUDE' && styles.excludeItem,
+                paymentState === 'EXCLUDE' && !isAssetData && styles.excludeItem,
               ]}>
               {merchantName}
             </Text>
@@ -59,7 +60,7 @@ const PaymentItem = ({payment, onPress}: PaymentItemProps) => {
             <Text
               style={[
                 styles.balance,
-                paymentState === 'EXCLUDE' && styles.excludeItem,
+                paymentState === 'EXCLUDE' && !isAssetData && styles.excludeItem,
               ]}>
               {payment.paymentType === 'INCOME' ? '+ ' : '- '}
               {balance.toLocaleString()}원
