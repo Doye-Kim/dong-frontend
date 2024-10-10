@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CategoryIcon from '@/components/common/CategoryIcon';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 interface IconListProps {
   onPress: (iconId: number) => void;
@@ -12,6 +13,8 @@ const data = [
 ];
 
 const IconList = ({onPress}: IconListProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const renderItem = ({item}: {item: number}) => (
     <TouchableOpacity style={{margin: 4}} onPress={() => onPress(item)}>
       <CategoryIcon categoryNumber={item} size={40} />
@@ -31,20 +34,20 @@ const IconList = ({onPress}: IconListProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {
-    marginBottom: 5,
-  },
-  headerText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_500,
-    fontSize: 15,
-    marginBottom: 5,
-  },
-  flatListContainer: {
-    // flexGrow: 1,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    header: {
+      marginBottom: 5,
+    },
+    headerText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_500,
+      fontSize: 15,
+      marginBottom: 5,
+    },
+    flatListContainer: {
+      // flexGrow: 1,
+    },
+  });
 
 export default IconList;

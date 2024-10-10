@@ -22,6 +22,7 @@ import NotificationScreen from '@/screen/NotificationScreen';
 import NotificationHeader from '@/components/common/NotificationHeader';
 import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 import {AccountInfo} from '@/api/asset';
+import useThemeStore from '@/store/useThemeStore';
 
 export type AccountBookStackParamList = {
   [accountBookNavigations.TABBAR]:
@@ -53,15 +54,16 @@ export type AccountBookStackParamList = {
 const Stack = createStackNavigator();
 
 const AccountBookStackNavigator = () => {
+  const {theme} = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -69,7 +71,7 @@ const AccountBookStackNavigator = () => {
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       <Stack.Screen
         name={accountBookNavigations.TABBAR}

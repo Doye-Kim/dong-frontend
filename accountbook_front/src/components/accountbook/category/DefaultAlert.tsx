@@ -1,7 +1,10 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
 
 const DefaultAlert = ({isVisible}: {isVisible: boolean}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <Modal
       animationType="fade"
@@ -20,22 +23,23 @@ const DefaultAlert = ({isVisible}: {isVisible: boolean}) => {
     </Modal>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  textContainer: {
-    backgroundColor: colors.RED_500,
-    justifyContent: 'center',
-    margin: 20,
-    padding: 10,
-    borderRadius: 20,
-  },
-  text: {
-    fontFamily: 'Pretendard-Bold',
-    color: colors.WHITE,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    textContainer: {
+      backgroundColor: colors[theme].RED_500,
+      justifyContent: 'center',
+      margin: 20,
+      padding: 10,
+      borderRadius: 20,
+    },
+    text: {
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].WHITE,
+    },
+  });
 export default DefaultAlert;

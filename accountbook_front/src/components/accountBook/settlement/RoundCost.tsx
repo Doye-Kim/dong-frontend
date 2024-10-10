@@ -4,6 +4,7 @@ import {ResponsePayment} from '@/screen/accountBook/settlement/SettlementPayment
 import useSettlementCreateStore, {
   SettlementUser,
 } from '@/store/useSettlementCreate';
+import useThemeStore from '@/store/useThemeStore';
 import {useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -28,6 +29,9 @@ const RoundCost = ({
   paymentData: ResponsePayment;
   userData: SettlementUser[];
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   let distributedCost = Math.floor(paymentData.balance / userData.length);
   let extraAmount = paymentData.balance - distributedCost * userData.length;
 
@@ -146,59 +150,59 @@ const RoundCost = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: Dimensions.get('screen').width - 40,
-    height: Dimensions.get('screen').height - 300,
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: colors.PRIMARY,
-    padding: 10,
-  },
-  titleContainer: {
-    borderBottomWidth: 1,
-    borderColor: colors.GRAY_600,
-    padding: 10,
-  },
-  merchantNameText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.BLACK,
-  },
-  balanceText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 5,
-  },
-  userContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  balanceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    minWidth: 100,
-  },
-  nameText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 18,
-    color: colors.BLACK,
-    margin: 10,
-  },
-  userBalanceText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 22,
-    paddingLeft: 10,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      width: Dimensions.get('screen').width - 40,
+      height: Dimensions.get('screen').height - 300,
+      borderRadius: 30,
+      borderWidth: 2,
+      borderColor: colors[theme].PRIMARY,
+      padding: 10,
+    },
+    titleContainer: {
+      borderBottomWidth: 1,
+      borderColor: colors[theme].GRAY_600,
+      padding: 10,
+    },
+    merchantNameText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].BLACK,
+    },
+    balanceText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    infoContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 5,
+    },
+    userContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    balanceContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      minWidth: 100,
+    },
+    nameText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+      margin: 10,
+    },
+    userBalanceText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 22,
+      paddingLeft: 10,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default RoundCost;

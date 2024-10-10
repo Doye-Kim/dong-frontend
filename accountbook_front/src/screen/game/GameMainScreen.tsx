@@ -17,8 +17,11 @@ import {GameStackParamList} from '@/navigations/stack/GameStackNavigator';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ResponseGame, getGames} from '@/api/game';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const GameMainScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -96,22 +99,23 @@ const GameMainScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  headerText: {
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-    fontSize: 18,
-    paddingVertical: 10,
-  },
-  noneText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_600,
-    fontSize: 16,
-    paddingVertical: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingHorizontal: 20,
+    },
+    headerText: {
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+      fontSize: 18,
+      paddingVertical: 10,
+    },
+    noneText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_600,
+      fontSize: 16,
+      paddingVertical: 10,
+    },
+  });
 export default GameMainScreen;

@@ -9,6 +9,14 @@ import {
   WalletFillIcon,
   GameFillIcon,
   GameIcon,
+  HouseHoldIconDark,
+  HouseHoldFillIconDark,
+  MeatballMenuIconDark,
+  MeatballMenuFillIconDark,
+  WalletIconDark,
+  WalletFillIconDark,
+  GameFillIconDark,
+  GameIconDark,
 } from '@/assets/icons';
 import {View, StyleSheet} from 'react-native';
 
@@ -28,10 +36,13 @@ import {
 import ExtraStackNavigator from '../stack/ExtraStackNavigator';
 import AssetStackNavigatior from '../stack/asset/AssetStackNavigatior';
 import GameStackNavigator from '../stack/GameStackNavigator';
+import useThemeStore from '@/store/useThemeStore';
 
 const Tab = createBottomTabNavigator();
 
 const Navbar = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -41,16 +52,40 @@ const Navbar = () => {
             let Icon;
             switch (route.name) {
               case mainNavigations.ACCOUNTBOOK:
-                Icon = focused ? HouseHoldFillIcon : HouseHoldIcon;
+                Icon = focused
+                  ? theme === 'dark'
+                    ? HouseHoldFillIconDark
+                    : HouseHoldFillIcon
+                  : theme === 'dark'
+                  ? HouseHoldIconDark
+                  : HouseHoldIcon;
                 break;
               case mainNavigations.ASSET:
-                Icon = focused ? WalletFillIcon : WalletIcon;
+                Icon = focused
+                  ? theme === 'dark'
+                    ? WalletFillIconDark
+                    : WalletFillIcon
+                  : theme === 'dark'
+                  ? WalletIconDark
+                  : WalletIcon;
                 break;
               case mainNavigations.GAME:
-                Icon = focused ? GameFillIcon : GameIcon;
+                Icon = focused
+                  ? theme === 'dark'
+                    ? GameFillIconDark
+                    : GameFillIcon
+                  : theme === 'dark'
+                  ? GameIconDark
+                  : GameIcon;
                 break;
               case mainNavigations.EXTRA:
-                Icon = focused ? MeatballMenuFillIcon : MeatballMenuIcon;
+                Icon = focused
+                  ? theme === 'dark'
+                    ? MeatballMenuFillIconDark
+                    : MeatballMenuFillIcon
+                  : theme === 'dark'
+                  ? MeatballMenuIconDark
+                  : MeatballMenuIcon;
                 break;
               default:
                 Icon = HouseHoldIcon;
@@ -181,23 +216,24 @@ const Navbar = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  tabBarStyle: {
-    backgroundColor: colors.WHITE,
-    height: 70,
-    justifyContent: 'center',
-    paddingBottom: 10,
-    paddingTop: 10,
-    display: 'flex',
-  },
-  tabBarText: {
-    fontSize: 12,
-    fontFamily: 'Pretendard-Light',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    tabBarStyle: {
+      backgroundColor: colors[theme].WHITE,
+      height: 70,
+      justifyContent: 'center',
+      paddingBottom: 10,
+      paddingTop: 10,
+      display: 'flex',
+    },
+    tabBarText: {
+      fontSize: 12,
+      fontFamily: 'Pretendard-Light',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default Navbar;

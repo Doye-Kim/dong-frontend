@@ -8,6 +8,7 @@ import useDateStore from '@/store/useDateStore';
 import axiosInstance from '@/api/axios';
 import {getDateWithSeparator} from '@/utils';
 import {useFocusEffect} from '@react-navigation/native';
+import useThemeStore from '@/store/useThemeStore';
 
 type CategoryBudget = {
   categoryId: number;
@@ -18,6 +19,8 @@ type CategoryBudget = {
 };
 
 const BudgetMainScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const date = useDateStore(state => state.date);
   const [fetchedYearMonth, setFetchedYearMonth] = useState<string>('');
   const [budgetId, setBudgetId] = useState<number>();
@@ -58,14 +61,14 @@ const BudgetMainScreen = () => {
   useFocusEffect(
     useCallback(() => {
       const yearMonth = getDateWithSeparator(date, '-').slice(0, 7);
-      
+
       // 이미 해당 yearMonth에 대해 데이터를 가져왔다면 요청하지 않음
       if (yearMonth !== fetchedYearMonth) {
         console.log(yearMonth);
         fetchBudget(yearMonth);
         setFetchedYearMonth(yearMonth);
       }
-    }, [date])
+    }, [date]),
   );
 
   return (
@@ -85,11 +88,12 @@ const BudgetMainScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+  });
 
 export default BudgetMainScreen;

@@ -1,28 +1,31 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import hexToRgba from '@/utils/hexToRgba';
 import {StyleSheet, View} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
-import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
+import {LineChartData} from 'react-native-chart-kit/dist/line-chart/LineChart';
 
-const chartConfig = {
-  backgroundColor: colors.WHITE,
-  backgroundGradientFrom: colors.WHITE,
-  backgroundGradientTo: colors.WHITE,
-  color: () => {
-    hexToRgba(colors.BLACK);
-  },
-  style: {
-    borderRadius: 16,
-  },
-  propsForLabels: {
-    fontSize: 12,
-    fontFamily: 'Pretendard-Medium',
-  },
-  propsForBackgroundLines: {
-    stroke: colors.GRAY_400,
-  },
-};
 const LineChartByCategory = ({chartData}: {chartData: LineChartData}) => {
+  const {theme} = useThemeStore();
+
+  const chartConfig = {
+    backgroundColor: colors[theme].WHITE,
+    backgroundGradientFrom: colors[theme].WHITE,
+    backgroundGradientTo: colors[theme].WHITE,
+    color: () => {
+      hexToRgba(colors[theme].BLACK);
+    },
+    style: {
+      borderRadius: 16,
+    },
+    propsForLabels: {
+      fontSize: 12,
+      fontFamily: 'Pretendard-Medium',
+    },
+    propsForBackgroundLines: {
+      stroke: colors[theme].GRAY_400,
+    },
+  };
   return (
     <View style={styles.chartContainer}>
       <LineChart
@@ -39,7 +42,7 @@ const LineChartByCategory = ({chartData}: {chartData: LineChartData}) => {
           return {
             r: value === null ? 0 : '5', // 데이터가 null이면 점 크기를 0으로 설정
             strokeWidth: '2',
-            stroke: colors.PRIMARY,
+            stroke: colors[theme].PRIMARY,
           };
         }}
       />
@@ -56,7 +59,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     paddingLeft: 20,
     paddingRight: 20,
-    ...chartConfig.style,
   },
 });
 

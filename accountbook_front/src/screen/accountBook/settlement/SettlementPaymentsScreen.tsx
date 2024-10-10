@@ -3,10 +3,11 @@ import CustomButton from '@/components/common/CustomButton';
 import {accountBookNavigations, colors} from '@/constants';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
+import useThemeStore from '@/store/useThemeStore';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 export type ResponsePayment = {
   paymentsId: number;
@@ -21,6 +22,8 @@ export type ResponsePayment = {
   paymentType: 'INCOME' | 'EXPENSE';
 };
 const SettlementPaymentsScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [selectedPayments, setSelectedPayments] = useState<ResponsePayment[]>(
     [],
   );
@@ -73,20 +76,22 @@ const SettlementPaymentsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  text: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+      backgroundColor: colors[theme].WHITE,
+    },
+    text: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+      marginBottom: 20,
+    },
+    buttonContainer: {
+      justifyContent: 'flex-end',
+    },
+  });
 export default SettlementPaymentsScreen;

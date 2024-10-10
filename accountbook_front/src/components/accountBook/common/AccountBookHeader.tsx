@@ -1,6 +1,12 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
-import {FilterButton, LeftArrowIcon, RightArrowIcon} from '@/assets/icons';
+import {
+  FilterButton,
+  LeftArrowIcon,
+  LeftArrowIconDark,
+  RightArrowIcon,
+  RightArrowIconDark,
+} from '@/assets/icons';
 import {
   accountBookHeaderNavigations,
   accountBookNavigations,
@@ -10,11 +16,12 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import useDateStore from '@/store/useDateStore';
-import {getMonthYearDetails, getNewMonthYear} from '@/utils';
+import {getMonthYearDetails} from '@/utils';
+import useThemeStore from '@/store/useThemeStore';
 
-interface CustomCalendarHeaderProps {}
-
-const AccountBookHeader = ({}: CustomCalendarHeaderProps) => {
+const AccountBookHeader = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const date = useDateStore(state => state.date);
   const updateMonth = useDateStore(state => state.updateMonth);
 
@@ -33,12 +40,14 @@ const AccountBookHeader = ({}: CustomCalendarHeaderProps) => {
             styles.arrowButton,
             pressed && styles.buttonPressed,
           ]}>
-          <LeftArrowIcon />
+          {theme === 'dark' ? <LeftArrowIconDark /> : <LeftArrowIcon />}
         </Pressable>
         {year === getMonthYearDetails(new Date()).year ? (
           <Text style={styles.monthText}>{month}월</Text>
         ) : (
-          <Text style={styles.monthText}>{year}년 {month}월</Text>
+          <Text style={styles.monthText}>
+            {year}년 {month}월
+          </Text>
         )}
 
         <Pressable
@@ -47,7 +56,7 @@ const AccountBookHeader = ({}: CustomCalendarHeaderProps) => {
             styles.arrowButton,
             pressed && styles.buttonPressed,
           ]}>
-          <RightArrowIcon />
+          {theme === 'dark' ? <RightArrowIconDark /> : <RightArrowIcon />}
         </Pressable>
       </View>
       <View style={styles.rightContainer}>
@@ -80,60 +89,61 @@ const AccountBookHeader = ({}: CustomCalendarHeaderProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: colors.WHITE,
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  arrowButton: {
-    padding: 0,
-  },
-  monthText: {
-    fontSize: 28,
-    width: 'auto',
-    marginHorizontal: 10,
-    textAlign: 'center',
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  filterButton: {
-    padding: 5,
-    marginRight: 15,
-  },
-  iconButton: {
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: 35,
-  },
-  iconText: {
-    color: colors.ORANGE_600,
-    fontSize: 16,
-    lineHeight: 30,
-    textAlignVertical: 'center',
-    fontWeight: 'bold',
-    fontFamily: 'Pretendard-Medium',
-  },
-  buttonPressed: {
-    opacity: 0.7,
-  },
-  iconButtonPressed: {
-    backgroundColor: colors.ORANGE_400,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    headerContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      backgroundColor: colors[theme].WHITE,
+    },
+    leftContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    rightContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    arrowButton: {
+      padding: 0,
+    },
+    monthText: {
+      fontSize: 28,
+      width: 'auto',
+      marginHorizontal: 10,
+      textAlign: 'center',
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    filterButton: {
+      padding: 5,
+      marginRight: 15,
+    },
+    iconButton: {
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 80,
+      height: 35,
+    },
+    iconText: {
+      color: colors[theme].ORANGE_600,
+      fontSize: 16,
+      lineHeight: 30,
+      textAlignVertical: 'center',
+      fontWeight: 'bold',
+      fontFamily: 'Pretendard-Medium',
+    },
+    buttonPressed: {
+      opacity: 0.7,
+    },
+    iconButtonPressed: {
+      backgroundColor: colors[theme].ORANGE_400,
+    },
+  });
 
 export default AccountBookHeader;

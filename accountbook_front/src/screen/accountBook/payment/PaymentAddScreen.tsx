@@ -22,8 +22,11 @@ import DateTimePicker, {
 import {useNavigation} from '@react-navigation/native';
 import CategorySelectModal from '@/components/accountBook/common/CategorySelectModal';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const PaymentAddScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation();
   const [balanceEditStatus, setBalanceEditStatus] = useState<boolean>(true);
   const [isOpenCalendar, setIsOpneCalendar] = useState<boolean>(false);
@@ -204,7 +207,7 @@ const PaymentAddScreen = () => {
               <TextInput
                 style={styles.headerTitle}
                 placeholder="상품 이름을 입력하세요"
-                placeholderTextColor={colors.GRAY_500}
+                placeholderTextColor={colors[theme].GRAY_500}
                 onChangeText={text =>
                   setPaymentData({...paymentData, merchantName: text})
                 }
@@ -214,7 +217,7 @@ const PaymentAddScreen = () => {
                 {balanceEditStatus ? (
                   <TextInput
                     placeholder="금액을 입력하세요"
-                    placeholderTextColor={colors.GRAY_600}
+                    placeholderTextColor={colors[theme].GRAY_600}
                     style={styles.amountTextInput}
                     onChangeText={setInputBalanceValue}
                     onBlur={handleBlur}
@@ -271,7 +274,10 @@ const PaymentAddScreen = () => {
                       {getDateLocaleFormat(paymentData.paymentTime)}
                     </Text>
                   </TouchableOpacity>
-                  <Text style={{color: colors.BLACK, fontSize: 15}}> | </Text>
+                  <Text style={{color: colors[theme].BLACK, fontSize: 15}}>
+                    {' '}
+                    |{' '}
+                  </Text>
                   <TouchableOpacity onPress={toggleTimePicker}>
                     <Text style={styles.detailValue}>
                       {getTimeLocalFormat(paymentData.paymentTime)}
@@ -298,7 +304,7 @@ const PaymentAddScreen = () => {
                 <TextInput
                   style={styles.memoInput}
                   placeholder="메모를 입력하세요"
-                  placeholderTextColor={colors.GRAY_400}
+                  placeholderTextColor={colors[theme].GRAY_400}
                   onChangeText={text =>
                     setPaymentData({...paymentData, memo: text})
                   }
@@ -349,140 +355,141 @@ const PaymentAddScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  headerBelow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  backButton: {
-    padding: 8,
-    width: 60,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    padding: 0,
-  },
-  moreButton: {
-    padding: 8,
-  },
-  amountText: {
-    fontSize: 32,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    marginRight: 10,
-  },
-  amountTextInput: {
-    fontSize: 24,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    padding: 0,
-  },
-  editButton: {
-    padding: 10,
-  },
-  detailsContainer: {
-    paddingHorizontal: 16,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    height: 40,
-  },
-  detailLabel: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_600,
-  },
-  detailValue: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  dateTimeContainer: {
-    flexDirection: 'row',
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-  },
-  categoryButton: {
-    height: 30,
-    width: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.GRAY_300,
-    marginLeft: 8,
-  },
-  selectedButton: {
-    borderColor: colors.PRIMARY,
-  },
-  categoryButtonText: {
-    color: colors.GRAY_600,
-    fontSize: 14,
-    bottom: 1,
-  },
-  selectedButtonText: {
-    color: colors.PRIMARY,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  memoInput: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    width: '80%',
-    textAlign: 'right',
-    padding: 0,
-  },
-  buttonContainer: {
-    padding: 16,
-  },
-  saveButton: {
-    backgroundColor: colors.PRIMARY,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: colors.WHITE,
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-  },
-  errorText: {
-    fontSize: 14,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.RED_500,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  loadingText: {
-    fontSize: 30,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    header: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    headerBelow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    backButton: {
+      padding: 8,
+      width: 60,
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      padding: 0,
+    },
+    moreButton: {
+      padding: 8,
+    },
+    amountText: {
+      fontSize: 32,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      marginRight: 10,
+    },
+    amountTextInput: {
+      fontSize: 24,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      padding: 0,
+    },
+    editButton: {
+      padding: 10,
+    },
+    detailsContainer: {
+      paddingHorizontal: 16,
+    },
+    detailItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      height: 40,
+    },
+    detailLabel: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_600,
+    },
+    detailValue: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    dateTimeContainer: {
+      flexDirection: 'row',
+    },
+    categoryContainer: {
+      flexDirection: 'row',
+    },
+    categoryButton: {
+      height: 30,
+      width: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors[theme].GRAY_300,
+      marginLeft: 8,
+    },
+    selectedButton: {
+      borderColor: colors[theme].PRIMARY,
+    },
+    categoryButtonText: {
+      color: colors[theme].GRAY_600,
+      fontSize: 14,
+      bottom: 1,
+    },
+    selectedButtonText: {
+      color: colors[theme].PRIMARY,
+    },
+    switchContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 12,
+    },
+    memoInput: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      width: '80%',
+      textAlign: 'right',
+      padding: 0,
+    },
+    buttonContainer: {
+      padding: 16,
+    },
+    saveButton: {
+      backgroundColor: colors[theme].PRIMARY,
+      padding: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    saveButtonText: {
+      color: colors[theme].WHITE,
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+    },
+    errorText: {
+      fontSize: 14,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].RED_500,
+      textAlign: 'center',
+      marginTop: 10,
+    },
+    loadingText: {
+      fontSize: 30,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default PaymentAddScreen;

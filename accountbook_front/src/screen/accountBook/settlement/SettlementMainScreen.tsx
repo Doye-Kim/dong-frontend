@@ -12,7 +12,7 @@ import {
 } from '@/utils';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 
 import useDateStore from '@/store/useDateStore';
 
@@ -25,8 +25,11 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 const SettlementMainScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [settlementData, setSettlementData] = useState<ResponseSettlements[]>();
   const [ongoingData, setOnGoingData] = useState<ResponseSettlements[]>();
   const [completeData, setCompleteData] = useState<ResponseSettlements[]>();
@@ -111,34 +114,36 @@ const SettlementMainScreen = () => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 5,
-    borderBottomWidth: 0.8,
-    borderColor: colors.GRAY_600,
-  },
-  listContainer: {
-    marginHorizontal: 10,
-    marginBottom: 70,
-  },
-  labelText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    fontSize: 14,
-  },
-  infoText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-    textAlign: 'center',
-    margin: 20,
-    fontSize: 16,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      backgroundColor: colors[theme].WHITE,
+    },
+    titleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      paddingBottom: 5,
+      borderBottomWidth: 0.8,
+      borderColor: colors[theme].GRAY_600,
+    },
+    listContainer: {
+      marginHorizontal: 10,
+      marginBottom: 70,
+    },
+    labelText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      fontSize: 14,
+    },
+    infoText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+      textAlign: 'center',
+      margin: 20,
+      fontSize: 16,
+    },
+  });
 export default SettlementMainScreen;

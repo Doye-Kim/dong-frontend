@@ -1,4 +1,5 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {useEffect, useState} from 'react';
 import {Animated, Easing, StyleSheet, TouchableOpacity} from 'react-native';
 
@@ -9,6 +10,7 @@ const Toggle = ({
   isEnabled: boolean;
   toggleSwitch: () => void;
 }) => {
+  const {theme} = useThemeStore();
   const [animatedValue] = useState(new Animated.Value(isEnabled ? 1 : 0));
   useEffect(() => {
     Animated.timing(animatedValue, {
@@ -24,7 +26,7 @@ const Toggle = ({
     outputRange: [3, 28],
   });
 
-  const color = isEnabled ? colors.PRIMARY : colors.GRAY_400;
+  const color = isEnabled ? colors[theme].PRIMARY : colors[theme].GRAY_400;
   return (
     <TouchableOpacity
       onPress={toggleSwitch}
@@ -34,7 +36,7 @@ const Toggle = ({
           transform: [{translateX}],
           width: 20,
           height: 20,
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
           borderRadius: 99,
         }}
       />

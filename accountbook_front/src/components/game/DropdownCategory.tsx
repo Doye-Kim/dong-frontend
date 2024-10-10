@@ -1,4 +1,5 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {category} from '@/utils/categories';
 import {
   TouchableOpacity,
@@ -19,6 +20,8 @@ const DropdownCategory: React.FC<DropdownCategoryProps> = ({
   onSelect,
   onClose,
 }: DropdownCategoryProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   if (!isVisible) return null;
 
   return (
@@ -43,27 +46,28 @@ const DropdownCategory: React.FC<DropdownCategoryProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  dropdownMenu: {
-    position: 'absolute',
-    bottom: 80,
-    height: 200,
-    left: 10,
-    width: Dimensions.get('window').width - 60,
-    backgroundColor: colors.WHITE,
-    borderRadius: 25,
-    elevation: 5,
-    zIndex: 10,
-  },
-  dropdownItem: {
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  dropdownText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    dropdownMenu: {
+      position: 'absolute',
+      bottom: 80,
+      height: 200,
+      left: 10,
+      width: Dimensions.get('window').width - 60,
+      backgroundColor: colors[theme].WHITE,
+      borderRadius: 25,
+      elevation: 5,
+      zIndex: 10,
+    },
+    dropdownItem: {
+      paddingVertical: 10,
+      alignItems: 'center',
+    },
+    dropdownText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default DropdownCategory;

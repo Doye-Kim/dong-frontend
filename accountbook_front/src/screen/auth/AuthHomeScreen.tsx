@@ -4,6 +4,7 @@ import {colors} from '@/constants/colors';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
 import {authNavigations} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 type AuthHomeScreenProps = {
   navigation: StackNavigationProp<
@@ -12,6 +13,8 @@ type AuthHomeScreenProps = {
   >;
 };
 const AuthHomeScreen = ({navigation}: AuthHomeScreenProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -31,32 +34,33 @@ const AuthHomeScreen = ({navigation}: AuthHomeScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 50,
-  },
-  imageContainer: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  titleContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 28,
-    color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginVertical: 50,
+    },
+    imageContainer: {
+      flex: 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    titleContainer: {
+      flex: 1,
+    },
+    title: {
+      fontSize: 28,
+      color: colors[theme].BLACK,
+      fontFamily: 'Pretendard-Bold',
+    },
+    buttonContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+  });
 export default AuthHomeScreen;

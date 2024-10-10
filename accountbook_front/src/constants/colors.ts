@@ -1,4 +1,4 @@
-const colors = {
+const common = {
   PRIMARY: '#FFA000',
   ORANGE_200: '#FFF0C8',
   ORANGE_300: '#FFDC96',
@@ -9,15 +9,6 @@ const colors = {
   RED_400: '#DD8080',
   RED_500: '#ff5f5f',
   BLUE_400: '#9DC1E3',
-  WHITE: '#fafafa',
-  GRAY_200: '#F5F5F5',
-  GRAY_300: '#EEEEEE',
-  GRAY_400: '#E0E0E0',
-  GRAY_500: '#BDBDBD',
-  GRAY_600: '#9E9E9E',
-  GRAY_700: '#757575',
-  GRAY_800: '#616161',
-  BLACK: '#424242',
 
   CATEGORY_0: '#FFC998', // 식비
   CATEGORY_1: '#AF8968', // 카페
@@ -44,5 +35,34 @@ const colors = {
   CATEGORY_22: '#B3E39D', // 꽃
   CATEGORY_23: '#9DC1E3', // 운동
   CATEGORY_24: '#A4A4A4', // 기타
+  CATEGORY_25: '#D9D9D9', // 송금
 };
+
+const colors = {
+  light: {
+    WHITE: '#fafafa',
+    GRAY_200: '#F5F5F5',
+    GRAY_300: '#EEEEEE',
+    GRAY_400: '#E0E0E0',
+    GRAY_500: '#BDBDBD',
+    GRAY_600: '#9E9E9E',
+    GRAY_700: '#757575',
+    GRAY_800: '#616161',
+    BLACK: '#424242',
+    ...common,
+  },
+  dark: {
+    WHITE: '#424242',
+    GRAY_200: '#616161',
+    GRAY_300: '#757575',
+    GRAY_400: '#9E9E9E',
+    GRAY_500: '#BDBDBD',
+    GRAY_600: '#E0E0E0',
+    GRAY_700: '#EEEEEE',
+    GRAY_800: '#F5F5F5',
+    BLACK: '#fafafa',
+    ...common,
+  },
+} as const;
+
 export {colors};

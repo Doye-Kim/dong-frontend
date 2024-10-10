@@ -1,9 +1,8 @@
 import React from 'react';
 import {colors} from '@/constants';
-import {Dimensions, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {CalendarList, DateData} from 'react-native-calendars';
-
-const { width: screenWidth } = Dimensions.get('window');
+import useThemeStore from '@/store/useThemeStore';
 
 const DatePickCalendar = ({
   isVisible,
@@ -16,6 +15,8 @@ const DatePickCalendar = ({
   onClose: () => void;
   setSelectedDate: (date: string) => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const handleDayPress = (day: DateData) => {
     setSelectedDate(day.dateString);
     onClose();
@@ -51,9 +52,9 @@ const DatePickCalendar = ({
               textDayFontFamily: 'Pretendard-Medium',
               textMonthFontSize: 20,
               textMonthFontFamily: 'Pretendard-SemiBold',
-              dayTextColor: colors.BLACK,
-              monthTextColor: colors.BLACK,
-              todayTextColor: colors.PRIMARY,
+              dayTextColor: colors[theme].BLACK,
+              monthTextColor: colors[theme].BLACK,
+              todayTextColor: colors[theme].PRIMARY,
             }}
           />
         </View>
@@ -62,30 +63,31 @@ const DatePickCalendar = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
-  },
-  modalBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  modalContainer: {
-    width: 350,
-    height: 400,
-    borderRadius: 20,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.WHITE,
-    padding: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+    },
+    modalBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    modalContainer: {
+      width: 350,
+      height: 400,
+      borderRadius: 20,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors[theme].WHITE,
+      padding: 10,
+    },
+  });
 
 export default DatePickCalendar;

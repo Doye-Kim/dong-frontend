@@ -6,6 +6,7 @@ import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 import JoinScreen from '@/screen/auth/JoinScreen';
 import SelectAssetsScreen from '@/screen/auth/SelectAssetsScreen';
 import {authNavigations, colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 export type AuthStackParamList = {
   [authNavigations.AUTH_HOME]: undefined;
@@ -21,15 +22,16 @@ function AuthStackNavigator({
 }: {
   initialRoute: 'AuthHome' | 'PinCode';
 }) {
+  const {theme} = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -37,7 +39,7 @@ function AuthStackNavigator({
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       {initialRoute === 'AuthHome' ? (
         <>

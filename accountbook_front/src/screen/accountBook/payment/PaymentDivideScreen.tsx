@@ -1,13 +1,13 @@
 import axiosInstance from '@/api/axios';
-import {BackArrow, PaymentDetailAdd} from '@/assets/icons';
-import CategoryList from '@/components/accountBook/category/CategoryList';
+import {PaymentDetailAdd} from '@/assets/icons';
 import PaymentDevideItemList from '@/components/accountBook/payment/PaymentDevideItemList';
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants';
 import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
+import useThemeStore from '@/store/useThemeStore';
 import {Payment} from '@/types/domain';
-import {getDateLocaleFormat, getDateTimeLocaleFormat, getDateWithSeparator} from '@/utils';
+import {getDateTimeLocaleFormat, getDateWithSeparator} from '@/utils';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
@@ -19,7 +19,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Modal,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -29,10 +28,14 @@ type PaymentDivideScreenRouteProp = RouteProp<
 >;
 
 const PaymentDivideScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const route = useRoute<PaymentDivideScreenRouteProp>();
   const [paymentData, setPaymentData] = useState(route.params.payment);
   const [paymentDivideList, setPaymentDivideList] = useState<Payment[]>([]);
-  const reloadPaymentList = usePaymentDataStore(state => state.fetchPaymentData);
+  const reloadPaymentList = usePaymentDataStore(
+    state => state.fetchPaymentData,
+  );
   const navigation = useNavigation();
 
   const addPaymentDevide = () => {
@@ -89,8 +92,8 @@ const PaymentDivideScreen = () => {
         `/payments/${paymentData.paymentsId}`,
         transformedPaymentList,
       );
-      
-      reloadPaymentList(getDateWithSeparator(paymentData.paymentTime, "-"));
+
+      reloadPaymentList(getDateWithSeparator(paymentData.paymentTime, '-'));
       navigation.goBack();
       navigation.goBack();
     } catch (error) {
@@ -160,62 +163,63 @@ const PaymentDivideScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-    paddingTop: 25,
-  },
-  detailsContainer: {
-    paddingHorizontal: 30,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    height: 45,
-  },
-  detailLabel: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Light',
-    color: colors.BLACK,
-  },
-  detailValue: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  borderLineContainer: {
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  borderLine: {
-    width: '90%',
-    borderBottomWidth: 1,
-    borderColor: colors.GRAY_600,
-  },
-  separateContainer: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  separateHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 5,
-    marginBottom: 15,
-  },
-  separateHeaderText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Light',
-    color: colors.BLACK,
-  },
-  confirmButtonContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+      paddingTop: 25,
+    },
+    detailsContainer: {
+      paddingHorizontal: 30,
+    },
+    detailItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      height: 45,
+    },
+    detailLabel: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Light',
+      color: colors[theme].BLACK,
+    },
+    detailValue: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    borderLineContainer: {
+      marginVertical: 10,
+      alignItems: 'center',
+    },
+    borderLine: {
+      width: '90%',
+      borderBottomWidth: 1,
+      borderColor: colors[theme].GRAY_600,
+    },
+    separateContainer: {
+      flex: 1,
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    separateHeaderContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      paddingHorizontal: 5,
+      marginBottom: 15,
+    },
+    separateHeaderText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Light',
+      color: colors[theme].BLACK,
+    },
+    confirmButtonContainer: {
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+  });
 
 export default PaymentDivideScreen;

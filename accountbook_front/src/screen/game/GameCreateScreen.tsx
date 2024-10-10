@@ -4,8 +4,9 @@ import CustomButton from '@/components/common/CustomButton';
 import DropdownCategory from '@/components/game/DropdownCategory';
 import ImageIcon from '@/components/game/ImageIcon';
 import {colors, gameNavigations} from '@/constants';
-import {GameStackParamList} from '@/navigations/stack/asset/GameStackNavigation';
+import {GameStackParamList} from '@/navigations/stack/GameStackNavigator';
 import useGameCreateStore from '@/store/useGameCreateStore';
+import useThemeStore from '@/store/useThemeStore';
 import {getDateLocaleFormatDiff} from '@/utils';
 import {category, categoryId} from '@/utils/categories';
 import {useNavigation} from '@react-navigation/native';
@@ -25,6 +26,8 @@ import {
 import Toast from 'react-native-toast-message';
 
 const GameCreateScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [isOpenCalendar, setIsOpneCalendar] = useState(false);
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
@@ -172,79 +175,80 @@ const GameCreateScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  textIconContainer: {
-    margin: 30,
-    height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textIcon: {
-    fontSize: 100,
-    color: colors.BLACK,
-  },
-  dateInfo: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  startendDate: {
-    backgroundColor: colors.ORANGE_200,
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    marginBottom: 20,
-  },
-  dateText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.PRIMARY,
-  },
-  contentsContainer: {
-    marginHorizontal: 10,
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  infoTitleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-  infoDescText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 14,
-    color: colors.GRAY_600,
-  },
-  infoContainer: {
-    width: '100%',
-    height: 50,
-    marginTop: 10,
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  infoText: {
-    margin: 5,
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 22,
-    color: colors.PRIMARY,
-    paddingVertical: 0,
-  },
-  buttonContainer: {
-    justifyContent: 'flex-end',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    textIconContainer: {
+      margin: 30,
+      height: 100,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    textIcon: {
+      fontSize: 100,
+      color: colors[theme].BLACK,
+    },
+    dateInfo: {
+      width: '100%',
+      alignItems: 'center',
+    },
+    startendDate: {
+      backgroundColor: colors[theme].ORANGE_200,
+      width: '100%',
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+      marginBottom: 20,
+    },
+    dateText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].PRIMARY,
+    },
+    contentsContainer: {
+      marginHorizontal: 10,
+      marginTop: 10,
+      marginBottom: 20,
+    },
+    infoTitleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+    infoDescText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 14,
+      color: colors[theme].GRAY_600,
+    },
+    infoContainer: {
+      width: '100%',
+      height: 50,
+      marginTop: 10,
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    infoText: {
+      margin: 5,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 22,
+      color: colors[theme].PRIMARY,
+      paddingVertical: 0,
+    },
+    buttonContainer: {
+      justifyContent: 'flex-end',
+    },
+  });
 export default GameCreateScreen;

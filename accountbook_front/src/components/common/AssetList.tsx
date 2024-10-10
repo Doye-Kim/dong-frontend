@@ -8,6 +8,7 @@ import {
   RegisterAccountInfo,
   RegisterCardInfo,
 } from '@/api/asset';
+import useThemeStore from '@/store/useThemeStore';
 
 interface AssetListProps {
   title: string;
@@ -34,6 +35,8 @@ const AssetList = ({
   setSelectedList,
   selectedList,
 }: AssetListProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const data = accountData || cardData;
   const accountOrCard = !!accountData; // true면 계좌, false면 카드
   return (
@@ -61,14 +64,15 @@ const AssetList = ({
   );
 };
 
-const styles = StyleSheet.create({
-  assetTitle: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  assetContainer: {
-    flex: 1,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    assetTitle: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    assetContainer: {
+      flex: 1,
+    },
+  });
 
 export default AssetList;

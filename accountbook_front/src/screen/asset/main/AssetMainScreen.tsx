@@ -5,7 +5,7 @@ import {
 } from '@/assets/icons';
 import AssetItemList from '@/components/asset/asset/AssetItemList';
 import AssetListHeader from '@/components/asset/asset/AssetListHeader';
-import {assetNavigations, colors, seedNavigations} from '@/constants';
+import {assetNavigations, colors} from '@/constants';
 import {Account, Card, Seed} from '@/types/domain';
 import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {
@@ -22,6 +22,7 @@ import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatio
 import axiosInstance from '@/api/axios';
 import {getSeeds} from '@/api/seed';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 type AssetData = {
   accounts: Account[];
@@ -31,6 +32,8 @@ type AssetData = {
 type SeedData = Seed[];
 
 const AssetMainScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [username, setUsername] = useState('장효승');
   const [assetAmount, setAssetAmount] = useState<number>(0);
   const [assetData, setAssetData] = useState<AssetData | null>(null);
@@ -153,14 +156,13 @@ const AssetMainScreen = () => {
           <Text style={styles.headerText}>계좌</Text>
         )}
         <AssetItemList accountData={filteredAccounts} />
-        
+
         {filteredCards.length === 0 ? (
           <></>
         ) : (
           <Text style={styles.headerText}>카드</Text>
         )}
         <AssetItemList cardData={filteredCards} />
-
 
         {/* 자산 숨기기 버튼 */}
         <TouchableOpacity
@@ -186,55 +188,56 @@ const AssetMainScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    backgroundColor: colors.WHITE,
-  },
-  assetSeparator: {
-    backgroundColor: colors.GRAY_300,
-    height: 5,
-    borderRadius: 5,
-  },
-  hiddenAssetsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-  },
-  hiddenAssetsText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: colors.GRAY_500,
-  },
-  hiddenAssetsIcon: {
-    marginLeft: 5,
-  },
-  headerText: {
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-    fontSize: 18,
-    paddingVertical: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: colors.ORANGE_200,
-    height: 55,
-    marginHorizontal: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.PRIMARY,
-    marginLeft: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingHorizontal: 20,
+      backgroundColor: colors[theme].WHITE,
+    },
+    assetSeparator: {
+      backgroundColor: colors[theme].GRAY_300,
+      height: 5,
+      borderRadius: 5,
+    },
+    hiddenAssetsButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+    },
+    hiddenAssetsText: {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 14,
+      color: colors[theme].GRAY_500,
+    },
+    hiddenAssetsIcon: {
+      marginLeft: 5,
+    },
+    headerText: {
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+      fontSize: 18,
+      paddingVertical: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 20,
+      backgroundColor: colors[theme].ORANGE_200,
+      height: 55,
+      marginHorizontal: 5,
+      marginBottom: 10,
+    },
+    buttonText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].PRIMARY,
+      marginLeft: 10,
+    },
+  });
 
 export default AssetMainScreen;

@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   Alert,
-  PermissionsAndroid,
   Platform,
   Linking,
 } from 'react-native';
@@ -15,6 +14,7 @@ import Barcode from '@adrianso/react-native-barcode-builder';
 import ViewShot from 'react-native-view-shot'; // ViewShot 추가
 import RNFS from 'react-native-fs'; // RNFS 추가
 import {requestStoragePermission} from '@/utils/grantPermission';
+import useThemeStore from '@/store/useThemeStore';
 
 interface BarcodeModalProps {
   visible: boolean;
@@ -27,6 +27,8 @@ const BarcodeModal = ({
   barcodeNumber,
   onDismiss,
 }: BarcodeModalProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const barcodeRef = useRef(null);
 
   const handleSaveImage = async () => {
@@ -101,60 +103,61 @@ const BarcodeModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: colors.WHITE,
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    width: '95%',
-  },
-  giftTitle: {
-    fontSize: 22,
-    fontFamily: 'Pretendard-Bold',
-    textAlign: 'center',
-    color: colors.BLACK,
-    marginBottom: 20,
-  },
-  barcode: {
-    width: 150,
-    height: 75,
-  },
-  barcodeContainer: {
-    marginVertical: 10,
-  },
-  barcodeText: {
-    fontSize: 24,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  saveButton: {
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 25,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.PRIMARY,
-  },
-  noticeText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.WHITE,
-    marginTop: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    modalContent: {
+      backgroundColor: colors[theme].WHITE,
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+      width: '95%',
+    },
+    giftTitle: {
+      fontSize: 22,
+      fontFamily: 'Pretendard-Bold',
+      textAlign: 'center',
+      color: colors[theme].BLACK,
+      marginBottom: 20,
+    },
+    barcode: {
+      width: 150,
+      height: 75,
+    },
+    barcodeContainer: {
+      marginVertical: 10,
+    },
+    barcodeText: {
+      fontSize: 24,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      marginTop: 10,
+      textAlign: 'center',
+    },
+    saveButton: {
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 25,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      marginTop: 25,
+      alignItems: 'center',
+    },
+    saveButtonText: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].PRIMARY,
+    },
+    noticeText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].WHITE,
+      marginTop: 10,
+    },
+  });
 
 export default BarcodeModal;

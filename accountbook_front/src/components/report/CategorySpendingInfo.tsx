@@ -1,4 +1,5 @@
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 
 const CategorySpendingInfo = ({
@@ -12,7 +13,8 @@ const CategorySpendingInfo = ({
   percentage: number;
   spending: number;
 }) => {
-  // console.log(name, percentage, spending);
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <View
       style={[
@@ -31,32 +33,34 @@ const CategorySpendingInfo = ({
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  categoryColor: {
-    width: 10,
-    height: 10,
-    borderRadius: 10,
-    margin: 5,
-  },
-  nameText: {
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    fontSize: 16,
-  },
-  percentageText: {
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.GRAY_600,
-    fontSize: 16,
-    margin: 5,
-  },
-  spendingText: {
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    fontSize: 20,
-  },
-});
+
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    categoryColor: {
+      width: 10,
+      height: 10,
+      borderRadius: 10,
+      margin: 5,
+    },
+    nameText: {
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      fontSize: 16,
+    },
+    percentageText: {
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].GRAY_600,
+      fontSize: 16,
+      margin: 5,
+    },
+    spendingText: {
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      fontSize: 20,
+    },
+  });
 export default CategorySpendingInfo;

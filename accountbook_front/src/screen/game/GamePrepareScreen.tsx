@@ -10,6 +10,7 @@ import {
 import CustomButton from '@/components/common/CustomButton';
 import UserIcon from '@/components/game/UserIcon';
 import {colors, gameNavigations} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
@@ -28,6 +29,8 @@ import {
 import Toast from 'react-native-toast-message';
 
 const GamePrepareScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [gameData, setGameData] = useState<ResponseGameState>();
   const [userData, setUserData] = useState();
   const [categoryData, setCategoryData] = useState<Category[]>();
@@ -272,58 +275,59 @@ const GamePrepareScreen = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  infoTitletext: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 18,
-    color: colors.BLACK,
-  },
-  user: {
-    margin: 10,
-  },
-  infoText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 15,
-    marginLeft: 10,
-    color: colors.PRIMARY,
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    margin: 10,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  cancelText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 14,
-    marginTop: 10,
-    color: colors.GRAY_600,
-    textDecorationLine: 'underline',
-  },
-  categoryText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    color: '#402c1b',
-    borderRadius: 10,
-    backgroundColor: '#F9E4BC',
-    marginLeft: 5,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    infoTitletext: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 18,
+      color: colors[theme].BLACK,
+    },
+    user: {
+      margin: 10,
+    },
+    infoText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 15,
+      marginLeft: 10,
+      color: colors[theme].PRIMARY,
+    },
+    infoContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      margin: 10,
+    },
+    buttonContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    cancelText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 14,
+      marginTop: 10,
+      color: colors[theme].GRAY_600,
+      textDecorationLine: 'underline',
+    },
+    categoryText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      color: '#402c1b',
+      borderRadius: 10,
+      backgroundColor: '#F9E4BC',
+      marginLeft: 5,
+    },
+  });
 export default GamePrepareScreen;

@@ -5,8 +5,12 @@ import CategoryIcon from '../common/CategoryIcon';
 import {GameStackParamList} from '@/navigations/stack/GameStackNavigator';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import useThemeStore from '@/store/useThemeStore';
 
 const GameItem = ({item}: {item: ResponseGame}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   const handleOnPress = () => {
     console.log('press');
@@ -33,20 +37,21 @@ const GameItem = ({item}: {item: ResponseGame}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: colors.GRAY_200,
-    borderRadius: 20,
-    marginVertical: 10,
-    padding: 10,
-    alignItems: 'center',
-  },
-  titleText: {
-    marginLeft: 10,
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      backgroundColor: colors[theme].GRAY_200,
+      borderRadius: 20,
+      marginVertical: 10,
+      padding: 10,
+      alignItems: 'center',
+    },
+    titleText: {
+      marginLeft: 10,
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 export default GameItem;

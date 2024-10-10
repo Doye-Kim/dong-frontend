@@ -14,9 +14,10 @@ import {getMonthYearDetails} from '@/utils/date';
 import useDateStore from '@/store/useDateStore';
 import {Payment} from '@/types/domain';
 import PaymentItemList from '@/components/accountBook/payment/PaymentItemList';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import useThemeStore from '@/store/useThemeStore';
 
 interface CalendarScreenProps {
   paymentList: Payment[];
@@ -29,6 +30,9 @@ interface DailyTotal {
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function CalendarScreen({paymentList}: CalendarScreenProps) {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const date = useDateStore(state => state.date);
   const paymentMonthData = paymentList;
   const [expenses, setExpenses] = useState<DailyTotal>({});
@@ -38,7 +42,8 @@ function CalendarScreen({paymentList}: CalendarScreenProps) {
     [],
   );
 
-  const navigation = useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
 
   const toggleDetailModalVisible = () => {
     setIsDetailModalVisible(prev => !prev);
@@ -98,7 +103,10 @@ function CalendarScreen({paymentList}: CalendarScreenProps) {
           <View style={styles.bottomModalContent}>
             <TouchableOpacity activeOpacity={1} style={styles.modalContent}>
               <Text style={styles.modalTitle}>상세 내역</Text>
-              <PaymentItemList payments={selectedDatePayments} onPaymentPress={handlePaymentPress}/>
+              <PaymentItemList
+                payments={selectedDatePayments}
+                onPaymentPress={handlePaymentPress}
+              />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -106,32 +114,32 @@ function CalendarScreen({paymentList}: CalendarScreenProps) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  bottomModalContent: {
-    width: '100%',
-    backgroundColor: colors.WHITE,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: SCREEN_HEIGHT * 0.6,
-  },
-  modalContent: {
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginBottom: 20,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    bottomModalContent: {
+      width: '100%',
+      backgroundColor: colors[theme].WHITE,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      maxHeight: SCREEN_HEIGHT * 0.6,
+    },
+    modalContent: {
+      padding: 20,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      marginBottom: 20,
+    },
+  });
 
 export default CalendarScreen;

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {colors} from '@/constants';
 import {BackArrow} from '@/assets/icons';
+import useThemeStore from '@/store/useThemeStore';
 
 const shuffleArray = (array: number[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -25,6 +26,8 @@ const Keypad = ({
   pin: number[];
   setPin: (pin: number[]) => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [numbers, setNumbers] = useState<number[]>([]);
   // const selectNumbers = useRef<number[]>([]);
   useEffect(() => {
@@ -66,34 +69,35 @@ const Keypad = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: 320,
-  },
-  grid: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    width: Dimensions.get('screen').width / 3,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  leftButton: {
-    width: Dimensions.get('screen').width / 3,
-    height: 80,
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    bottom: 0,
-    right: 0,
-  },
-  buttonText: {
-    fontSize: 24,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      height: 320,
+    },
+    grid: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    button: {
+      width: Dimensions.get('screen').width / 3,
+      height: 80,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    leftButton: {
+      width: Dimensions.get('screen').width / 3,
+      height: 80,
+      position: 'absolute',
+      justifyContent: 'center',
+      alignItems: 'center',
+      bottom: 0,
+      right: 0,
+    },
+    buttonText: {
+      fontSize: 24,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default Keypad;

@@ -1,5 +1,6 @@
 import CategoryIcon from '@/components/common/CategoryIcon';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {Payment} from '@/types/domain';
 import {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
@@ -11,8 +12,11 @@ const PaymentItem = ({
 }: {
   item: Payment;
   selectedPayments: Payment[];
-  setSelectedList(selectedList: (item: Payment[]) => void): void;
+  setSelectedPayments(selectedPayments: (item: Payment[]) => void): void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const [checked, setChecked] = useState(false);
   const handleOnPress = () => {
     setChecked(prev => !prev);
@@ -32,21 +36,35 @@ const PaymentItem = ({
       onPress={handleOnPress}
       style={[
         styles.container,
-        checked && {backgroundColor: colors.ORANGE_200},
+        checked && {backgroundColor: colors[theme].ORANGE_200},
       ]}>
       <View style={styles.leftContainer}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <CategoryIcon categoryNumber={item.categoryImageNumber} size={40} />
           <View style={styles.paymentContainer}>
-            <Text style={styles.titleText}>{item.merchantName}</Text>
-            <Text style={styles.infoText}>
+            <Text
+              style={[
+                styles.titleText,
+                checked && {color: colors['light'].BLACK},
+              ]}>
+              {item.merchantName}
+            </Text>
+            <Text
+              style={[
+                styles.infoText,
+                checked && {color: colors['light'].BLACK},
+              ]}>
               {item.paymentName
                 ? `${item.categoryName} | ${item.paymentName}`
                 : item.categoryName}
             </Text>
           </View>
         </View>
-        <Text style={styles.balanceText}>
+        <Text
+          style={[
+            styles.balanceText,
+            checked && {color: colors['light'].BLACK},
+          ]}>
           {item.paymentType === 'EXPENSE' ? '-' : '+'}
           {item.balance.toLocaleString()}원
         </Text>
@@ -55,34 +73,36 @@ const PaymentItem = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 20,
-    paddingVertical: 10,
-    marginVertical: 5,
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  paymentContainer: {
-    marginHorizontal: 10,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-  infoText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: colors.GRAY_600,
-  },
-  balanceText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 22,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      borderRadius: 20,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
+      marginVertical: 5,
+    },
+    leftContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    paymentContainer: {
+      marginHorizontal: 10,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+    infoText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 12,
+      color: colors[theme].GRAY_600,
+    },
+    balanceText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 22,
+      color: colors[theme].BLACK,
+    },
+  });
 export default PaymentItem;

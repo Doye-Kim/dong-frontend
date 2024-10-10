@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {assetDetailNavigations, assetNavigations, colors} from '@/constants';
 import AssetItem from './AssetItem';
 import {Account, Card} from '@/types/domain';
 import {useNavigation} from '@react-navigation/native';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
 import {StackNavigationProp} from '@react-navigation/stack';
+import useThemeStore from '@/store/useThemeStore';
 
 interface AssetItemListProps {
   accountData?: Account[];
@@ -13,6 +14,8 @@ interface AssetItemListProps {
 }
 
 const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
 
   if (accountData) {
@@ -71,24 +74,25 @@ const AssetItemList = ({accountData, cardData}: AssetItemListProps) => {
   }
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-    fontSize: 18,
-    paddingVertical: 10,
-  },
-  noAssetText: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      marginTop: 10,
+      marginBottom: 20,
+    },
+    sectionHeader: {
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+      fontSize: 18,
+      paddingVertical: 10,
+    },
+    noAssetText: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+      textAlign: 'center',
+      marginTop: 10,
+    },
+  });
 
 export default AssetItemList;

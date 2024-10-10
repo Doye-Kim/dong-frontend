@@ -4,6 +4,7 @@ import {
   colors,
   gameNavigations,
 } from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {useEffect, useState} from 'react';
@@ -24,6 +25,8 @@ const FcmAlert = ({
   body: string;
   onClose: () => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [lottieSource, setLottieSource] = useState<any>(null);
   const [navigateName, setNavigateName] = useState('');
   const navigation = useNavigation();
@@ -74,7 +77,7 @@ const FcmAlert = ({
           <TouchableOpacity
             style={styles.buttonContainer}
             onPress={handlePressOk}>
-            <Text style={[styles.buttonText, {color: colors.PRIMARY}]}>
+            <Text style={[styles.buttonText, {color: colors[theme].PRIMARY}]}>
               보러 가기
             </Text>
           </TouchableOpacity>
@@ -84,54 +87,55 @@ const FcmAlert = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    width: Dimensions.get('screen').width,
-    height: Dimensions.get('screen').height,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  alertContainer: {
-    width: 300,
-    height: 400,
-    padding: 20,
-    borderRadius: 30,
-    backgroundColor: colors.WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: -4,
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      position: 'absolute',
+      width: Dimensions.get('screen').width,
+      height: Dimensions.get('screen').height,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    elevation: 8,
-  },
-  animationContainer: {
-    width: 200,
-    height: 200,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    color: colors.BLACK,
-  },
-  bodyText: {
-    marginTop: 15,
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 18,
-    color: colors.GRAY_700,
-  },
-  buttonContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    marginTop: 20,
-  },
-  buttonText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.GRAY_600,
-  },
-});
+    alertContainer: {
+      width: 300,
+      height: 400,
+      padding: 20,
+      borderRadius: 30,
+      backgroundColor: colors[theme].WHITE,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: colors[theme].BLACK,
+      shadowOffset: {
+        width: 0,
+        height: -4,
+      },
+      elevation: 8,
+    },
+    animationContainer: {
+      width: 200,
+      height: 200,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 24,
+      color: colors[theme].BLACK,
+    },
+    bodyText: {
+      marginTop: 15,
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 18,
+      color: colors[theme].GRAY_700,
+    },
+    buttonContainer: {
+      paddingVertical: 20,
+      paddingHorizontal: 30,
+      marginTop: 20,
+    },
+    buttonText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].GRAY_600,
+    },
+  });
 
 export default FcmAlert;

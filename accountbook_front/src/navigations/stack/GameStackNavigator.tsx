@@ -16,6 +16,7 @@ import NotificationHeader from '@/components/common/NotificationHeader';
 import NotificationScreen from '@/screen/NotificationScreen';
 import {AccountInfo} from '@/api/asset';
 import PinCodeScreen from '@/screen/auth/PinCodeScreen';
+import useThemeStore from '@/store/useThemeStore';
 
 export type GameStackParamList = {
   [gameNavigations.MAIN]: undefined;
@@ -39,15 +40,16 @@ export type GameStackParamList = {
 const Stack = createStackNavigator<GameStackParamList>();
 
 function ExtraStackNavigator() {
+  const {theme} = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -55,7 +57,7 @@ function ExtraStackNavigator() {
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       <Stack.Screen
         name={gameNavigations.MAIN}

@@ -16,8 +16,11 @@ import useSettlementCreateStore from '@/store/useSettlementCreate';
 import {colors, gameNavigations, accountBookNavigations} from '@/constants';
 import useGameCreateStore from '@/store/useGameCreateStore';
 import {postGame} from '@/api/game';
+import useThemeStore from '@/store/useThemeStore';
 
 const SelectAccountScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const pageNumber = route?.params?.pageNumber;
   const [title, setTitle] = useState('');
   const [nextText, setNextText] = useState('');
@@ -196,21 +199,22 @@ const SelectAccountScreen = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  listContainer: {
-    height: Dimensions.get('window').height - 170,
-    marginVertical: 10,
-  },
-  text: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginBottom: 20,
+    },
+    listContainer: {
+      height: Dimensions.get('window').height - 170,
+      marginVertical: 10,
+    },
+    text: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default SelectAccountScreen;

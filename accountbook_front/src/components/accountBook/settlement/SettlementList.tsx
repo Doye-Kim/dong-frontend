@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import SettlementItem from './SettlementItem';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 
 interface paymentListProps {
   settlementPaymentId: number;
@@ -31,6 +32,8 @@ const SettlementList = ({
   isFinished: boolean;
   refresh: () => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <View>
       {data.map((item, index) => {
@@ -58,12 +61,13 @@ const SettlementList = ({
   );
 };
 
-const styles = StyleSheet.create({
-  dateText: {
-    fontFamily: 'Pretendard-Medium',
-    color: colors.GRAY_600,
-    marginTop: 5,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    dateText: {
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].GRAY_600,
+      marginTop: 5,
+    },
+  });
 
 export default SettlementList;

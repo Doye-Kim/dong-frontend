@@ -1,5 +1,9 @@
-const hexToRgba = (hex: string, opacity: number = 1): string => {
+const hexToRgba = (hex: string = '#000000', opacity: number = 1): string => {
   // HEX 코드가 '#'로 시작하지 않으면 추가
+  if (typeof hex !== 'string' || !hex) {
+    throw new Error('Invalid HEX color format');
+  }
+
   if (hex.startsWith('#')) {
     hex = hex.slice(1);
   }

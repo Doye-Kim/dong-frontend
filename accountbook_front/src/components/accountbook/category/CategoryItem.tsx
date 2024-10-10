@@ -7,6 +7,7 @@ import CategoryEditModal from './CategoryEditModal';
 import ActionModal from './ActionModal';
 import {ResponseCategory} from '@/api/category';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 
 type CategoryItemProps = {
   item: ResponseCategory;
@@ -18,6 +19,8 @@ type CategoryItemProps = {
 };
 
 const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isActionModalVisible, setIsActionModalVisible] = useState(false);
   const [modalData, setModalData] = useState<ResponseCategory | null>(null);
@@ -84,22 +87,23 @@ const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 60,
-    height: 60,
-  },
-  icon: {
-    marginBottom: 5,
-  },
-  name: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      margin: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 60,
+      height: 60,
+    },
+    icon: {
+      marginBottom: 5,
+    },
+    name: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 14,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default CategoryItem;

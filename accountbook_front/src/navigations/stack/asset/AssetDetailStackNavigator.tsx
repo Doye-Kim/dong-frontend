@@ -3,11 +3,12 @@ import AssetDetailScreen from '@/screen/asset/main/AssetDetailScreen';
 import AssetManageScreen from '@/screen/asset/main/AssetManageScreen';
 import {StackScreenProps, createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {AssetStackParamList} from './AssetStackNavigatior';
 import PaymentDetailScreen from '@/screen/accountBook/payment/PaymentDetailScreen';
 import CardManageScreen from '@/screen/asset/main/CardManageScreen';
 import CardDetailScreen from '@/screen/asset/main/CardDetailScreen';
+import useThemeStore from '@/store/useThemeStore';
 
 const Stack = createStackNavigator<AssetDetailStackParamList>();
 
@@ -25,15 +26,17 @@ export type AssetDetailStackParamList = {
 };
 
 const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerStyle: {
           shadowColor: 'transparent',
-          backgroundColor: colors.WHITE,
+          backgroundColor: colors[theme].WHITE,
         },
         headerTitleStyle: {
           fontSize: 20,
@@ -41,7 +44,7 @@ const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
           paddingLeft: 0,
           marginLeft: 0,
         },
-        headerTintColor: colors.BLACK,
+        headerTintColor: colors[theme].BLACK,
       }}>
       <Stack.Screen
         name={assetDetailNavigations.ACCOUNTDETAIL}
@@ -102,20 +105,21 @@ const AssetDetailStackNavigator = ({route}: AssetDetailStackNavigatorProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  manageButton: {
-    marginRight: 15,
-  },
-  manageText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    headerTitle: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    manageButton: {
+      marginRight: 15,
+    },
+    manageText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default AssetDetailStackNavigator;

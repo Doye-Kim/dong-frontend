@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -10,19 +10,24 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import { accountBookNavigations, colors } from '@/constants';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import {accountBookNavigations, colors} from '@/constants';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import CustomButton from '@/components/common/CustomButton';
+import useThemeStore from '@/store/useThemeStore';
 
-type NoBudgetScreenNavigationProp = StackNavigationProp<AccountBookStackParamList>;
+type NoBudgetScreenNavigationProp =
+  StackNavigationProp<AccountBookStackParamList>;
 
 interface NoBudgetContentProps {
   isPastMonth: boolean;
 }
 
-function NoBudgetContent({ isPastMonth }: NoBudgetContentProps) {
+function NoBudgetContent({isPastMonth}: NoBudgetContentProps) {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const navigation = useNavigation<NoBudgetScreenNavigationProp>();
   const [budget, setBudget] = useState<number>(0);
 
@@ -32,19 +37,19 @@ function NoBudgetContent({ isPastMonth }: NoBudgetContentProps) {
   };
 
   const handleBudgetSubmit = () => {
-    navigation.navigate(accountBookNavigations.BUDGETCREATE, {totalBudget: budget});
+    navigation.navigate(accountBookNavigations.BUDGETCREATE, {
+      totalBudget: budget,
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoidingView}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}>
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
-          keyboardShouldPersistTaps="handled"
-        >
+          keyboardShouldPersistTaps="handled">
           <Image
             style={styles.piggyBank}
             source={require('@/assets/logo.png')}
@@ -69,7 +74,7 @@ function NoBudgetContent({ isPastMonth }: NoBudgetContentProps) {
                   onChangeText={handleBudgetChange}
                   keyboardType="numeric"
                   placeholder="금액을 입력하"
-                  placeholderTextColor={colors.GRAY_600}
+                  placeholderTextColor={colors[theme].GRAY_600}
                   onSubmitEditing={handleBudgetSubmit}
                   value={budget.toLocaleString()}
                 />
@@ -90,69 +95,69 @@ function NoBudgetContent({ isPastMonth }: NoBudgetContentProps) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 20, // Add some bottom padding
-  },
-  piggyBank: {
-    width: 160,
-    height: 160,
-    marginBottom: 20,
-  },
-  message: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
-  },
-  subMessage: {
-    fontSize: 14,
-    color: colors.BLACK,
-    marginBottom: 20,
-    fontFamily: 'Pretendard-Medium',
-  },
-  budgetInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.GRAY_400,
-    paddingBottom: 5,
-    width: '80%',
-  },
-  budgetLabel: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Bold',
-    marginRight: 10,
-    color: colors.BLACK,
-  },
-  budgetInput: {
-    flex: 1,
-    fontSize: 16,
-    textAlign: 'right',
-    color: colors.BLACK,
-  },
-  wonText: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-    marginLeft: 5,
-  },
-  submitButton: {
-    marginTop: 50,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    keyboardAvoidingView: {
+      flex: 1,
+    },
+    scrollViewContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingBottom: 20, // Add some bottom padding
+    },
+    piggyBank: {
+      width: 160,
+      height: 160,
+      marginBottom: 20,
+    },
+    message: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: colors[theme].BLACK,
+      fontFamily: 'Pretendard-Bold',
+    },
+    subMessage: {
+      fontSize: 14,
+      color: colors[theme].BLACK,
+      marginBottom: 20,
+      fontFamily: 'Pretendard-Medium',
+    },
+    budgetInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderBottomColor: colors[theme].GRAY_400,
+      paddingBottom: 5,
+      width: '80%',
+    },
+    budgetLabel: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Bold',
+      marginRight: 10,
+      color: colors[theme].BLACK,
+    },
+    budgetInput: {
+      flex: 1,
+      fontSize: 16,
+      textAlign: 'right',
+      color: colors[theme].BLACK,
+    },
+    wonText: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+      marginLeft: 5,
+    },
+    submitButton: {
+      marginTop: 50,
+    },
+  });
 
 export default NoBudgetContent;

@@ -1,5 +1,6 @@
 import {PeriodOptions} from '@/api/seed';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 const period: Record<PeriodOptions, string> = {
@@ -19,6 +20,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   onSelect,
   onClose,
 }: DropdownMenuProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   if (!isVisible) return null;
 
   return (
@@ -41,26 +44,27 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  dropdownMenu: {
-    position: 'absolute',
-    top: 60,
-    right: -5,
-    width: 150,
-    backgroundColor: colors.WHITE,
-    borderRadius: 25,
-    elevation: 5,
-    zIndex: 10,
-  },
-  dropdownItem: {
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  dropdownText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    color: colors.BLACK,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    dropdownMenu: {
+      position: 'absolute',
+      top: 60,
+      right: -5,
+      width: 150,
+      backgroundColor: colors[theme].WHITE,
+      borderRadius: 25,
+      elevation: 5,
+      zIndex: 10,
+    },
+    dropdownItem: {
+      paddingVertical: 10,
+      alignItems: 'center',
+    },
+    dropdownText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 24,
+      color: colors[theme].BLACK,
+    },
+  });
 
 export default DropdownMenu;

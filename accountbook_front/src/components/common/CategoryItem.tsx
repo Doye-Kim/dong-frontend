@@ -1,6 +1,6 @@
 import {CategoryCheckEmptyIcon, CategoryCheckFillIcon} from '@/assets/icons';
-import { colors } from '@/constants';
-import {useEffect, useState} from 'react';
+import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 interface CategoryItemProps {
@@ -10,7 +10,13 @@ interface CategoryItemProps {
   onPress: () => void;
 }
 
-const CategoryItem: React.FC<CategoryItemProps> = ({ name, categoryId, isChecked, onPress }) => {
+const CategoryItem: React.FC<CategoryItemProps> = ({
+  name,
+  isChecked,
+  onPress,
+}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={onPress}>
@@ -21,18 +27,19 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ name, categoryId, isChecked
   );
 };
 
-const styles = StyleSheet.create({
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-  },
-  text: {
-    color: colors.BLACK,
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    marginHorizontal: 10,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    itemContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+    },
+    text: {
+      color: colors[theme].BLACK,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      marginHorizontal: 10,
+    },
+  });
 
 export default CategoryItem;

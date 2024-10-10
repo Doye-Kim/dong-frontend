@@ -1,5 +1,6 @@
 import {User} from '@/assets/icons';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {StyleSheet, Text, View} from 'react-native';
 
 type transferState = 'FINISH' | 'YET';
@@ -15,6 +16,8 @@ interface UserStateProps {
   transferState: string;
 }
 const UserStateItem = ({data}: UserStateProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -23,7 +26,7 @@ const UserStateItem = ({data}: UserStateProps) => {
           style={[
             styles.nameAndCostText,
             data.transferState === 'YET' && {
-              color: colors.BLACK,
+              color: colors[theme].BLACK,
             },
           ]}>
           {data.userName}
@@ -33,7 +36,7 @@ const UserStateItem = ({data}: UserStateProps) => {
         style={[
           styles.nameAndCostText,
           data.transferState === 'YET' && {
-            color: colors.BLACK,
+            color: colors[theme].BLACK,
           },
         ]}>
         {data.cost.toLocaleString()}원
@@ -42,7 +45,7 @@ const UserStateItem = ({data}: UserStateProps) => {
         style={[
           styles.stateText,
           data.transferState === 'YET' && {
-            color: colors.BLACK,
+            color: colors[theme].BLACK,
           },
         ]}>
         {typeToText[data.transferState]}
@@ -51,24 +54,25 @@ const UserStateItem = ({data}: UserStateProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
-  nameAndCostText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 16,
-    color: colors.GRAY_600,
-    margin: 5,
-  },
-  stateText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 14,
-    color: colors.GRAY_600,
-    margin: 5,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 5,
+    },
+    nameAndCostText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 16,
+      color: colors[theme].GRAY_600,
+      margin: 5,
+    },
+    stateText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 14,
+      color: colors[theme].GRAY_600,
+      margin: 5,
+    },
+  });
 export default UserStateItem;

@@ -1,5 +1,6 @@
 import {ResponseGameState, getProgressGame} from '@/api/game';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {category} from '@/utils/categories';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
 import getGameImage from '@/utils/getGameImage';
@@ -15,6 +16,8 @@ import {
 import Toast from 'react-native-toast-message';
 
 const GameDetailScreen = ({route, navigation}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [gameData, setGameData] = useState<ResponseGameState>();
   const [userData, setUserData] = useState();
   const participantId = route?.params?.participantId;
@@ -101,62 +104,63 @@ const GameDetailScreen = ({route, navigation}) => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 70,
-    alignItems: 'center',
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 28,
-    color: colors.BLACK,
-    margin: 5,
-  },
-  periodText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.GRAY_500,
-    margin: 5,
-  },
-  prizeMoneyText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-  infoText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: colors.GRAY_600,
-    marginBottom: 5,
-  },
-  userListContainer: {
-    width: '100%',
-    padding: 15,
-    backgroundColor: colors.ORANGE_200,
-    borderRadius: 30,
-    marginTop: 30,
-  },
-  userInfoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 14,
-    borderRadius: 20,
-  },
-  highlightContainer: {
-    backgroundColor: colors.PRIMARY,
-  },
-  highlightText: {
-    color: colors.WHITE,
-  },
-  userInfoText: {
-    fontFamily: 'Pretemdard-Bold',
-    fontSize: 18,
-    color: colors.BLACK,
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginVertical: 70,
+      alignItems: 'center',
+    },
+    titleText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+      margin: 5,
+    },
+    periodText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].GRAY_500,
+      margin: 5,
+    },
+    prizeMoneyText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+    infoText: {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 14,
+      color: colors[theme].GRAY_600,
+      marginBottom: 5,
+    },
+    userListContainer: {
+      width: '100%',
+      padding: 15,
+      backgroundColor: colors[theme].ORANGE_200,
+      borderRadius: 30,
+      marginTop: 30,
+    },
+    userInfoContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 14,
+      borderRadius: 20,
+    },
+    highlightContainer: {
+      backgroundColor: colors['light'].PRIMARY,
+    },
+    highlightText: {
+      color: colors['light'].WHITE,
+    },
+    userInfoText: {
+      fontFamily: 'Pretemdard-Bold',
+      fontSize: 18,
+      color: colors['light'].BLACK,
+      textAlignVertical: 'center',
+      textAlign: 'center',
+    },
+  });
 export default GameDetailScreen;

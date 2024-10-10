@@ -4,15 +4,16 @@ import LineChartByDay from '@/components/report/LineChartByDay';
 import MonthlyComparison from '@/components/report/MonthlyComparison';
 import PieChartByCategory from '@/components/report/PieChartByCategory';
 import {accountBookHeaderNavigations, colors} from '@/constants';
-import { AccountBookHeaderParamList } from '@/navigations/stack/accountBook/AccountBookHeaderNavigator';
+import {AccountBookHeaderParamList} from '@/navigations/stack/accountBook/AccountBookHeaderNavigator';
 import useCategoryStore from '@/store/useCategoryStore';
 import useDateStore from '@/store/useDateStore';
 import useHideStatusStore from '@/store/useHideStatusStore';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
+import useThemeStore from '@/store/useThemeStore';
 import {getDateWithSeparator, getMonthYearDetails, getYearMonth} from '@/utils';
 import {useNavigation} from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import {useEffect, useState} from 'react';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -23,9 +24,14 @@ import {
 } from 'react-native';
 
 const SpendingReportScreen = () => {
-  const navigation = useNavigation<StackNavigationProp<AccountBookHeaderParamList>>();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+  const navigation =
+    useNavigation<StackNavigationProp<AccountBookHeaderParamList>>();
   const categories = useCategoryStore(state => state.categories);
-  const selectedCategories = useCategoryStore(state => state.selectedCategories);
+  const selectedCategories = useCategoryStore(
+    state => state.selectedCategories,
+  );
   const isHideVisible = useHideStatusStore(state => state.isHideVisible);
   const date = useDateStore(state => state.date);
   const {year, month} = getMonthYearDetails(date);
@@ -37,13 +43,13 @@ const SpendingReportScreen = () => {
     const labels = [''];
     const daysInMonth = new Date(year, month, 0).getDate();
     const data = Array(daysInMonth).fill(0);
-  
+
     const currentMonthKey = getYearMonth(date);
     const currentMonthPayments = paymentList[currentMonthKey] || [];
-  
+
     currentMonthPayments.forEach(payment => {
       const day = new Date(payment.paymentTime).getDate() - 1; // 날짜는 1부터 시작하므로 -1 처리
-  
+
       // 필터 조건: 선택된 카테고리와 숨김 처리 여부에 따른 필터링 적용
       if (
         selectedCategories.includes(payment.categoryId) &&
@@ -52,13 +58,13 @@ const SpendingReportScreen = () => {
         data[day] += payment.balance;
       }
     });
-  
+
     // 라벨 설정
     for (let i = 1; i <= daysInMonth; i++) {
       labels.push(`${i}`);
     }
     labels.push('');
-  
+
     return {
       labels,
       datasets: [
@@ -91,7 +97,10 @@ const SpendingReportScreen = () => {
           return selectedCategories.includes(payment.categoryId);
         } else {
           // isHideVisible이 false인 경우 paymentState가 'INCLUDE'인 것만
-          return payment.paymentState === 'INCLUDE' && selectedCategories.includes(payment.categoryId);
+          return (
+            payment.paymentState === 'INCLUDE' &&
+            selectedCategories.includes(payment.categoryId)
+          );
         }
       })
       .reduce((accumulator, payment) => accumulator + payment.balance, 0);
@@ -101,9 +110,9 @@ const SpendingReportScreen = () => {
   const generateCategoryChartData = () => {
     const currentMonthKey = getYearMonth(date);
     const currentMonthPayments = paymentList[currentMonthKey] || [];
-    
+
     const categorySpendings: Record<number, number> = {};
-  
+
     // 카테고리별로 소비 금액 합산
     currentMonthPayments.forEach(payment => {
       if (
@@ -116,13 +125,16 @@ const SpendingReportScreen = () => {
         categorySpendings[payment.categoryId] += payment.balance;
       }
     });
-  
+
     // 카테고리별 차트 데이터 생성
     return categories
       .filter(category => categorySpendings[category.categoryId])
       .map(category => ({
         category: category.name,
-        color: colors[`CATEGORY_${category.imageNumber}` as keyof typeof colors],
+        color:
+          colors[theme][
+            `CATEGORY_${category.imageNumber}` as keyof (typeof colors)[typeof theme]
+          ],
         spending: categorySpendings[category.categoryId],
       }));
   };
@@ -169,36 +181,38 @@ const SpendingReportScreen = () => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginBottom: 50,
-  },
-  scrollContainer: {
-    // backgroundColor: 'pink',
-  },
-  contentContainer: {
-    marginHorizontal: 20,
-  },
-  dateText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: colors.BLACK,
-    marginBottom: 10,
-  },
-  spendingMoney: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 28,
-    color: colors.BLACK,
-  },
-  dayHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dayTitle: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    color: colors.BLACK,
-  },
-});
+
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginBottom: 50,
+    },
+    scrollContainer: {
+      // backgroundColor: 'pink',
+    },
+    contentContainer: {
+      marginHorizontal: 20,
+    },
+    dateText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 16,
+      color: colors[theme].BLACK,
+      marginBottom: 10,
+    },
+    spendingMoney: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 28,
+      color: colors[theme].BLACK,
+    },
+    dayHeaderContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    dayTitle: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 20,
+      color: colors[theme].BLACK,
+    },
+  });
 export default SpendingReportScreen;

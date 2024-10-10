@@ -21,6 +21,7 @@ import {useNavigation} from '@react-navigation/native';
 import {AssetStackParamList} from '@/navigations/stack/asset/AssetStackNavigatior';
 import {StackNavigationProp} from '@react-navigation/stack';
 import BackHeader from '@/components/common/BackHeader';
+import useThemeStore from '@/store/useThemeStore';
 
 const period: Record<PeriodOptions, string> = {
   DAILY: '매일',
@@ -29,6 +30,8 @@ const period: Record<PeriodOptions, string> = {
 };
 
 const SeedCreateScreen = () => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<AssetStackParamList>>();
   const [isOpenCalendar, setIsOpneCalendar] = useState(false);
   const [isOpenPeriodDropdown, setIsOpenPeriodDropdown] = useState(false);
@@ -163,7 +166,7 @@ const SeedCreateScreen = () => {
               width: '100%',
               height: '100%',
             }}
-            source={require('@/assets/lottie/seed.json')}
+            source={require('@/assets/lottie/seed-animation.json')}
             autoPlay
             loop={true}
             speed={0.7}
@@ -246,78 +249,81 @@ const SeedCreateScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginVertical: 20,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  animationContainer: {
-    width: 200,
-    height: 200,
-    marginTop: 30,
-  },
-  dateInfo: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  startendDate: {
-    backgroundColor: colors.ORANGE_200,
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-  },
-  dateText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 16,
-    color: colors.PRIMARY,
-  },
-  seedFormContainer: {
-    marginVertical: 20,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 5,
-  },
-  inputContainer: {
-    width: 150,
-    height: 55,
-    backgroundColor: colors.GRAY_500,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  moneyText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    color: colors.BLACK,
-    paddingVertical: 0,
-  },
-  formText: {
-    margin: 5,
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    color: colors.BLACK,
-    paddingVertical: 0,
-  },
-  dropdownContainer: {
-    flexDirection: 'row',
-    width: 150,
-    height: 55,
-    backgroundColor: colors.GRAY_500,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    alignItems: 'center',
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginHorizontal: 20,
+      marginVertical: 20,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    animationContainer: {
+      width: 200,
+      height: 200,
+      marginTop: 30,
+    },
+    dateInfo: {
+      width: '100%',
+      alignItems: 'center',
+    },
+    startendDate: {
+      backgroundColor: colors[theme].ORANGE_200,
+      width: '100%',
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+    },
+    dateText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 16,
+      color: colors[theme].PRIMARY,
+    },
+    seedFormContainer: {
+      marginVertical: 20,
+    },
+    rowContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 5,
+    },
+    inputContainer: {
+      width: 150,
+      height: 55,
+      backgroundColor:
+        theme === 'dark' ? colors[theme].GRAY_300 : colors[theme].GRAY_500,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+    },
+    moneyText: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 24,
+      color: colors[theme].BLACK,
+      paddingVertical: 0,
+    },
+    formText: {
+      margin: 5,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 24,
+      color: colors[theme].BLACK,
+      paddingVertical: 0,
+    },
+    dropdownContainer: {
+      flexDirection: 'row',
+      width: 150,
+      height: 55,
+      backgroundColor:
+        theme === 'dark' ? colors[theme].GRAY_300 : colors[theme].GRAY_500,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonContainer: {
+      alignItems: 'center',
+    },
+  });
 export default SeedCreateScreen;

@@ -1,15 +1,13 @@
 import React, {useCallback, useState} from 'react';
 import {StyleSheet, View, FlatList, Text} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import {colors} from '@/constants';
-import PaymentItem from './PaymentItem'; // 새로 만든 PaymentItem 컴포넌트
+import PaymentItem from './PaymentItem';
 import {formatDateToDayOfWeek, getDateWithSeparator} from '@/utils';
 import {Payment} from '@/types/domain';
-import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import {RefreshControl} from 'react-native-gesture-handler';
 import usePaymentDataStore from '@/store/usePaymentDataStore';
 import useDateStore from '@/store/useDateStore';
+import useThemeStore from '@/store/useThemeStore';
 
 type GroupedPayments = Record<string, Payment[]>;
 
@@ -31,8 +29,9 @@ const groupPaymentsByDate = (payments: Payment[]) => {
 };
 
 const PaymentItemList = ({payments, onPaymentPress}: PaymentItemListProps) => {
-  const navigation =
-    useNavigation<StackNavigationProp<AccountBookStackParamList>>();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const groupedPayments: GroupedPayments = groupPaymentsByDate(payments);
   const handlePress = (payments_id: number) => {
     if (onPaymentPress) {
@@ -80,24 +79,25 @@ const PaymentItemList = ({payments, onPaymentPress}: PaymentItemListProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 0,
-    paddingHorizontal: 10,
-    marginBottom: 60,
-  },
-  dateGroup: {
-    marginTop: 20,
-  },
-  dateHeader: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.GRAY_800,
-    marginBottom: 8,
-    paddingBottom: 6,
-    borderBottomWidth: 0.5,
-    borderColor: colors.GRAY_600,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 0,
+      paddingHorizontal: 10,
+      marginBottom: 60,
+    },
+    dateGroup: {
+      marginTop: 20,
+    },
+    dateHeader: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors[theme].GRAY_800,
+      marginBottom: 8,
+      paddingBottom: 6,
+      borderBottomWidth: 0.5,
+      borderColor: colors[theme].GRAY_600,
+    },
+  });
 
 export default PaymentItemList;

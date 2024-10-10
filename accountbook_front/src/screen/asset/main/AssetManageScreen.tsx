@@ -1,6 +1,7 @@
-import {BackArrow, ExpandRight} from '@/assets/icons';
+import {ExpandRight} from '@/assets/icons';
 import Toggle from '@/components/common/Toggle';
 import {colors} from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {Account} from '@/types/domain';
 import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
@@ -19,6 +20,8 @@ const assetData = {
 };
 
 const AssetManageScreen = ({}: AssetManageScreenProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [asset, setAsset] = useState<Account | null>(assetData);
   return (
     <View style={styles.container}>
@@ -46,18 +49,16 @@ const AssetManageScreen = ({}: AssetManageScreenProps) => {
             </Text>
           </View>
           <View style={styles.toggleButton}>
-          <Toggle isEnabled={false} toggleSwitch={() => {}} />
+            <Toggle isEnabled={false} toggleSwitch={() => {}} />
           </View>
         </View>
         <View style={styles.manageContainer}>
           <View style={styles.manageTitleContainer}>
             <Text style={styles.manageTitleMain}>계좌 숨기기</Text>
-            <Text style={styles.manageTitleInfo}>
-              자산 목록에서 숨겨져요
-            </Text>
+            <Text style={styles.manageTitleInfo}>자산 목록에서 숨겨져요</Text>
           </View>
           <View style={styles.toggleButton}>
-          <Toggle isEnabled={true} toggleSwitch={() => {}} />
+            <Toggle isEnabled={true} toggleSwitch={() => {}} />
           </View>
         </View>
       </View>
@@ -65,72 +66,73 @@ const AssetManageScreen = ({}: AssetManageScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-  },
-  accountTitleContainer: {
-    marginHorizontal: 25,
-  },
-  accountNicknameText: {
-    fontSize: 30,
-    fontFamily: 'Pretendard-ExtraBold',
-    color: colors.BLACK,
-    marginBottom: 5,
-  },
-  accountInfoText: {
-    fontSize: 15,
-    fontFamily: 'Pretendard-Medium',
-    color: colors.BLACK,
-  },
-  contentContainer: {
-    marginVertical: 25,
-  },
-  accountNicknameContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 25,
-    // alignItems: 'center',
-  },
-  accountNicknameTitle: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-  },
-  nicknameSetupContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  accountNicknameSetup: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-    marginRight: 15,
-    paddingBottom: 3,
-  },
-  manageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  manageTitleContainer: {
-    marginHorizontal: 25,
-    marginVertical: 20,
-  },
-  manageTitleMain: {
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  manageTitleInfo: {
-    fontSize: 13,
-    fontFamily: 'Pretendard-Regular',
-    color: colors.BLACK,
-  },
-  toggleButton: {
-    marginRight : 25,
-  }
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].WHITE,
+    },
+    accountTitleContainer: {
+      marginHorizontal: 25,
+    },
+    accountNicknameText: {
+      fontSize: 30,
+      fontFamily: 'Pretendard-ExtraBold',
+      color: colors[theme].BLACK,
+      marginBottom: 5,
+    },
+    accountInfoText: {
+      fontSize: 15,
+      fontFamily: 'Pretendard-Medium',
+      color: colors[theme].BLACK,
+    },
+    contentContainer: {
+      marginVertical: 25,
+    },
+    accountNicknameContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginHorizontal: 25,
+      // alignItems: 'center',
+    },
+    accountNicknameTitle: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+    },
+    nicknameSetupContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    accountNicknameSetup: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+      marginRight: 15,
+      paddingBottom: 3,
+    },
+    manageContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    manageTitleContainer: {
+      marginHorizontal: 25,
+      marginVertical: 20,
+    },
+    manageTitleMain: {
+      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    manageTitleInfo: {
+      fontSize: 13,
+      fontFamily: 'Pretendard-Regular',
+      color: colors[theme].BLACK,
+    },
+    toggleButton: {
+      marginRight: 25,
+    },
+  });
 
 export default AssetManageScreen;

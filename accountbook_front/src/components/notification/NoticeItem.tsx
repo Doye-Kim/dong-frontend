@@ -8,6 +8,7 @@ import {
   gameNavigations,
   mainNavigations,
 } from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import {convertDateToString} from '@/utils';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -39,10 +40,13 @@ const notiNumber = {
   SEED_FINISH: 3,
 };
 const NotiItem = ({item}: {item: ResponseAlarm}) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const contentTextStyle = {
     ...styles.contentText,
-    color: item.status === 'READ' ? colors.GRAY_500 : colors.BLACK,
+    color:
+      item.status === 'READ' ? colors[theme].GRAY_500 : colors[theme].BLACK,
   };
   const checkRead = async () => {
     console.log('checkREad', item.id);
@@ -104,8 +108,8 @@ const NotiItem = ({item}: {item: ResponseAlarm}) => {
       style={[
         styles.container,
         item.status === 'READ'
-          ? {backgroundColor: colors.GRAY_200}
-          : {backgroundColor: colors.WHITE},
+          ? {backgroundColor: colors[theme].GRAY_200}
+          : {backgroundColor: colors[theme].WHITE},
       ]}>
       <View style={styles.icon}>
         <NotiIcon notiNumber={notiNumber[item.type]} size={40} />
@@ -125,35 +129,36 @@ const NotiItem = ({item}: {item: ResponseAlarm}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'pink',
-    padding: 5,
-    height: 70,
-  },
-  icon: {
-    margin: 10,
-  },
-  contentContainer: {
-    width: Dimensions.get('screen').width - 70,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: 10,
-  },
-  headerText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 14,
-    color: colors.GRAY_500,
-  },
-  contentText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 20,
-    width: Dimensions.get('screen').width - 100,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'pink',
+      padding: 5,
+      height: 70,
+    },
+    icon: {
+      margin: 10,
+    },
+    contentContainer: {
+      width: Dimensions.get('screen').width - 70,
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginRight: 10,
+    },
+    headerText: {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 14,
+      color: colors[theme].GRAY_500,
+    },
+    contentText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 20,
+      width: Dimensions.get('screen').width - 100,
+    },
+  });
 
 export default NotiItem;

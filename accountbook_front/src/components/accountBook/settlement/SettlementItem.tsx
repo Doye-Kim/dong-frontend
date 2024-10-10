@@ -7,6 +7,7 @@ import CategoryIcon from '@/components/common/CategoryIcon';
 import UserStateItem from './UserStateItem';
 import {postFinishSettlement} from '@/api/settlement';
 import Toast from 'react-native-toast-message';
+import useThemeStore from '@/store/useThemeStore';
 interface PaymentItemProps {
   settlementPaymentId: number;
   paymentId: number;
@@ -41,6 +42,8 @@ const SettlementItem = ({
   isFinished: boolean;
   refresh: () => void;
 }) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const [isOpenDetail, setIsOpenDetail] = useState(false);
 
   const handlePressTitle = () => {
@@ -79,10 +82,14 @@ const SettlementItem = ({
         onPress={handlePressTitle}
         style={[
           styles.itemTitleContainer,
-          isFinished && {backgroundColor: colors.GRAY_600},
+          isFinished && {backgroundColor: colors[theme].GRAY_600},
         ]}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={[styles.titleText, isFinished && {color: colors.BLACK}]}>
+          <Text
+            style={[
+              styles.titleText,
+              isFinished && {color: colors[theme].BLACK},
+            ]}>
             {data.representativeMerchandise}
             {data.settlementPaymentCnt > 1
               ? ` 외 ${data.settlementPaymentCnt - 1}건`
@@ -134,81 +141,82 @@ const SettlementItem = ({
     </View>
   );
 };
-const styles = StyleSheet.create({
-  itemTitleContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    borderRadius: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-    backgroundColor: colors.PRIMARY,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: colors.WHITE,
-    marginRight: 10,
-  },
-  buttonContainer: {
-    backgroundColor: colors.ORANGE_200,
-    height: 30,
-    width: 50,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: colors.PRIMARY,
-  },
-  paymentListContainer: {
-    paddingBottom: 5,
-    borderBottomWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.GRAY_500,
-  },
-  itemContainer: {
-    // paddingVertical: 12,
-    // paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemContent: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  merchantInfo: {
-    flex: 1,
-  },
-  merchantName: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-SemiBold',
-    color: colors.BLACK,
-  },
-  balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  balance: {
-    fontSize: 20,
-    fontFamily: 'Pretendard-Bold',
-    color: colors.BLACK,
-  },
-  details: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 13,
-    color: colors.GRAY_500,
-    marginTop: 2,
-  },
-});
+const styling = (theme: 'dark' | 'light') =>
+  StyleSheet.create({
+    itemTitleContainer: {
+      flexDirection: 'row',
+      padding: 10,
+      borderRadius: 10,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 10,
+      backgroundColor: colors[theme].PRIMARY,
+    },
+    titleText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 18,
+      color: colors[theme].WHITE,
+      marginRight: 10,
+    },
+    buttonContainer: {
+      backgroundColor: colors[theme].ORANGE_200,
+      height: 30,
+      width: 50,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonText: {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 14,
+      color: colors[theme].PRIMARY,
+    },
+    paymentListContainer: {
+      paddingBottom: 5,
+      borderBottomWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: colors[theme].GRAY_500,
+    },
+    itemContainer: {
+      // paddingVertical: 12,
+      // paddingHorizontal: 16,
+      borderRadius: 8,
+      marginBottom: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    itemContent: {
+      marginLeft: 16,
+      flex: 1,
+    },
+    itemHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    merchantInfo: {
+      flex: 1,
+    },
+    merchantName: {
+      fontSize: 16,
+      fontFamily: 'Pretendard-SemiBold',
+      color: colors[theme].BLACK,
+    },
+    balanceContainer: {
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+    },
+    balance: {
+      fontSize: 20,
+      fontFamily: 'Pretendard-Bold',
+      color: colors[theme].BLACK,
+    },
+    details: {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 13,
+      color: colors[theme].GRAY_500,
+      marginTop: 2,
+    },
+  });
 
 export default SettlementItem;
