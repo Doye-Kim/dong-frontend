@@ -9,6 +9,7 @@ import SpendingReportScreen from '@/screen/common/SpendingReportScreen';
 import ExtraMainScreen from '@/screen/extra/ExtraMainScreen';
 import NotificationScreen from '@/screen/NotificationScreen';
 import NotificationHeader from '@/components/common/NotificationHeader';
+import CategoryFilterScreen from '@/screen/common/CategoryFilterScreen';
 import useThemeStore from '@/store/useThemeStore';
 
 export type ExtraStackParamList = {
@@ -16,6 +17,7 @@ export type ExtraStackParamList = {
   [extraNavigations.MARKET]: {point: Number};
   [extraNavigations.BUDGET]: undefined;
   [extraNavigations.CATEGORY]: undefined;
+  [extraNavigations.CATEGORYFILTER]: undefined;
   [extraNavigations.REPORT]: undefined;
   [extraNavigations.NOTICE]: undefined;
 };
@@ -87,6 +89,13 @@ function ExtraStackNavigator() {
         options={{
           headerTitle: '알림',
         }}
+      />
+      <Stack.Screen
+        name={extraNavigations.CATEGORYFILTER}
+        component={CategoryFilterScreen}
+        options={({navigation}) => ({
+          title: '카테고리 필터링',
+        })}
       />
     </Stack.Navigator>
   );
