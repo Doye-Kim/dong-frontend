@@ -29,7 +29,10 @@ const PaymentList = ({
   const getData = async (date: string) => {
     try {
       const {data} = await axiosInstance.get(`/payments?date=${date}`);
-      setPaymentList(prev => [...prev, ...data]);
+      const filteredData = data.filter(
+        (payment: Payment) => payment.paymentState === 'INCLUDE',
+      );
+      setPaymentList(prev => [...prev, ...filteredData]);
     } catch (err) {
       console.log(err);
     }

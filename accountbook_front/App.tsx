@@ -5,6 +5,7 @@ import React, {useEffect} from 'react';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
 import useThemeStore from './src/store/useThemeStore';
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
   // dark | light
