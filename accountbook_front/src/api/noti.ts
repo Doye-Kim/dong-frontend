@@ -17,7 +17,7 @@ export type ResponseAlarm = {
 };
 const getAlarm = async (alarmId?: number) => {
   let url = '';
-  console.log(alarmId);
+  // console.log(alarmId);
   if (alarmId !== undefined && alarmId !== null) {
     url = `/alarms?alarmId=${alarmId}&pageSize=20`;
   } else {
@@ -30,7 +30,7 @@ const getAlarm = async (alarmId?: number) => {
 
 const patchAlarm = async (alarmId: number) => {
   const {data} = await axiosInstance.patch(`/alarms/${alarmId}`);
-  console.log('patch', data);
+  // console.log('patch', data);
   return data;
 };
 export {getAlarm, patchAlarm};

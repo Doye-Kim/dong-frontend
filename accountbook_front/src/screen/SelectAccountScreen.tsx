@@ -42,7 +42,6 @@ const SelectAccountScreen = ({route, navigation}) => {
     }
   }, [pageNumber]);
 
-  console.log(pageNumber);
   const {setAccountNumber} = useGameCreateStore();
   const [accounts, setAccounts] = useState<AccountInfo[]>();
   const [account, setAccount] = useState<AccountInfo>();
@@ -51,7 +50,6 @@ const SelectAccountScreen = ({route, navigation}) => {
   const getAssetList = async () => {
     try {
       const data = await getAssets();
-      console.log(data);
       setAccounts(data.accountList);
     } catch (err) {
       Toast.show({
@@ -80,7 +78,6 @@ const SelectAccountScreen = ({route, navigation}) => {
         })),
     }));
     try {
-      console.log('new', newPaymentList[0].settlementUserList);
       const data = await postSettlement({
         accountId: accountId,
         settlementPaymentList: newPaymentList,
@@ -89,7 +86,6 @@ const SelectAccountScreen = ({route, navigation}) => {
       navigation.navigate(accountBookNavigations.TABBAR, {
         screen: accountBookNavigations.SETTLEMENTMAIN,
       });
-      console.log(data);
     } catch (err) {
       console.log(err.response.data);
       Toast.show({
@@ -120,7 +116,6 @@ const SelectAccountScreen = ({route, navigation}) => {
         fee,
         accountNumber,
       });
-      console.log(data);
       navigation.navigate(gameNavigations.MAIN);
       Toast.show({
         type: 'success',
@@ -147,7 +142,6 @@ const SelectAccountScreen = ({route, navigation}) => {
     } else if (pageNumber === 1) {
       enterSettlement(account.id);
     } else if (pageNumber === 3) {
-      console.log('account ', account.accountNumber);
       setAccountNumber(account.accountNumber);
       if (gameCategoryId) enterGame(account.accountNumber);
       else

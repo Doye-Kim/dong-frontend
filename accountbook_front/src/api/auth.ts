@@ -26,7 +26,7 @@ type ResponseUser = {
 const setAccessToken = async (accessToken: string) => {
   try {
     await setEncryptStorage('accessToken', accessToken);
-    console.log('token', accessToken);
+    // console.log('token', accessToken);
     setHeader('Authorization', accessToken);
   } catch (err) {
     console.log(err);

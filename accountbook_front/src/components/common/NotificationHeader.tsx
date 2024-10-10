@@ -12,7 +12,7 @@ const NotificationHeader = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   const onPressNotice = () => {
-    console.log('onPressNotice');
+    // console.log('onPressNotice');
     navigation.navigate('Notification');
   };
 

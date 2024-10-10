@@ -5,6 +5,7 @@ import {
   authNavigations,
   colors,
   gameNavigations,
+  mainNavigations,
 } from '@/constants';
 import {useEffect, useState} from 'react';
 import {getEncryptStorage} from '@/utils/encryptedStorage';
@@ -80,7 +81,9 @@ const PinCodeScreen = ({route, navigation}) => {
         text1: '송금 완료!',
       });
       resetSettlement();
-      navigation.navigate(accountBookNavigations.NOTICE);
+      navigation.navigate(mainNavigations.ACCOUNTBOOK, {
+        screen: accountBookNavigations.TABBAR,
+      });
     } catch (err) {
       console.log(err);
       console.log(err.response.data);

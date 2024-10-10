@@ -28,8 +28,13 @@ import useThemeStore from '@/store/useThemeStore';
 const GameFriendsScreen = () => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const {setParticipantIds, participantIds} = useGameCreateStore();
   const friends = useFriendsStore(state => state.friends);
-  const [selectedFriends, setSelectedFriends] = useState<ResponseFriend[]>([]);
+  const [selectedFriends, setSelectedFriends] = useState<ResponseFriend[]>(
+    participantIds.length > 0
+      ? friends.filter(friend => participantIds.includes(friend.friendId))
+      : [],
+  );
   const [userData, setUserData] = useState();
   const getUser = async () => {
     const user = JSON.parse(await getEncryptStorage('user'));
@@ -75,7 +80,6 @@ const GameFriendsScreen = () => {
     }
   };
 
-  const {setParticipantIds} = useGameCreateStore();
   const onPressNext = () => {
     console.log(selectedFriends);
     const filteredIds = selectedFriends

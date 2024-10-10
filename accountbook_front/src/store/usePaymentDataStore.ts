@@ -20,9 +20,9 @@ const usePaymentDataStore = create<PaymentStore>(set => ({
       },
     }));
   },
-  fetchPaymentData: async (date) => {
+  fetchPaymentData: async date => {
     const yearMonth = date.slice(0, 7);
-    console.log(yearMonth)
+    // console.log(yearMonth)
     try {
       const paymentsResponse = await axiosInstance.get('/payments', {
         params: {

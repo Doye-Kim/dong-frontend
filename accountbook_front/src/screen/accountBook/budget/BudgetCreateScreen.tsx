@@ -80,7 +80,6 @@ const BudgetCreateScreen = () => {
 
   useEffect(() => {
     const initialCategories = route.params.categories;
-    console.log(route.params.budgetId);
     if (initialCategories !== undefined) {
       setCategories(initialCategories);
       setBudgetId(route.params.budgetId);
@@ -204,14 +203,12 @@ const BudgetCreateScreen = () => {
           month: getYearMonth(date),
           categories: inputCategories,
         });
-        console.log(response.data);
       } else {
         const response = await axiosInstance.put(`/budget/${budgetId}`, {
           total: totalBudget,
           month: getYearMonth(date),
           categories: inputCategories,
         });
-        console.log(response.data);
       }
     } catch (error) {
       console.error((error as any).response?.data);

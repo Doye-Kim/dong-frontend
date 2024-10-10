@@ -32,11 +32,11 @@ const CategoryEditModal = ({
   const [categoryName, setCategoryName] = useState(data?.name || '');
   const {fetchCategories} = useCategoryStore();
   // console.log으로 상태 점검
-  console.log('isVisible:', isVisible);
-  console.log('data:', data);
+  // console.log('isVisible:', isVisible);
+  // console.log('data:', data);
 
   const handleIconPress = (iconId: number) => {
-    console.log(iconId);
+    // console.log(iconId);
     setImageNumber(iconId);
   };
 
@@ -47,10 +47,10 @@ const CategoryEditModal = ({
           categoryName,
           imageNumber,
         });
-        console.log(res);
+        // console.log(res);
       } else {
         const res = await postCategory({categoryName, imageNumber});
-        console.log(res);
+        // console.log(res);
       }
 
       fetchCategories();

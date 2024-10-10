@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from '../tab/Navbar';
-import useUserStore from '@/store/useUserStore';
+import useUserStore from '../../store/useUserStore';
 import AuthStackNavigator from '../stack/AuthStackNavigator';
 import PinCodeScreen from '@/screen/auth/PinCodeScreen';
 import FcmAlert from '@/components/common/FcmAlert';
@@ -28,7 +28,7 @@ function RootNavigator() {
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       if (remoteMessage.notification) {
-        console.log(remoteMessage.notification);
+        // console.log(remoteMessage.notification);
         const {title, body} = remoteMessage.notification;
         setFcmData({title, body});
         setIsOpenAlert(true);

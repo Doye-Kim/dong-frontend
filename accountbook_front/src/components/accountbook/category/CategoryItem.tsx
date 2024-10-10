@@ -27,7 +27,7 @@ const CategoryItem = ({item, onCategorySelect}: CategoryItemProps) => {
 
   const onPress = (item: ResponseCategory) => {
     if (item.categoryId === -1) {
-      console.log('추가');
+      // console.log('추가');
       setModalData(null);
       setIsEditModalVisible(true);
       setIsActionModalVisible(false);

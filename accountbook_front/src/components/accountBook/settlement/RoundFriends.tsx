@@ -28,7 +28,7 @@ const RoundFriends = ({data}: ResponsePayment) => {
 
   const {friends} = useFriendsStore();
   const {refreshFriends} = useContacts();
-  const {setSettlementUser} = useSettlementCreateStore();
+  const {settlementPaymentList, setSettlementUser} = useSettlementCreateStore();
   const [selectedFriends, setSelectedFriends] = useState<
     {userId: number; nickname: string}[]
   >([]);
@@ -44,6 +44,19 @@ const RoundFriends = ({data}: ResponsePayment) => {
   };
   useEffect(() => {
     getInit();
+    const payment = settlementPaymentList.find(
+      item => item.paymentId === data.paymentsId,
+    );
+
+    if (payment && payment.settlementUserList.length > 0) {
+      const users = payment.settlementUserList.map(user => ({
+        userId: user.userId,
+        nickname: user.nickname,
+      }));
+      setSelectedFriends(users);
+    } else {
+      setSelectedFriends([]);
+    }
   }, []);
 
   useEffect(() => {

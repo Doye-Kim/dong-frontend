@@ -28,12 +28,14 @@ import Toast from 'react-native-toast-message';
 const GameCreateScreen = () => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+
+  const {startDate, endDate, gameCategoryId, fee} = useGameCreateStore();
   const [isOpenCalendar, setIsOpneCalendar] = useState(false);
-  const [start, setStart] = useState(null);
-  const [end, setEnd] = useState(null);
+  const [start, setStart] = useState(startDate.length > 0 ? startDate : null);
+  const [end, setEnd] = useState(endDate.length > 0 ? endDate : null);
   const [isOpenCategoryDropdown, setIsOpenCategotyDropdown] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const [amount, setAmount] = useState('0');
+  const [selectedCategory, setSelectedCategory] = useState(gameCategoryId);
+  const [amount, setAmount] = useState(String(fee));
   const curDate = new Date();
   const navigtaion = useNavigation<StackNavigationProp<GameStackParamList>>();
 

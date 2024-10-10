@@ -24,10 +24,12 @@ export type ResponsePayment = {
 const SettlementPaymentsScreen = () => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const {paymentList, setPaymentList, setSettlementPayment} =
+    useSettlementCreateStore();
   const [selectedPayments, setSelectedPayments] = useState<ResponsePayment[]>(
-    [],
+    paymentList.length > 0 ? paymentList : [],
   );
-  const {setPaymentList, setSettlementPayment} = useSettlementCreateStore();
+
   const navigation =
     useNavigation<StackNavigationProp<AccountBookStackParamList>>();
 
