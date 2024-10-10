@@ -88,7 +88,7 @@ const SettlementItem = ({
           <Text
             style={[
               styles.titleText,
-              isFinished && {color: colors[theme].BLACK},
+              isFinished && {color: colors['light'].BLACK},
             ]}>
             {data.representativeMerchandise}
             {data.settlementPaymentCnt > 1
@@ -155,7 +155,7 @@ const styling = (theme: 'dark' | 'light') =>
     titleText: {
       fontFamily: 'Pretendard-SemiBold',
       fontSize: 18,
-      color: colors[theme].WHITE,
+      color: colors['light'].WHITE,
       marginRight: 10,
     },
     buttonContainer: {

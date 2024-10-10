@@ -40,11 +40,17 @@ const SettlementMainScreen = () => {
     try {
       const data = await getSettlements(yearMonth);
       console.log(data);
-      setSettlementData(data);
-      const ongoing = data.filter(
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.settlementDate).getTime() -
+          new Date(a.settlementDate).getTime(),
+      );
+
+      setSettlementData(sortedData);
+      const ongoing = sortedData.filter(
         settlement => settlement.settlementState === 'YET',
       );
-      const complete = data.filter(
+      const complete = sortedData.filter(
         settlement => settlement.settlementState === 'FINISH',
       );
       setOnGoingData(ongoing);
