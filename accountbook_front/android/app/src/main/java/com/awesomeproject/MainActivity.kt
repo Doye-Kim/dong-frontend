@@ -23,7 +23,7 @@ class MainActivity : ReactActivity() {
       DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    // SplashScreen.show(this, true)
+    SplashScreen.show(this, true)
     super.onCreate(savedInstanceState)
   }
 }
