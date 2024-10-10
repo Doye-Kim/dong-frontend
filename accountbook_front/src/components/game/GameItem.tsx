@@ -13,8 +13,8 @@ const GameItem = ({item}: {item: ResponseGame}) => {
 
   const navigation = useNavigation<StackNavigationProp<GameStackParamList>>();
   const handleOnPress = () => {
-    console.log('press');
-    console.log(gameNavigations.PREPARE);
+    // console.log('press');
+    // console.log(gameNavigations.PREPARE);
     if (item.gameStatus === 'BEFORE_START')
       navigation.navigate(gameNavigations.PREPARE, {
         participantId: item.participantId,

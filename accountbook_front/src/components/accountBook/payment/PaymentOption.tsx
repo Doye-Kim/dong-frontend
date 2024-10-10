@@ -1,9 +1,9 @@
-import { accountBookNavigations, colors } from '@/constants';
-import { AccountBookStackParamList } from '@/navigations/stack/accountBook/AccountBookStackNavigator';
+import {accountBookNavigations, colors} from '@/constants';
+import {AccountBookStackParamList} from '@/navigations/stack/accountBook/AccountBookStackNavigator';
 import useSettlementCreateStore from '@/store/useSettlementCreate';
-import { Payment } from '@/types/domain';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {Payment} from '@/types/domain';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import useThemeStore from '@/store/useThemeStore';
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -19,8 +19,11 @@ type PaymentOptionNavigationProp =
 const PaymentOption = ({onClose, payment}: PaymentOptionProps) => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const {resetSettlement} = useSettlementCreateStore();
   const navigation = useNavigation<PaymentOptionNavigationProp>();
-  const setSettlementPayment = useSettlementCreateStore(state => state.setPaymentList);
+  const setSettlementPayment = useSettlementCreateStore(
+    state => state.setPaymentList,
+  );
 
   const handleDividePress = () => {
     onClose(); // 모달을 닫습니다
@@ -28,7 +31,7 @@ const PaymentOption = ({onClose, payment}: PaymentOptionProps) => {
   };
   const handleSettlementPress = () => {
     onClose();
-    
+    resetSettlement();
     const settlementPayment = {
       paymentsId: payment.paymentsId,
       merchantName: payment.merchantName,
@@ -40,8 +43,8 @@ const PaymentOption = ({onClose, payment}: PaymentOptionProps) => {
       paymentTime: payment.paymentTime,
       paymentState: payment.paymentState,
       paymentType: payment.paymentType,
-    }
-    setSettlementPayment([settlementPayment]);  
+    };
+    setSettlementPayment([settlementPayment]);
     navigation.navigate(accountBookNavigations.SETTLEMENTFRIENDS);
   };
 

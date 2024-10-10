@@ -96,7 +96,7 @@ export type ResponseGameState = {
 const getPrepareGame = async (
   participantId: number,
 ): Promise<ResponseGameState> => {
-  console.log('pppp', participantId);
+  // console.log('pppp', participantId);
   const {data} = await axiosInstance.get(`/games/before/${participantId}`);
   return data;
 };

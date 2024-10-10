@@ -6,7 +6,7 @@ const getDateDetails = (dateString: Date | string) => {
   const day = date.getDate();
   const dayOfWeek = date.toLocaleString('ko-KR', {weekday: 'long'}); // 요일
   return {year, month, day, dayOfWeek};
-}
+};
 
 const getDateWithSeparator = (
   dateString: Date | string,
@@ -20,19 +20,15 @@ const getDateWithSeparator = (
     String(month).padStart(2, '0'),
     String(day).padStart(2, '0'),
   ].join(separator);
-}
+};
 
 function convertDateToString(dateString: string) {
   const dateTime = new Date(dateString);
   const now = new Date();
-
-  // 한국 시간을 위한 UTC+9 보정
-  const kstOffset = 9 * 60; // 9시간을 분으로 변환
-  const localOffset = now.getTimezoneOffset(); // 현재 로컬 타임존 오프셋(분)
+  console.log(dateString, 'datetime', dateTime, 'now', now);
 
   // diff는 밀리초 차이
-  const diff =
-    now.getTime() + (kstOffset - localOffset) * 60 * 1000 - dateTime.getTime();
+  const diff = now.getTime() - dateTime.getTime();
 
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -68,8 +64,8 @@ function getDatePaymentFormat(dateString: Date | string) {
 
 const getYearMonthLocalFormat = (dateString: Date | string) => {
   const {year, month, day} = getDateDetails(dateString);
-  return `${year}년 ${month}월`
-}
+  return `${year}년 ${month}월`;
+};
 
 const getDateTimeLocaleFormat = (dateString: Date | string) => {
   const date = new Date(dateString);
@@ -88,7 +84,7 @@ const getDateLocaleFormatDiff = (dateString: Date | string) => {
     2,
     '0',
   )}`;
-}
+};
 
 function getTimeLocalFormat(dateString: Date | string): string {
   const date =
@@ -117,7 +113,7 @@ const getMonthYearDetails = (initialDate: Date) => {
   const lastDate = Number(lastDateString);
 
   return {month, year, startDate, firstDOW, lastDate};
-}
+};
 
 type MonthYear = {
   month: number;
@@ -134,7 +130,7 @@ const getNewMonthYear = (prevData: MonthYear, increment: number) => {
   );
 
   return getMonthYearDetails(newMonthYear);
-}
+};
 
 const isSameAsCurrentDate = (year: number, month: number, date: number) => {
   /** 현재 날짜와 입력받은 날짜가 같은지 여부를 검사 */
@@ -144,7 +140,7 @@ const isSameAsCurrentDate = (year: number, month: number, date: number) => {
   ).padStart(2, '0')}`;
 
   return currentDate === inputDate;
-}
+};
 
 const formatDateToDayOfWeek = (dateString: string) => {
   /** 날짜를 ~일 ~요일로 변경하는 함수 */
@@ -156,8 +152,8 @@ const formatDateToDayOfWeek = (dateString: string) => {
 };
 
 const getYearMonth = (dateString: Date | string) => {
-  return getDateWithSeparator(dateString, "-").slice(0, 7);
-}
+  return getDateWithSeparator(dateString, '-').slice(0, 7);
+};
 
 export {
   convertDateToString,

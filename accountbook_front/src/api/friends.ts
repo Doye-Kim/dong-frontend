@@ -32,11 +32,11 @@ const mapContactsToRequestFriends = (contacts: any[]): RequestFriend[] => {
 
 const postFriends = async (contacts: any): Promise<ResponseFriend[]> => {
   const registerFriendsRequestDto = mapContactsToRequestFriends(contacts);
-  console.log('register', registerFriendsRequestDto);
+  // console.log('register', registerFriendsRequestDto);
   const {data} = await axiosInstance.post('/friends', {
     registerFriendsRequestDto,
   });
-  console.log('postdata', data);
+  // console.log('postdata', data);
   return data;
 };
 

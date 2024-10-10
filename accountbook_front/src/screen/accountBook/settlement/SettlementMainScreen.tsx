@@ -26,10 +26,12 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import useThemeStore from '@/store/useThemeStore';
+import useSettlementCreateStore from '@/store/useSettlementCreate';
 
 const SettlementMainScreen = () => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const {resetSettlement} = useSettlementCreateStore();
   const [settlementData, setSettlementData] = useState<ResponseSettlements[]>();
   const [ongoingData, setOnGoingData] = useState<ResponseSettlements[]>();
   const [completeData, setCompleteData] = useState<ResponseSettlements[]>();
@@ -78,6 +80,7 @@ const SettlementMainScreen = () => {
   };
 
   const handleOnPressAdd = () => {
+    resetSettlement();
     navigation.navigate(accountBookNavigations.SETTLEMENTPAYMENTS);
   };
   return (

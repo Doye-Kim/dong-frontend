@@ -18,6 +18,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {ResponseGame, getGames} from '@/api/game';
 import Toast from 'react-native-toast-message';
 import useThemeStore from '@/store/useThemeStore';
+import useGameCreateStore from '@/store/useGameCreateStore';
 
 const GameMainScreen = () => {
   const {theme} = useThemeStore();
@@ -28,6 +29,8 @@ const GameMainScreen = () => {
   const [onGoingGame, setOnGoingGame] = useState<ResponseGame[]>();
   const [prepareGame, setPrepareGame] = useState<ResponseGame[]>();
   const [finishGame, setFinishGame] = useState<ResponseGame[]>();
+
+  const {resetGame} = useGameCreateStore();
 
   const getGameData = async () => {
     try {
@@ -58,6 +61,7 @@ const GameMainScreen = () => {
   }, []);
 
   const handlePressAdd = () => {
+    resetGame();
     navigation.navigate(gameNavigations.CREATE);
   };
   return (

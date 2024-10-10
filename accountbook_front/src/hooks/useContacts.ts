@@ -37,7 +37,7 @@ const useContacts = () => {
   const {friends, fetchFriends} = useFriendsStore();
 
   const refreshFriends = async () => {
-    console.log('refresh');
+    // console.log('refresh');
     const contacts = await Contacts.getAll();
     const data = await postFriends(contacts);
     await fetchFriends();
@@ -46,17 +46,17 @@ const useContacts = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        console.log('useEffect, fetch');
+        // console.log('useEffect, fetch');
         const granted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
         );
 
         if (granted) {
           if (friends.length === 0) {
-            console.log('friends 업슴');
+            // console.log('friends 업슴');
             await refreshFriends();
           } else {
-            console.log('friends 이씀 그냥 넘어감');
+            // console.log('friends 이씀 그냥 넘어감');
           }
         } else {
           const contacts = await requestContactsPermission();

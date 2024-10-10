@@ -19,10 +19,13 @@ import useThemeStore from '@/store/useThemeStore';
 const SelectCategoryScreen = ({route, navigation}) => {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const {customCategoryIds, setCustomCategoryIds} = useGameCreateStore();
   const [categories, setCategories] = useState<ResponseCategory[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
     route?.params?.category
       ? route?.params?.category.map(category => category.categoryId)
+      : customCategoryIds.length > 0
+      ? customCategoryIds
       : [],
   );
   const participantId = route?.params?.participantId
@@ -44,7 +47,6 @@ const SelectCategoryScreen = ({route, navigation}) => {
     };
     getData();
   }, []);
-  const {setCustomCategoryIds} = useGameCreateStore();
 
   const editCategory = async () => {
     console.log('edit', {

@@ -32,7 +32,7 @@ const SelectAccountModal = ({
   const getAccountList = async () => {
     try {
       const data = await getAssets();
-      console.log(data.accountList);
+      // console.log(data.accountList);
       if (data.accountList.length > 1) {
         setAccountList(data.accountList);
       } else {

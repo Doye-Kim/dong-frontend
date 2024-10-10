@@ -25,7 +25,7 @@ const NotificationScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const getData = useCallback(async (alarmId?: number) => {
-    console.log('Fetching data...');
+    // console.log('Fetching data...');
     try {
       setLoading(true);
       const data = await getAlarm(alarmId);
