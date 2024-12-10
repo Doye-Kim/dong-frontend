@@ -81,8 +81,8 @@
         <td colspan="2">게임 생성</td>
     </tr>
     <tr>
-        <td>![game_create1](img/game_create1.gif)</td>
-        <td>![game_create2](img/game_create2.gif)</td>
+        <td><img src="img/game_create1.gif" /></td>
+        <td><img src="img/game_create2.gif" /></td>
     </tr>
 </table>
 
